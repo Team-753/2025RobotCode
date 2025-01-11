@@ -22,7 +22,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
 
         #set up the joystick and navx sensor
         self.joystick = joystick
-        self.navx = navx.AHRS.create_spi(update_rate_hz=60)
+        self.navx = navx.AHRS.create_spi()
 
         #getting some important constants about the robot declared
         self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
@@ -53,7 +53,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.poseEstimatior = estimator.SwerveDrive4PoseEstimator(kinematics.SwerveDrive4Kinematics(geometry.Translation2d(float(self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(self.trackWidth / 2), float(-self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(-self.wheelBase / 2))), 
                                                                   self.getNavxRotation2d(), self.getSwerveModulePositions(), geometry.Pose2d(0, 0, geometry.Rotation2d()), self.stateStdDevs, self.visionMeasurementsStdDevs)
         
-        self.field = wpilib.Field2d
+        self.field = wpilib.Field2d()
         #wpilib.SmartDashboard.putData("Field: ", self.field)
         
     def getNavxRotation2d(self)-> geometry.Rotation2d:
@@ -87,7 +87,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
     def setSwerveStates(self, xSpeed: float, ySpeed: float, zSpeed: float, fieldOrient = True)-> None:
         #using the input from the get joystick input function to tell the wheels where to go
         if fieldOrient:
-            SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, zSpeed), self.poseEstimatior.getEstimatedPosition().rotation())
+            SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition().rotation()))
         else:
             SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds(xSpeed, ySpeed, zSpeed))
         print ('set swerve states (drivetrain is running)')
@@ -129,7 +129,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
     
     def periodic(self) -> None:
         #do these things a bunch of times
-        currentPose = self.poseEstimatior.update(self.getNavxRotation2d, self.getSwerveModulePositions())
+        currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
         self.field.setRobotPose(currentPose)
 
     

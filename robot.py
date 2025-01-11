@@ -5,12 +5,13 @@ from phoenix6 import hardware, controls, configs, StatusCode
 from wpimath.units import seconds
 from robotContainer import RobotContainer
 from commands.defaultDriveCommand import DefaultDriveCommand
+import commands2
 
 #note to self: use duty cycle control modes because they are simpler. 
 # Might be a good idea to give figuring out voltage control stuff to Ryan 
 # or Chris if we need to use it
 
-class MyRobot(wpilib.TimedRobot):
+class MyRobot(commands2.TimedCommandRobot):
 
     def __init__(self, period: float = 0.02) -> None:
         super().__init__(period)

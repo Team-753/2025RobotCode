@@ -11,7 +11,9 @@ class RobotContainer:
         #declaring the subsystems and setting up the drivetrain control
         self.joystick = commands2.button.CommandJoystick(config.driveConstants.joystickConstants.USB_ID)
         self.driveTrain = DriveTrainSubSystem(self.joystick)
-        #self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        self.scheduler = commands2.CommandScheduler()
+        #self.scheduler.setDefaultCommand(self.driveTrain, DefaultDriveCommand(self.driveTrain))
 
     def checkJoystickInput(self, kInput: float):
         #getting values out of the joystick to do things
@@ -33,6 +35,8 @@ class RobotContainer:
         pass
 
     def teleopInit(self):
+        print("doing the thing")
+        #self.scheduler.unregisterAllSubsystems()
         #self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
         pass
 

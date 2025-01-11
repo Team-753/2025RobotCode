@@ -89,11 +89,13 @@ class SwerveModule:
     
     def setState(self, desiredState: kinematics.SwerveModuleState)-> None:
         #getting the wheel to where we want it to be
-        optimizedDesiredState = kinematics.SwerveModuleState.optimize(desiredState, geometry.Rotation2d(self.turnMotor.get_position().value))
-        driveMotorVelocity = optimizedDesiredState.speed / (rc.driveConstants.wheelDiameter * math.pi)
-        turnMotorPosition = optimizedDesiredState.angle / math.tau
-        self.driveMotor.set_control(self.velocity(driveMotorVelocity))
-        self.turnMotor.set_control(self.position(turnMotorPosition))
+        #optimizedDesiredState = kinematics.SwerveModuleState.optimize(desiredState, geometry.Rotation2d(self.turnMotor.get_position().value))
+        #driveMotorVelocity = optimizedDesiredState.speed / (rc.driveConstants.wheelDiameter * math.pi)
+        #turnMotorPosition = optimizedDesiredState.angle / math.tau
+        driveMotorVelocity = desiredState.speed * rc.SwerveModules.drivingGearRatio/ (rc.driveConstants.wheelDiameter * math.pi)
+        turnMotorPosition = desiredState.angle.radians() * rc.SwerveModules.turningGearRatio/ math.tau
+        self.driveMotor.set_control(self.velocity.with_velocity(driveMotorVelocity))
+        self.turnMotor.set_control(self.position.with_position(turnMotorPosition))
         self.desiredState = desiredState
         print("set state (swerveModule) is running")
 
