@@ -42,7 +42,7 @@ class SwerveModule:
         driveMotorConfigs.voltage.peak_reverse_voltage = -8
         driveMotorConfigs.current_limits.supply_current_limit = 38 #find a real number for this
         driveMotorConfigs.motor_output.neutral_mode = signals.NeutralModeValue.COAST
-        driveMotorConfigs.feedback.sensor_to_mechanism_ratio = 12 #check swerve stuff to get a real number
+        driveMotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.drivingGearRatio #check swerve stuff to get a real number
 
         self.driveMotor.configurator.apply(driveMotorConfigs)
 
@@ -53,12 +53,12 @@ class SwerveModule:
         turnMotorConfigs.slot0.k_d = 0.0
         turnMotorConfigs.voltage.peak_forward_voltage = 8
         turnMotorConfigs.voltage.peak_reverse_voltage = -8
-        turnMotorConfigs.feedback.feedback_remote_sensor_id = coderID
         turnMotorConfigs.feedback.feedback_sensor_source = signals.FeedbackSensorSourceValue.REMOTE_CANCODER
+        turnMotorConfigs.feedback.feedback_remote_sensor_id = coderID
         turnMotorConfigs.motor_output.neutral_mode = signals.NeutralModeValue.COAST
-        turnMotorConfigs.feedback.sensor_to_mechanism_ratio = 12 #check swerve drive specs to get a real number
+        turnMotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.turningGearRatio #check swerve drive specs to get a real number
 
-        turnMotorConfigs.current_limits.supply_current_limit = 12 #find a real number for this
+        turnMotorConfigs.current_limits.supply_current_limit = 38 #find a real number for this
 
         self.turnMotor.configurator.apply(turnMotorConfigs)
 
@@ -97,7 +97,6 @@ class SwerveModule:
         self.driveMotor.set_control(self.velocity.with_velocity(driveMotorVelocity))
         self.turnMotor.set_control(self.position.with_position(turnMotorPosition))
         self.desiredState = desiredState
-        print("set state (swerveModule) is running")
 
     def setNuetral(self)-> None:
         #stop spinning the motors (coast them)

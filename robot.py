@@ -7,11 +7,11 @@ from robotContainer import RobotContainer
 from commands.defaultDriveCommand import DefaultDriveCommand
 import commands2
 
-#note to self: use duty cycle control modes because they are simpler. 
-# Might be a good idea to give figuring out voltage control stuff to Ryan 
-# or Chris if we need to use it
+#note to self: assign aux subsystems, get real numbers on the drivetrain from Nolan
+
 
 class MyRobot(commands2.TimedCommandRobot):
+
 
     def __init__(self, period: float = 0.02) -> None:
         super().__init__(period)
@@ -67,7 +67,7 @@ class MyRobot(commands2.TimedCommandRobot):
         return super().testInit()
 
     def testPeriodic(self):
-        return super().testPeriodic()
+        self.robotContainer.testPeriodic
     
        #self.robotContainer.teleopPeriodic()
     ''' joystick_value = self.joystick.getLeftY()

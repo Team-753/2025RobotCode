@@ -6,8 +6,8 @@ class robotDimensions:
 
 class SwerveModules:
 
-    drivingGearRatio = 5 # find a real number
-    turningGearRatio = 5 # find a real number
+    drivingGearRatio = 5.68 # find a real number
+    turningGearRatio = 12.1 # find a real number
 
     class frontLeft:
         driveMotorID = 1

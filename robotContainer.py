@@ -9,11 +9,11 @@ import RobotConfig as config
 class RobotContainer:
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
-        self.joystick = commands2.button.CommandJoystick(config.driveConstants.joystickConstants.USB_ID)
+        self.joystick = commands2.button.CommandJoystick(0)
         self.driveTrain = DriveTrainSubSystem(self.joystick)
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
         self.scheduler = commands2.CommandScheduler()
-        #self.scheduler.setDefaultCommand(self.driveTrain, DefaultDriveCommand(self.driveTrain))
+      
 
     def checkJoystickInput(self, kInput: float):
         #getting values out of the joystick to do things
@@ -36,12 +36,9 @@ class RobotContainer:
 
     def teleopInit(self):
         print("doing the thing")
-        #self.scheduler.unregisterAllSubsystems()
-        #self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
-        pass
 
     def teleopPeriodic(self):
-        self.checkJoystickInput(0.0)
+        pass
 
     def testInit(self):
         pass

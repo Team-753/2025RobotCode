@@ -79,7 +79,10 @@ class DriveTrainSubSystem(commands2.Subsystem):
     def getJoystickInput(self)-> tuple[float]:
         #getting input from the joysticks and changing it so that we can use it
         constants = rc.driveConstants.joystickConstants
-        print('getting input.')
+        '''print('getting input.')
+        print('x value: ' + str(self.joystick.getX()))
+        print('y value: ' + str(self.joystick.getY()))
+        print('z value: ' + str(self.joystick.getZ()))'''
         return(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband),
                -wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband),
                -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband))
@@ -90,7 +93,6 @@ class DriveTrainSubSystem(commands2.Subsystem):
             SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition().rotation()))
         else:
             SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds(xSpeed, ySpeed, zSpeed))
-        print ('set swerve states (drivetrain is running)')
         self.frontLeft.setState(SwerveModuleStates[0])
         self.frontRight.setState(SwerveModuleStates[1])
         self.rearLeft.setState(SwerveModuleStates[2])
@@ -98,11 +100,16 @@ class DriveTrainSubSystem(commands2.Subsystem):
     
     def joystickDrive(self, inputs: tuple[float])-> None:
         #proccessing the joystick input values and sending them to the set swerve states function
-        print ("joystick drive is running.")
+        #print ("joystick drive is running.")
         xSpeed, ySpeed, zSpeed, = (inputs[0] * self.kMaxSpeed,
                                    inputs[1] * self.kMaxSpeed,
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
-        self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
+        print("x speed: " + str(xSpeed))
+        print("Y speed: " + str(ySpeed))
+        print("Z speed: " + str(zSpeed))
+        self.frontRight.turnMotor.set_control(self.frontRight.position.with_position(1))
+        #self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
+
 
     def stationary(self)-> None:
         #stop the robot by breaking all the motors
