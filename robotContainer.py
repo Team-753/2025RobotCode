@@ -35,7 +35,8 @@ class RobotContainer:
         pass
 
     def teleopInit(self):
-        print("doing the thing")
+        #self.driveTrain.setSwerveStates(1.0, 1.0, 1.0)
+        pass
 
     def teleopPeriodic(self):
         pass

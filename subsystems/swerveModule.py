@@ -2,7 +2,7 @@ import phoenix6
 from wpimath import kinematics, geometry
 import wpilib
 import math
-from phoenix6 import hardware, controls, signals
+from phoenix6 import hardware, controls, signals, configs
 import RobotConfig as rc
 
 class SwerveModule:
@@ -20,7 +20,7 @@ class SwerveModule:
 
         #defining control modes for the motors
         self.velocity = controls.VelocityVoltage(0).with_slot(0)
-        self.position = controls.PositionVoltage(0).with_slot(0)
+        self.position = controls.PositionVoltage(0).with_slot(1)
         self.brake = controls.NeutralOut() #wont actually break the motors, confusing i know
 
         #defining and applying configs for the cancoder
@@ -31,34 +31,34 @@ class SwerveModule:
         self.canCoder.configurator.apply(canCoderConfigs)
 
         #defining and applying configs for motors
-        driveMotorConfigs = phoenix6.configs.TalonFXConfiguration()
+        MotorConfigs = phoenix6.configs.TalonFXConfiguration()
 
-        driveMotorConfigs.slot0.k_p = 0.1
-        driveMotorConfigs.slot0.k_i = 0.0001
-        driveMotorConfigs.slot0.k_d = 0.0001
-        driveMotorConfigs.slot0.k_s = 0.1
-        driveMotorConfigs.slot0.k_v = 0.12
-        driveMotorConfigs.voltage.peak_forward_voltage = 8
-        driveMotorConfigs.voltage.peak_reverse_voltage = -8
-        driveMotorConfigs.current_limits.supply_current_limit = 38 #find a real number for this
-        driveMotorConfigs.motor_output.neutral_mode = signals.NeutralModeValue.COAST
-        driveMotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.drivingGearRatio #check swerve stuff to get a real number
+        MotorConfigs.slot0.k_p = 0.1
+        MotorConfigs.slot0.k_i = 0.0001
+        MotorConfigs.slot0.k_d = 0.0001
+        MotorConfigs.slot0.k_s = 0.1
+        MotorConfigs.slot0.k_v = 0.12
+        MotorConfigs.voltage.peak_forward_voltage = 8
+        MotorConfigs.voltage.peak_reverse_voltage = -8
+        MotorConfigs.current_limits.supply_current_limit = 38 #find a real number for this
+        MotorConfigs.motor_output.neutral_mode = signals.NeutralModeValue.COAST
+        MotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.drivingGearRatio #check swerve stuff to get a real number
 
-        self.driveMotor.configurator.apply(driveMotorConfigs)
+        self.driveMotor.configurator.apply(MotorConfigs)
 
         turnMotorConfigs = phoenix6.configs.TalonFXConfiguration()
 
-        turnMotorConfigs.slot0.k_p = 0.0005
-        turnMotorConfigs.slot0.k_i = 0.0005
-        turnMotorConfigs.slot0.k_d = 0.0
+        turnMotorConfigs.slot1.k_p = 0.0005
+        turnMotorConfigs.slot1.k_i = 0.0005
+        turnMotorConfigs.slot1.k_d = 0.0
         turnMotorConfigs.voltage.peak_forward_voltage = 8
         turnMotorConfigs.voltage.peak_reverse_voltage = -8
-        turnMotorConfigs.feedback.feedback_sensor_source = signals.FeedbackSensorSourceValue.REMOTE_CANCODER
-        turnMotorConfigs.feedback.feedback_remote_sensor_id = coderID
-        turnMotorConfigs.motor_output.neutral_mode = signals.NeutralModeValue.COAST
+        #turnMotorConfigs.feedback.feedback_sensor_source = signals.FeedbackSensorSourceValue.REMOTE_CANCODER
+        #turnMotorConfigs.feedback.feedback_remote_sensor_id = coderID
+        #turnMotorConfigs.motor_output.neutral_mode = signals.NeutralModeValue.COAST
         turnMotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.turningGearRatio #check swerve drive specs to get a real number
 
-        turnMotorConfigs.current_limits.supply_current_limit = 38 #find a real number for this
+        #turnMotorConfigs.current_limits.supply_current_limit = 38 #find a real number for this
 
         self.turnMotor.configurator.apply(turnMotorConfigs)
 
@@ -84,7 +84,7 @@ class SwerveModule:
         return kinematics.SwerveModuleState(self.driveMotor.get_velocity().value * rc.driveConstants.wheelDiameter * math.pi, self.getTurnWheelState())
     
     def getPosition(self)-> kinematics.SwerveModulePosition:
-        #where are we relative to where we started
+        #where are we relative to where we started, haha nope really just the same as above
         return kinematics.SwerveModulePosition(self.driveMotor.get_position().value * rc.driveConstants.wheelDiameter * math.pi, self.getTurnWheelState())
     
     def setState(self, desiredState: kinematics.SwerveModuleState)-> None:
@@ -93,15 +93,19 @@ class SwerveModule:
         #driveMotorVelocity = optimizedDesiredState.speed / (rc.driveConstants.wheelDiameter * math.pi)
         #turnMotorPosition = optimizedDesiredState.angle / math.tau
         driveMotorVelocity = desiredState.speed * rc.SwerveModules.drivingGearRatio/ (rc.driveConstants.wheelDiameter * math.pi)
-        turnMotorPosition = desiredState.angle.radians() * rc.SwerveModules.turningGearRatio/ math.tau
+        turnMotorPosition = desiredState.angle.radians()/ math.tau
+        print("swere is swerving " + str(turnMotorPosition))
+        #self.turnMotor.set_control(self.velocity.with_velocity(turnMotorPosition))
         self.driveMotor.set_control(self.velocity.with_velocity(driveMotorVelocity))
         self.turnMotor.set_control(self.position.with_position(turnMotorPosition))
+        #self.turnMotor.set_position(turnMotorPosition)
         self.desiredState = desiredState
 
     def setNuetral(self)-> None:
         #stop spinning the motors (coast them)
-        self.turnMotor.set_control(self.brake)
-        self.turnMotor.set_control(self.brake)
+        #self.driveMotor.set_control(self.brake)
+        #self.turnMotor.set_control(self.brake)
+        pass
 
     def stop(self)-> None:
         #THE ROBOT MUST STOP NOW (break the motors)

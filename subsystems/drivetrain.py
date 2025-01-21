@@ -107,8 +107,8 @@ class DriveTrainSubSystem(commands2.Subsystem):
         print("x speed: " + str(xSpeed))
         print("Y speed: " + str(ySpeed))
         print("Z speed: " + str(zSpeed))
-        self.frontRight.turnMotor.set_control(self.frontRight.position.with_position(1))
-        #self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
+        #self.frontRight.turnMotor.set_control(self.frontRight.position.with_position(1))
+        self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
 
 
     def stationary(self)-> None:
