@@ -43,6 +43,10 @@ class Climber:
     
     piston2Forward = 3
     piston2Reverse = 4
+
+class elevator:
+    leftMotorID= 1000
+    rightMotorID= 2000
     
 class driveConstants:
     wheelDiameter = 3
