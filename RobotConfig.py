@@ -32,6 +32,17 @@ class SwerveModules:
         CANCoderID = 11
         encoderOffset = 0.291
         turnMotorID = 12
+        
+class coralCannon:
+    intakeMotorID = 13
+    pivotMotorID = 14
+    
+class Climber:
+    piston1Forward = 1
+    piston1Reverse = 2
+    
+    piston2Forward = 3
+    piston2Reverse = 4
     
 class driveConstants:
     wheelDiameter = 3
