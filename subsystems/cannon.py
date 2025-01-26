@@ -11,7 +11,9 @@ class CannonSubsystem(commands2.Subsystem):
         print(self.intakeMotor)
         self.intakeMotor.set(1)
         
-        #add move to intake position
     def intake(self) -> None:
         print(self.intakeMotor)
         self.intakeMotor.set(-1)
+
+    def idle(self) -> None:
+        self.intakeMotor.set(0)
