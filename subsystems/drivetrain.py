@@ -31,10 +31,10 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.trackWidth = rc.robotDimensions.trackWidth
 
         #defining the location of each swerve module on the can chain
-        self.frontLeft = SwerveModule(rc.SwerveModules.frontLeft.driveMotorID, rc.SwerveModules.frontLeft.turnMotorID, rc.SwerveModules.frontLeft.CANCoderID)
-        self.frontRight = SwerveModule(rc.SwerveModules.frontRight.driveMotorID, rc.SwerveModules.frontRight.turnMotorID, rc.SwerveModules.frontRight.CANCoderID)
-        self.rearLeft = SwerveModule(rc.SwerveModules.rearLeft.driveMotorID, rc.SwerveModules.rearLeft.turnMotorID, rc.SwerveModules.rearLeft.CANCoderID)
-        self.rearRight = SwerveModule(rc.SwerveModules.rearRight.driveMotorID, rc.SwerveModules.rearRight.turnMotorID, rc.SwerveModules.rearRight.CANCoderID)
+        self.frontLeft = SwerveModule(rc.SwerveModules.frontLeft.driveMotorID, rc.SwerveModules.frontLeft.turnMotorID, rc.SwerveModules.frontLeft.CANCoderID, rc.SwerveModules.frontLeft.encoderOffset)
+        self.frontRight = SwerveModule(rc.SwerveModules.frontRight.driveMotorID, rc.SwerveModules.frontRight.turnMotorID, rc.SwerveModules.frontRight.CANCoderID, rc.SwerveModules.frontRight.encoderOffset)
+        self.rearLeft = SwerveModule(rc.SwerveModules.rearLeft.driveMotorID, rc.SwerveModules.rearLeft.turnMotorID, rc.SwerveModules.rearLeft.CANCoderID, rc.SwerveModules.rearLeft.encoderOffset)
+        self.rearRight = SwerveModule(rc.SwerveModules.rearRight.driveMotorID, rc.SwerveModules.rearRight.turnMotorID, rc.SwerveModules.rearRight.CANCoderID, rc.SwerveModules.rearRight.encoderOffset)
 
         #renaming some variables so they are easier to use
         teleopConstants = rc.driveConstants.poseConstants
@@ -104,9 +104,9 @@ class DriveTrainSubSystem(commands2.Subsystem):
         xSpeed, ySpeed, zSpeed, = (inputs[0] * self.kMaxSpeed,
                                    inputs[1] * self.kMaxSpeed,
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
-        print("x speed: " + str(xSpeed))
+        '''print("x speed: " + str(xSpeed))
         print("Y speed: " + str(ySpeed))
-        print("Z speed: " + str(zSpeed))
+        print("Z speed: " + str(zSpeed))'''
         #self.frontRight.turnMotor.set_control(self.frontRight.position.with_position(1))
         self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
 
@@ -137,6 +137,10 @@ class DriveTrainSubSystem(commands2.Subsystem):
     def periodic(self) -> None:
         #do these things a bunch of times
         currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
+        print("current position " + str(self.frontLeft.getTurnWheelState()))
+        print("front left desired position " + str(self.frontLeft.desiredState.angle))
+        print("front right desired position" + str(self.frontRight.desiredState.angle))
+        print("***")
         self.field.setRobotPose(currentPose)
 
     

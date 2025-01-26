@@ -12,21 +12,25 @@ class SwerveModules:
     class frontLeft:
         driveMotorID = 1
         CANCoderID = 2
+        encoderOffset = 0.7062 
         turnMotorID = 3
 
     class frontRight:
         driveMotorID = 4
         CANCoderID = 5
+        encoderOffset = 0.184
         turnMotorID = 6
     
     class rearRight:
         driveMotorID = 7
         CANCoderID = 8
+        encoderOffset = 0.84
         turnMotorID = 9
     
     class rearLeft:
         driveMotorID = 10
         CANCoderID = 11
+        encoderOffset = 0.291
         turnMotorID = 12
     
 class driveConstants:
