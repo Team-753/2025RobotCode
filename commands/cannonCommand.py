@@ -13,7 +13,7 @@ class place(commands2.Command):
         print("placing")
 
     def end(self, interrupted: bool):
-        self.cannon.stop()
+        self.cannon.idle()
 
 class intake(commands2.Command):
     def __init__(self, cannonSubsystem: CannonSubsystem):
@@ -28,7 +28,7 @@ class intake(commands2.Command):
         #add intake position function
 
     def end(self, interrupted: bool):
-        self.cannon.stop()
+        self.cannon.idle()
         #add idle for position
 
 
