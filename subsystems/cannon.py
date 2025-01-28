@@ -5,7 +5,7 @@ import RobotConfig
 class CannonSubsystem(commands2.Subsystem):
     
     def __init__(self) -> None:
-        self.intakeMotor = rev.SparkMax(RobotConfig.coralCannon.intakeMotorID, rev.SparkMax.MotorType.kBrushed)
+        self.intakeMotor = rev.CanSparkMax(RobotConfig.coralCannon.intakeMotorID, rev.CanSparkMax.MotorType.kBrushed)
         
     def place(self) -> None:
         print(self.intakeMotor)

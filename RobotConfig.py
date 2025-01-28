@@ -44,6 +44,14 @@ class Climber:
     piston2Forward = 3
     piston2Reverse = 4
 
+    pistonsHaveExtended = bool
+
+class algaeSquisher:
+    squisherPistonForward = 5
+    squisherPistonReverse = 6
+
+    squisherMotorID = 2123904
+
 class elevator:
     leftMotorID= 1000
     rightMotorID= 2000
