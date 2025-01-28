@@ -1,7 +1,6 @@
 import commands2
 from subsystems.Climber import ClimberSubsystem
 import wpilib
-import RobotConfig
 
 
 #extends the pistons to climb the cage
@@ -26,6 +25,7 @@ class ExtendClimber(commands2.Command):
 class ReleaseClimber(commands2.Command):
     def __init__(self, kclimberSubsystem: ClimberSubsystem):
         super().__init__()
+        self.addRequirements(kclimberSubsystem)
         self.climber = kclimberSubsystem
         
     def initialize(self):
@@ -42,10 +42,11 @@ class ReleaseClimber(commands2.Command):
 
 #Flips the pistons on an on and off position 
 
+'''
 class FlipClimber(commands2.Command):
     def __init__(self, kclimberSubsystem: ClimberSubsystem):
         super().__init__()
-
+        self.add
         #The Boolean flip on whether or not we have extended the pistons
         self.hasExtended = RobotConfig.Climber.pistonsHaveExtended
 
@@ -62,5 +63,5 @@ class FlipClimber(commands2.Command):
     def end(self, interrupted):
         print("Has moved pistons")
     
-        
+        '''
         
