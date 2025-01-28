@@ -55,6 +55,7 @@ class algaeSquisher:
 class elevator:
     leftMotorID= 1000
     rightMotorID= 2000
+    encoderID=1000^10
     
 class driveConstants:
     wheelDiameter = 3
