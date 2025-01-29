@@ -41,8 +41,10 @@ class posElevatorSubsystem(commands2.subsystem):
         self.rMotor=rev.CANSparkMax(rMotorID,rev.CANSparkMax.MotorType.kBrushless)
         
         self.encoder=wpilib.Encoder(encoderID)#!!!!!!!!INEEDTOFINDTHEENCODERTYPEOROURROBOTWILLEXPLODEANDTHESEASONWILLBEOVER!!!!!!!!!!!!!!!!!!!!!
-        self.lMotor.ControlType(rev.CANSparkMax.ControlType.kPosition)
         #read it
         self.rMotor.follow(self.lMotor,True)
+        self.Pid=self.lMotor.getPIDController()
+        self.Pid.setFeedbackDevice(self.encoder)
     def setPosition(self,desiredPos):
-        self.lMotor.set()#something)
+        #i have as much confidence this code works as i have confidence we arent secretly ruled over by reptillian overlords
+        self.Pid.setReference(desiredPos, rev.CANSparkMax.ControlType.kPosition,0)
