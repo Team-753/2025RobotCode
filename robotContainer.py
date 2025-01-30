@@ -12,6 +12,7 @@ from commands2.sysid import SysIdRoutine
 from telemetry import Telemetry
 from tuner_constants import TunerConstants
 from subsystems.swerveModule import myModules
+from commands.cannonCommand import place, intake
 
 from pathplannerlib.auto import AutoBuilder
 from phoenix6 import swerve, hardware
@@ -27,7 +28,7 @@ class RobotContainer:
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
         self.joystick = commands2.button.CommandJoystick(0)
-        self.AuxController = commands2.button.CommandJoystick(1)
+        self.AuxController = commands2.button.CommandXboxController(1)
         self.kDriveConstants = swerve.SwerveDrivetrainConstants()
         self.driveTrain = MyDriveTrain(hardware.TalonFX, hardware.TalonFX, hardware.CANcoder, self.kDriveConstants, myModules)
         self.drive = (swerve.requests.FieldCentric()
@@ -59,7 +60,9 @@ class RobotContainer:
         # Configure the button bindings
         self.configureButtonBindings()
 
+
     def configureButtonBindings(self) -> None:
+        self.AuxController.rightTrigger().whileTrue(place(self.cannon)) #why does the "cannon" part not work?
         """
         Use this method to define your button->command mappings. Buttons can be created by
         instantiating a :GenericHID or one of its subclasses (Joystick or XboxController),

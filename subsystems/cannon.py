@@ -5,10 +5,10 @@ import RobotConfig
 class CannonSubsystem(commands2.Subsystem):
     
     def __init__(self):
-        self.TopMotor = rev.CANSparkMax(RobotConfig.coralCannon.TopMotorID, rev.CANSparkMax.MotorType.kBrushed)
-        self.BottomMotor = rev.CANSparkMax(RobotConfig.coralCannon.BottomMotorID, rev.CANSparkMax.MotorType.kBrushed)
+        self.TopMotor = rev.SparkMax(RobotConfig.coralCannon.TopMotorID, rev.SparkMax.MotorType.kBrushed)
+        self.BottomMotor = rev.SparkMax(RobotConfig.coralCannon.BottomMotorID, rev.SparkMax.MotorType.kBrushed)
         self.BottomMotor.setInverted(True)
-        self.pivotMotor = rev.CANSparkMax(RobotConfig.coralCannon.pivotMotorID, rev.CANSparkMax.MotorType.kBrushless)
+        self.pivotMotor = rev.SparkMax(RobotConfig.coralCannon.pivotMotorID, rev.SparkMax.MotorType.kBrushless)
 
     def place(self):
         print(self.TopMotor)
