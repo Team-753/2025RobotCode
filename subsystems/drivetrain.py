@@ -21,6 +21,8 @@ driveTrainConstants.with_pigeon2_configs(None)'''
 class MyDriveTrain(Subsystem, swerve.SwerveDrivetrain):
 
     _SIM_LOOP_PERIOD: units.second = 0.005
+    _BLUE_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(0)
+    _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
 
     def __init__(self, driveMotorType, steerMotorType, CANCoderType, driveTrainConstants: swerve.SwerveDrivetrainConstants, myModule):
         Subsystem.__init__(self)

@@ -37,7 +37,7 @@ class RobotContainer:
             )  # Add a 10% deadband
             .with_drive_request_type(
                 swerve.SwerveModule.DriveRequestType.OPEN_LOOP_VOLTAGE))
-        self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        #self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
         self.scheduler = commands2.CommandScheduler()
 
         self._brake = swerve.requests.SwerveDriveBrake()
@@ -72,7 +72,7 @@ class RobotContainer:
             # Drivetrain will execute this command periodically
             self.drivetrain.apply_request(
                 lambda: (
-                    self._drive.with_velocity_x(
+                    self.drive.with_velocity_x(
                         -self._joystick.getLeftY() * self._max_speed
                     )  # Drive forward with negative Y (forward)
                     .with_velocity_y(
