@@ -1,148 +1,242 @@
-from wpimath import geometry, kinematics
-import wpilib
+from subsystems.swerveModule import *
+from phoenix6 import swerve, hardware
 import navx
-from subsystems.swerveModule import SwerveModule
-from wpilib import DriverStation
-from wpimath import controller, trajectory, estimator
-import wpimath
-from math import hypot, radians, pi, atan2
-from typing import List
-import commands2
-import RobotConfig as rc
+from commands2 import Command, Subsystem
+from commands2.sysid import SysIdRoutine
+import math
+from pathplannerlib.auto import AutoBuilder, RobotConfig
+from pathplannerlib.controller import PIDConstants, PPHolonomicDriveController
+from phoenix6 import SignalLogger, swerve, units, utils
+from typing import Callable, overload
+from wpilib import DriverStation, Notifier, RobotController
+from wpilib.sysid import SysIdRoutineLog
+from wpimath.geometry import Pose2d, Rotation2d
+
+"""""class DriveTrainConstants(swerve.SwerveDrivetrainConstants):
+    def __init__(self, NavXID):
+        super().__init__()"""
+'''driveTrainConstants = swerve.SwerveDrivetrainConstants()
+driveTrainConstants.pigeon2_configs = None
+driveTrainConstants.with_pigeon2_configs(None)'''
+class MyDriveTrain(Subsystem, swerve.SwerveDrivetrain):
+    def __init__(self, driveTrainConstants: swerve.SwerveDrivetrainConstants):
+        Subsystem.__init__(self)
+        swerve.SwerveDrivetrain.__init__(self, hardware.TalonFX, hardware.TalonFX, hardware.CANcoder, driveTrainConstants, myModules)
+
+        self.NavX = navx.AHRS.create_spi()
+
+
+        _SIM_LOOP_PERIOD: units.second = 0.005
+        self._sim_notifier: Notifier | None = None
+        self._last_sim_time: units.second = 0.0
+
+        self._has_applied_operator_perspective = False
+        """Keep track if we've ever applied the operator perspective before or not"""
+
+        # Swerve request to apply during path following
+        self._apply_robot_speeds = swerve.requests.ApplyRobotSpeeds()
+
+        # Swerve requests to apply during SysId characterization
+        self._translation_characterization = swerve.requests.SysIdSwerveTranslation()
+        self._steer_characterization = swerve.requests.SysIdSwerveSteerGains()
+        self._rotation_characterization = swerve.requests.SysIdSwerveRotation()
+
+        self._sys_id_routine_translation = SysIdRoutine(
+            SysIdRoutine.Config(
+                # Use default ramp rate (1 V/s) and timeout (10 s)
+                # Reduce dynamic voltage to 4 V to prevent brownout
+                stepVoltage=4.0,
+                # Log state with SignalLogger class
+                recordState=lambda state: SignalLogger.write_string(
+                    "SysIdTranslation_State", SysIdRoutineLog.stateEnumToString(state)
+                ),
+            ),
+            SysIdRoutine.Mechanism(
+                lambda output: self.set_control(
+                    self._translation_characterization.with_volts(output)
+                ),
+                lambda log: None,
+                self,
+            ),
+        )
+        """SysId routine for characterizing translation. This is used to find PID gains for the drive motors."""
+
+        self._sys_id_routine_steer = SysIdRoutine(
+            SysIdRoutine.Config(
+                # Use default ramp rate (1 V/s) and timeout (10 s)
+                # Use dynamic voltage of 7 V
+                stepVoltage=7.0,
+                # Log state with SignalLogger class
+                recordState=lambda state: SignalLogger.write_string(
+                    "SysIdSteer_State", SysIdRoutineLog.stateEnumToString(state)
+                ),
+            ),
+            SysIdRoutine.Mechanism(
+                lambda output: self.set_control(
+                    self._steer_characterization.with_volts(output)
+                ),
+                lambda log: None,
+                self,
+            ),
+        )
+        """SysId routine for characterizing steer. This is used to find PID gains for the steer motors."""
+
+        self._sys_id_routine_rotation = SysIdRoutine(
+            SysIdRoutine.Config(
+                # This is in radians per second², but SysId only supports "volts per second"
+                rampRate=math.pi / 6,
+                # Use dynamic voltage of 7 V
+                stepVoltage=7.0,
+                # Use default timeout (10 s)
+                # Log state with SignalLogger class
+                recordState=lambda state: SignalLogger.write_string(
+                    "SysIdSteer_State", SysIdRoutineLog.stateEnumToString(state)
+                ),
+            ),
+            SysIdRoutine.Mechanism(
+                lambda output: (
+                    # output is actually radians per second, but SysId only supports "volts"
+                    self.set_control(
+                        self._rotation_characterization.with_rotational_rate(output)
+                    ),
+                    # also log the requested output for SysId
+                    SignalLogger.write_double("Rotational_Rate", output),
+                ),
+                lambda log: None,
+                self,
+            ),
+        )
+        """
+        SysId routine for characterizing rotation.
+        This is used to find PID gains for the FieldCentricFacingAngle HeadingController.
+        See the documentation of swerve.requests.SysIdSwerveRotation for info on importing the log to SysId.
+        """
+
+        self._sys_id_routine_to_apply = self._sys_id_routine_translation
+        """The SysId routine to test"""
+
+        if utils.is_simulation():
+            self._start_sim_thread()
+        self._configure_auto_builder()
+
+    def _configure_auto_builder(self):
+        config = RobotConfig.fromGUISettings()
+        AutoBuilder.configure(
+            lambda: self.get_state().pose,   # Supplier of current robot pose
+            self.reset_pose,                 # Consumer for seeding pose against auto
+            lambda: self.get_state().speeds, # Supplier of current robot speeds
+            # Consumer of ChassisSpeeds and feedforwards to drive the robot
+            lambda speeds, feedforwards: self.set_control(
+                self._apply_robot_speeds
+                .with_speeds(speeds)
+                .with_wheel_force_feedforwards_x(feedforwards.robotRelativeForcesXNewtons)
+                .with_wheel_force_feedforwards_y(feedforwards.robotRelativeForcesYNewtons)
+            ),
+            PPHolonomicDriveController(
+                # PID constants for translation
+                PIDConstants(10.0, 0.0, 0.0),
+                # PID constants for rotation
+                PIDConstants(7.0, 0.0, 0.0)
+            ),
+            config,
+            # Assume the path needs to be flipped for Red vs Blue, this is normally the case
+            lambda: (DriverStation.getAlliance() or DriverStation.Alliance.kBlue) == DriverStation.Alliance.kRed,
+            self # Subsystem for requirements
+        )
+
+    def apply_request(
+        self, request: Callable[[], swerve.requests.SwerveRequest]
+    ) -> Command:
+        """
+        Returns a command that applies the specified control request to this swerve drivetrain.
+
+        :param request: Lambda returning the request to apply
+        :type request: Callable[[], swerve.requests.SwerveRequest]
+        :returns: Command to run
+        :rtype: Command
+        """
+        return self.run(lambda: self.set_control(request()))
+
+    def sys_id_quasistatic(self, direction: SysIdRoutine.Direction) -> Command:
+        """
+        Runs the SysId Quasistatic test in the given direction for the routine
+        specified by self.sys_id_routine_to_apply.
+
+        :param direction: Direction of the SysId Quasistatic test
+        :type direction: SysIdRoutine.Direction
+        :returns: Command to run
+        :rtype: Command
+        """
+        return self._sys_id_routine_to_apply.quasistatic(direction)
+
+    def sys_id_dynamic(self, direction: SysIdRoutine.Direction) -> Command:
+        """
+        Runs the SysId Dynamic test in the given direction for the routine
+        specified by self.sys_id_routine_to_apply.
+
+        :param direction: Direction of the SysId Dynamic test
+        :type direction: SysIdRoutine.Direction
+        :returns: Command to run
+        :rtype: Command
+        """
+        return self._sys_id_routine_to_apply.dynamic(direction)
+
+    def periodic(self):
+        # Periodically try to apply the operator perspective.
+        # If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
+        # This allows us to correct the perspective in case the robot code restarts mid-match.
+        # Otherwise, only check and apply the operator perspective if the DS is disabled.
+        # This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
+        if not self._has_applied_operator_perspective or DriverStation.isDisabled():
+            alliance_color = DriverStation.getAlliance()
+            if alliance_color is not None:
+                self.set_operator_perspective_forward(
+                    self._RED_ALLIANCE_PERSPECTIVE_ROTATION
+                    if alliance_color == DriverStation.Alliance.kRed
+                    else self._BLUE_ALLIANCE_PERSPECTIVE_ROTATION
+                )
+                self._has_applied_operator_perspective = True
+
+    def _start_sim_thread(self):
+        def _sim_periodic():
+            current_time = utils.get_current_time_seconds()
+            delta_time = current_time - self._last_sim_time
+            self._last_sim_time = current_time
+
+            # use the measured time delta, get battery voltage from WPILib
+            self.update_sim_state(delta_time, RobotController.getBatteryVoltage())
+
+        self._last_sim_time = utils.get_current_time_seconds()
+        self._sim_notifier = Notifier(_sim_periodic)
+        self._sim_notifier.startPeriodic(self._SIM_LOOP_PERIOD)
+
+    def add_vision_measurement(self, vision_robot_pose: Pose2d, timestamp: units.second, vision_measurement_std_devs: tuple[float, float, float] | None = None):
+        """
+        Adds a vision measurement to the Kalman Filter. This will correct the
+        odometry pose estimate while still accounting for measurement noise.
+
+        Note that the vision measurement standard deviations passed into this method
+        will continue to apply to future measurements until a subsequent call to
+        set_vision_measurement_std_devs or this method.
+
+        :param vision_robot_pose:           The pose of the robot as measured by the vision camera.
+        :type vision_robot_pose:            Pose2d
+        :param timestamp:                   The timestamp of the vision measurement in seconds.
+        :type timestamp:                    second
+        :param vision_measurement_std_devs: Standard deviations of the vision pose measurement
+                                            in the form [x, y, theta]ᵀ, with units in meters
+                                            and radians.
+        :type vision_measurement_std_devs:  tuple[float, float, float] | None
+        """
+        swerve.SwerveDrivetrain.add_vision_measurement(self, vision_robot_pose, utils.fpga_to_current_time(timestamp), vision_measurement_std_devs)
+
+    
+
+    def get_rotation3d(self):
+        return self.NavX.getRotation3d()
+    
 
 
 
-class DriveTrainSubSystem(commands2.Subsystem):
 
-    def __init__(self, joystick: commands2.button.CommandJoystick) -> None:
-
-        #camera settings
-        self.stateStdDevs = 0.1, 0.1, 0.1
-        self.visionMeasurementsStdDevs = 0., 0.9, 0.9
-
-        #set up the joystick and navx sensor
-        self.joystick = joystick
-        self.navx = navx.AHRS.create_spi()
-
-        #getting some important constants about the robot declared
-        self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
-        self.kMaxAngularVelocity = rc.driveConstants.RobotSpeeds.maxSpeed /hypot(rc.robotDimensions.trackWidth / 2, rc.robotDimensions.wheelBase / 2)
-        self.wheelBase = rc.robotDimensions.wheelBase
-        self.trackWidth = rc.robotDimensions.trackWidth
-
-        #defining the location of each swerve module on the can chain
-        self.frontLeft = SwerveModule(rc.SwerveModules.frontLeft.driveMotorID, rc.SwerveModules.frontLeft.turnMotorID, rc.SwerveModules.frontLeft.CANCoderID, rc.SwerveModules.frontLeft.encoderOffset)
-        self.frontRight = SwerveModule(rc.SwerveModules.frontRight.driveMotorID, rc.SwerveModules.frontRight.turnMotorID, rc.SwerveModules.frontRight.CANCoderID, rc.SwerveModules.frontRight.encoderOffset)
-        self.rearLeft = SwerveModule(rc.SwerveModules.rearLeft.driveMotorID, rc.SwerveModules.rearLeft.turnMotorID, rc.SwerveModules.rearLeft.CANCoderID, rc.SwerveModules.rearLeft.encoderOffset)
-        self.rearRight = SwerveModule(rc.SwerveModules.rearRight.driveMotorID, rc.SwerveModules.rearRight.turnMotorID, rc.SwerveModules.rearRight.CANCoderID, rc.SwerveModules.rearRight.encoderOffset)
-
-        #renaming some variables so they are easier to use
-        teleopConstants = rc.driveConstants.poseConstants
-
-        #setting up how we send info to the wheels about the position of the turn motor
-        rotationConstants = rc.driveConstants.ThetaPIDConstants.translationPIDConstants
-        self.rotationPID = controller.PIDController(rotationConstants.kP, rotationConstants.kI, rotationConstants.kD, rotationConstants.period)
-        self.rotationPID.enableContinuousInput(-pi, pi)
-
-        #a pose helps the robot know where it is, the alliance thing is for autos
-        self.poseTolerance = geometry.Pose2d(geometry.Translation2d(x=teleopConstants.xPoseToleranceMeters, y=teleopConstants.yPoseToleranceMeters), geometry.Rotation2d(teleopConstants.thetaPoseToleranceRadians))
-        self.alliance = wpilib.DriverStation.Alliance.kBlue
-
-        #classes to help proccess info about where the robot is and how fast and in what direction it is moving
-        self.KINEMATICS = kinematics.SwerveDrive4Kinematics(geometry.Translation2d(float(self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(self.trackWidth / 2), float(-self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(-self.wheelBase / 2)))
-        self.poseEstimatior = estimator.SwerveDrive4PoseEstimator(kinematics.SwerveDrive4Kinematics(geometry.Translation2d(float(self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(self.trackWidth / 2), float(-self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(-self.wheelBase / 2))), 
-                                                                  self.getNavxRotation2d(), self.getSwerveModulePositions(), geometry.Pose2d(0, 0, geometry.Rotation2d()), self.stateStdDevs, self.visionMeasurementsStdDevs)
         
-        self.field = wpilib.Field2d()
-        #wpilib.SmartDashboard.putData("Field: ", self.field)
-        
-    def getNavxRotation2d(self)-> geometry.Rotation2d:
-        #getting the direction the robot is facing relative to where we started for field orient
-        return self.navx.getRotation2d()
-    
-    def getPose(self)-> geometry.Pose2d:
-        #figuring out where the robot is relative to where we started
-        return self.poseEstimatior.getEstimatedPosition()
-    
-    def getSwerveModulePositions(self):
-        #figuring out where the wheels are relative to where they started
-        return self.frontLeft.getPosition(), self.frontRight.getPosition(), self.rearLeft.getPosition(), self.rearRight.getPosition()
-    
-    def resetPose(self, poseToSet: geometry.Pose2d)-> None:
-        #we broke our pose so we are resetting it with our current location as 0
-        self.poseEstimatior.resetPosition(self.getNavxRotation2d(), self.getSwerveModulePositions(), poseToSet)
-
-    def resetFieldOrient(self)-> None:
-        #this doesnt do anything useful
-        self.navx.reset()
-
-    def getJoystickInput(self)-> tuple[float]:
-        #getting input from the joysticks and changing it so that we can use it
-        constants = rc.driveConstants.joystickConstants
-        '''print('getting input.')
-        print('x value: ' + str(self.joystick.getX()))
-        print('y value: ' + str(self.joystick.getY()))
-        print('z value: ' + str(self.joystick.getZ()))'''
-        return(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband),
-               -wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband),
-               -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband))
-    
-    def setSwerveStates(self, xSpeed: float, ySpeed: float, zSpeed: float, fieldOrient = True)-> None:
-        #using the input from the get joystick input function to tell the wheels where to go
-        if fieldOrient:
-            SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition().rotation()))
-        else:
-            SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds(xSpeed, ySpeed, zSpeed))
-        self.frontLeft.setState(SwerveModuleStates[0])
-        self.frontRight.setState(SwerveModuleStates[1])
-        self.rearLeft.setState(SwerveModuleStates[2])
-        self.rearRight.setState(SwerveModuleStates[3])
-    
-    def joystickDrive(self, inputs: tuple[float])-> None:
-        #proccessing the joystick input values and sending them to the set swerve states function
-        #print ("joystick drive is running.")
-        xSpeed, ySpeed, zSpeed, = (inputs[0] * self.kMaxSpeed,
-                                   inputs[1] * self.kMaxSpeed,
-                                   inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
-        '''print("x speed: " + str(xSpeed))
-        print("Y speed: " + str(ySpeed))
-        print("Z speed: " + str(zSpeed))'''
-        #self.frontRight.turnMotor.set_control(self.frontRight.position.with_position(1))
-        self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
-
-
-    def stationary(self)-> None:
-        #stop the robot by breaking all the motors
-        self.frontLeft.stop()
-        self.frontRight.stop()
-        self.rearLeft.stop()
-        self.rearRight.stop()
-
-    def coast(self)-> None:
-        # coast the robot
-        self.frontLeft.setNuetral()
-        self.frontRight.setNuetral()
-        self.rearLeft.setNuetral()
-        self.rearRight.setNuetral()
-
-    def getRobotRelativeChassisSpeeds(self):
-        #where are all the wheels relative to where they started, not really sure what this is for
-        states = (self.frontLeft.getPosition(), self.frontRight.getPosition(), self.rearLeft.getPosition(), self.rearRight.getPosition())
-        return self.KINEMATICS.toChassisSpeeds(states)
-    
-    def getCurrentPose(self)-> geometry.Pose2d:
-        # updating the current position of the robot
-        return self.poseEstimatior.getEstimatedPosition()
-    
-    def periodic(self) -> None:
-        #do these things a bunch of times
-        currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
-        print("current position " + str(self.frontLeft.getTurnWheelState()))
-        print("front left desired position " + str(self.frontLeft.desiredState.angle))
-        print("front right desired position" + str(self.frontRight.desiredState.angle))
-        print("***")
-        self.field.setRobotPose(currentPose)
-
-    
-
-

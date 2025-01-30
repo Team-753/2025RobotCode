@@ -4,29 +4,22 @@ import RobotConfig
 
 class CannonSubsystem(commands2.Subsystem):
     
-    def __init__(self):
-        self.intakeMotor = rev.SparkMax(RobotConfig.coralCannon.intakeMotorID, rev.SparkMax.MotorType.kBrushed)
-        self.pivotMotor = rev.SparkMax(RobotConfig.coralCannon.pivotMotorID, rev.SparkMax.MotorType.kBrushless)
+    def __init__(self) -> None:
+        self.TopMotor = rev.CANSparkMax(RobotConfig.coralCannon.TopMotorID, rev.CANSparkMax.MotorType.kBrushed)
+        self.BottomMotor = rev.CANSparkMax(RobotConfig.coralCannon.BottomMotorID, rev.CANSparkMax.MotorType.kBrushed)
+        self.BottomMotor.setInverted(True)
 
-    def place(self):
-        print(self.intakeMotor)
-        self.intakeMotor.set(1)
         
-    def intake(self):
-        print(self.intakeMotor)
-        self.intakeMotor.set(-1)
-
-    def stop(self):
-        self.intakeMotor.set(0)
-
-    def spinup(self):
-        print(self.pivotMotor)
-        self.pivotMotor.set(1)
-
-    def spindown(self):
-        print(self.pivotMotor)
-        self.pivotMotor.set(-1)
-
-    def stop(self):
-        self.pivotMotor.set(0)
+    def place(self) -> None:
+        print(self.TopMotor)
+        self.TopMotor.set(1)
+        self.BottomMotor.set(1)
         
+    def intake(self) -> None:
+        print(self.TopMotor)
+        self.TopMotor.set(-1)
+        self.BottomMotor.set(-1)
+
+    def idle(self) -> None:
+        self.TopMotor.set(0)
+        self.BottomMotor.set(0)

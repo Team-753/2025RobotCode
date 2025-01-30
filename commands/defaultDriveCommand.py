@@ -1,9 +1,9 @@
 import commands2
-from subsystems.drivetrain import DriveTrainSubSystem
+from subsystems.drivetrain import MyDriveTrain
 from wpimath import geometry
 
 class DefaultDriveCommand(commands2.Command):
-    def __init__(self, driveTrainSubSystem: DriveTrainSubSystem):
+    def __init__(self, driveTrainSubSystem: MyDriveTrain):
         super().__init__()
         self.addRequirements(driveTrainSubSystem)
         self.driveTrain = driveTrainSubSystem
