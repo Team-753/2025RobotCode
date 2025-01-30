@@ -1,5 +1,6 @@
 import commands2
 from subsystems.cannon import CannonSubsystem
+from wpilib import XboxController
 
 class place(commands2.Command):
     def __init__(self, cannonSubsystem: CannonSubsystem):
