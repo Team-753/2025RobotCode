@@ -7,7 +7,9 @@ class robotDimensions:
 class SwerveModules:
 
     drivingGearRatio = 5.68 # find a real number
-    turningGearRatio = 12.1 # find a real number
+    turningGearRatio = 7.2 # find a real number
+    #turning gear notes from motor to output: 10: 30: 20: 12: 72
+    #contiued: 1/3* 3/2 * 5/3 * 1/6
 
     class frontLeft:
         driveMotorID = 1
@@ -24,13 +26,13 @@ class SwerveModules:
     class rearRight:
         driveMotorID = 7
         CANCoderID = 8
-        encoderOffset = 0.84
+        encoderOffset = -0.5139
         turnMotorID = 9
     
     class rearLeft:
         driveMotorID = 10
         CANCoderID = 11
-        encoderOffset = 0.291
+        encoderOffset = -0.7866
         turnMotorID = 12
         
 class coralCannon:

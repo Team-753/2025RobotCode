@@ -47,6 +47,8 @@ class MyRobot(commands2.TimedCommandRobot):
     def teleopInit(self) -> None:
         pass
 '''
+    def robotPeriodic(self):
+        commands2.CommandScheduler.getInstance().run()
 
     def teleopInit(self) -> None:
         print("hi")
