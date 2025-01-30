@@ -36,8 +36,9 @@ class SwerveModules:
         turnMotorID = 12
         
 class coralCannon:
-    intakeMotorID = 13
-    pivotMotorID = 14
+    TopMotorID = 13
+    BottomMotorID = 14
+    pivotMotorID = 15
     
 class Climber:
     piston1Forward = 1
