@@ -35,7 +35,6 @@ class posElevatorSubsystem(commands2.subsystem):
         #gets ID
         lMotorID=elevator.leftMotorID
         rMotorID=elevator.rightMotorID
-        encoderID=elevator.encoderID
         #sets motor based off motorid
         self.lMotor=rev.SparkMax(lMotorID,rev.SparkMax.MotorType.kBrushless)
         self.rMotor=rev.SparkMax(rMotorID,rev.SparkMax.MotorType.kBrushless)
