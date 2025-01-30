@@ -27,6 +27,7 @@ class RobotContainer:
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
         self.joystick = commands2.button.CommandJoystick(0)
+        self.AuxController = commands2.button.CommandJoystick(1)
         self.kDriveConstants = swerve.SwerveDrivetrainConstants()
         self.driveTrain = MyDriveTrain(hardware.TalonFX, hardware.TalonFX, hardware.CANcoder, self.kDriveConstants, myModules)
         self.drive = (swerve.requests.FieldCentric()
