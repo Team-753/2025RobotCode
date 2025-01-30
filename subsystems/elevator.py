@@ -7,8 +7,8 @@ class elevatorSubSystem(commands2.subsystem):
         lMotorID=elevator.leftMotorID
         rMotorID=elevator.rightMotorID
         #sets motor based off motorid
-        self.lMotor=rev.CANSparkMax(lMotorID,rev.CANSparkMax.MotorType.kBrushless)
-        self.rMotor=rev.CANSparkMax(rMotorID,rev.CANSparkMax.MotorType.kBrushless)
+        self.lMotor=rev.SparkMax(lMotorID,rev.SparkMax.MotorType.kBrushless)
+        self.rMotor=rev.SparkMax(rMotorID,rev.SparkMax.MotorType.kBrushless)
         #read it
         self.rMotor.follow(self.lMotor,True)
     def goUp(self):
@@ -24,8 +24,8 @@ class advElevatorSubsystem(commands2.subsystem):
         lMotorID=elevator.leftMotorID
         rMotorID=elevator.rightMotorID
         self.joystick=myJoystick
-        self.lMotor=rev.CANSparkMax(lMotorID,rev.CANSparkMax.MotorType.kBrushless)
-        self.rMotor=rev.CANSparkMax(rMotorID,rev.CANSparkMax.MotorType.kBrushless)
+        self.lMotor=rev.SparkMax(lMotorID,rev.SparkMax.MotorType.kBrushless)
+        self.rMotor=rev.SparkMax(rMotorID,rev.SparkMax.MotorType.kBrushless)
         self.rMotor.follow(self.lMotor,True)
     def setSpeed(self):
         self.lMotor.set(self.joystick.getLeftY())
@@ -37,14 +37,13 @@ class posElevatorSubsystem(commands2.subsystem):
         rMotorID=elevator.rightMotorID
         encoderID=elevator.encoderID
         #sets motor based off motorid
-        self.lMotor=rev.CANSparkMax(lMotorID,rev.CANSparkMax.MotorType.kBrushless)
-        self.rMotor=rev.CANSparkMax(rMotorID,rev.CANSparkMax.MotorType.kBrushless)
-        
-        self.encoder=wpilib.Encoder(encoderID)#!!!!!!!!INEEDTOFINDTHEENCODERTYPEOROURROBOTWILLEXPLODEANDTHESEASONWILLBEOVER!!!!!!!!!!!!!!!!!!!!!
-        #read it
-        self.rMotor.follow(self.lMotor,True)
-        self.Pid=self.lMotor.getPIDController()
-        self.Pid.setFeedbackDevice(self.encoder)
+        self.lMotor=rev.SparkMax(lMotorID,rev.SparkMax.MotorType.kBrushless)
+        self.rMotor=rev.SparkMax(rMotorID,rev.SparkMax.MotorType.kBrushless)
+             #read it
+        self.lMotor.ControlType.kPosition
+        self.pid=self.lMotor.getClosedLoopController()
+        self.encoder=self.lMotor.getAbsoluteEncoder()
+        self.processVariable=self.encoder.getPosition()
     def setPosition(self,desiredPos):
         #i have as much confidence this code works as i have confidence we arent secretly ruled over by reptillian overlords
-        self.Pid.setReference(desiredPos, rev.CANSparkMax.ControlType.kPosition,0)
+        self.pid.setReference(desiredPos, rev.SparkMax.ControlType.kPosition,0)
