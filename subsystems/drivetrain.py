@@ -19,14 +19,17 @@ from wpimath.geometry import Pose2d, Rotation2d
 driveTrainConstants.pigeon2_configs = None
 driveTrainConstants.with_pigeon2_configs(None)'''
 class MyDriveTrain(Subsystem, swerve.SwerveDrivetrain):
-    def __init__(self, driveTrainConstants: swerve.SwerveDrivetrainConstants):
+
+    _SIM_LOOP_PERIOD: units.second = 0.005
+
+    def __init__(self, driveMotorType, steerMotorType, CANCoderType, driveTrainConstants: swerve.SwerveDrivetrainConstants, myModule):
         Subsystem.__init__(self)
-        swerve.SwerveDrivetrain.__init__(self, hardware.TalonFX, hardware.TalonFX, hardware.CANcoder, driveTrainConstants, myModules)
+        swerve.SwerveDrivetrain.__init__(self, driveMotorType, steerMotorType, CANCoderType, driveTrainConstants, myModules)
 
         self.NavX = navx.AHRS.create_spi()
 
 
-        _SIM_LOOP_PERIOD: units.second = 0.005
+        
         self._sim_notifier: Notifier | None = None
         self._last_sim_time: units.second = 0.0
 
@@ -120,7 +123,8 @@ class MyDriveTrain(Subsystem, swerve.SwerveDrivetrain):
         self._configure_auto_builder()
 
     def _configure_auto_builder(self):
-        config = RobotConfig.fromGUISettings()
+        pass
+        '''config = RobotConfig.fromGUISettings()
         AutoBuilder.configure(
             lambda: self.get_state().pose,   # Supplier of current robot pose
             self.reset_pose,                 # Consumer for seeding pose against auto
@@ -142,7 +146,7 @@ class MyDriveTrain(Subsystem, swerve.SwerveDrivetrain):
             # Assume the path needs to be flipped for Red vs Blue, this is normally the case
             lambda: (DriverStation.getAlliance() or DriverStation.Alliance.kBlue) == DriverStation.Alliance.kRed,
             self # Subsystem for requirements
-        )
+        )'''
 
     def apply_request(
         self, request: Callable[[], swerve.requests.SwerveRequest]

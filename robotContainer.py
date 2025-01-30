@@ -11,19 +11,24 @@ import commands2.cmd
 from commands2.sysid import SysIdRoutine
 from telemetry import Telemetry
 from tuner_constants import TunerConstants
+from subsystems.swerveModule import myModules
 
 from pathplannerlib.auto import AutoBuilder
-from phoenix6 import swerve
+from phoenix6 import swerve, hardware
 from wpilib import SmartDashboard
 from wpimath.geometry import Rotation2d
 from wpimath.units import rotationsToRadians
 
 class RobotContainer:
+    _max_speed = 1
+    _max_angular_rate = 1
+    _BLUE_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(0)
+    _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
         self.joystick = commands2.button.CommandJoystick(0)
         self.kDriveConstants = swerve.SwerveDrivetrainConstants()
-        self.driveTrain = MyDriveTrain(self.kDriveConstants)
+        self.driveTrain = MyDriveTrain(hardware.TalonFX, hardware.TalonFX, hardware.CANcoder, self.kDriveConstants, myModules)
         self.drive = (swerve.requests.FieldCentric()
             .with_deadband(self._max_speed * 0.1)
             .with_rotational_deadband(
@@ -47,8 +52,8 @@ class RobotContainer:
         self.drivetrain = TunerConstants.create_drivetrain()
 
         # Path follower
-        self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
-        SmartDashboard.putData("Auto Mode", self._auto_chooser)
+        """self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
+        SmartDashboard.putData("Auto Mode", self._auto_chooser)"""
 
         # Configure the button bindings
         self.configureButtonBindings()
@@ -128,7 +133,8 @@ class RobotContainer:
 
         :returns: the command to run in autonomous
         """
-        return self._auto_chooser.getSelected()
+        pass
+        #return self._auto_chooser.getSelected()
     
       
 
