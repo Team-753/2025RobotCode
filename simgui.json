@@ -11,6 +11,11 @@
           "open": true
         }
       },
+      "Talon FX (v6)[3]/Rotor Sensor": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon FX (v6)[6]": {
         "header": {
           "open": true

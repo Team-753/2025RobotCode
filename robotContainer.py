@@ -13,6 +13,7 @@ from telemetry import Telemetry
 from tuner_constants import TunerConstants
 from subsystems.swerveModule import myModules
 from commands.cannonCommand import place, intake
+from subsystems.cannon import CannonSubsystem
 
 from pathplannerlib.auto import AutoBuilder
 from phoenix6 import swerve, hardware
@@ -52,6 +53,7 @@ class RobotContainer:
         self._joystick = commands2.button.CommandXboxController(0)
 
         self.drivetrain = TunerConstants.create_drivetrain()
+        self.cannon = CannonSubsystem()
 
         # Path follower
         """self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
@@ -62,7 +64,7 @@ class RobotContainer:
 
 
     def configureButtonBindings(self) -> None:
-        self.AuxController.rightTrigger().whileTrue(place(self.cannon)) #why does the "cannon" part not work?
+        self.AuxController.rightTrigger().whileTrue(place(self.cannon)) 
         """
         Use this method to define your button->command mappings. Buttons can be created by
         instantiating a :GenericHID or one of its subclasses (Joystick or XboxController),
