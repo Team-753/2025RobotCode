@@ -11,6 +11,34 @@ from typing import Callable, overload
 from wpilib import DriverStation, Notifier, RobotController
 from wpilib.sysid import SysIdRoutineLog
 from wpimath.geometry import Pose2d, Rotation2d
+import copy
+import ctypes
+from typing import final, overload, Callable, Generic, TypeVar
+from threading import RLock
+from phoenix6.status_code import StatusCode
+from phoenix6.hardware.pigeon2 import Pigeon2
+from phoenix6.hardware.traits.common_talon import CommonTalon
+from phoenix6.hardware.parent_device import ParentDevice
+from phoenix6.signals.spn_enums import NeutralModeValue
+from phoenix6.swerve.swerve_drivetrain_constants import SwerveDrivetrainConstants
+from phoenix6.swerve.swerve_module_constants import SwerveModuleConstants
+from phoenix6.swerve.swerve_module import SwerveModule
+from phoenix6.swerve.utility.geometry import *
+from phoenix6.swerve.utility.kinematics import *
+from phoenix6.swerve import requests
+from phoenix6.units import *
+from phoenix6.phoenix_native import (
+    Native,
+    Pose_t,
+    SwerveControlParams_t,
+    SwerveDriveState_t,
+    SwerveModulePosition_t,
+    SwerveModuleState_t,
+)
+from wpimath.kinematics import SwerveDrive2Kinematics, SwerveDrive3Kinematics, SwerveDrive4Kinematics, SwerveDrive6Kinematics
+from wpimath.geometry import Rotation2d, Rotation3d
+from phoenix6.swerve.sim_swerve_drivetrain import SimSwerveDrivetrain
+from phoenix6.swerve.swerve_drivetrain import SwerveControlParameters
 
 """""class DriveTrainConstants(swerve.SwerveDrivetrainConstants):
     def __init__(self, NavXID):
@@ -18,16 +46,164 @@ from wpimath.geometry import Pose2d, Rotation2d
 '''driveTrainConstants = swerve.SwerveDrivetrainConstants()
 driveTrainConstants.pigeon2_configs = None
 driveTrainConstants.with_pigeon2_configs(None)'''
+
+DriveMotorT = TypeVar("DriveMotorT", bound="CommonTalon")
+SteerMotorT = TypeVar("SteerMotorT", bound="CommonTalon")
+EncoderT = TypeVar("EncoderT", bound="ParentDevice")
+
+_NUM_CONFIG_ATTEMPTS = 2
 class MyDriveTrain(Subsystem, swerve.SwerveDrivetrain):
 
     _SIM_LOOP_PERIOD: units.second = 0.005
     _BLUE_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(0)
     _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
 
-    def __init__(self, driveMotorType, steerMotorType, CANCoderType, driveTrainConstants: swerve.SwerveDrivetrainConstants, myModule):
+    def __init__(self, drive_motor_type, steer_motor_type, encoder_type, drivetrain_constants: swerve.SwerveDrivetrainConstants, arg0, arg1= None, arg2= None, arg3= None):
         Subsystem.__init__(self)
-        swerve.SwerveDrivetrain.__init__(self, driveMotorType, steerMotorType, CANCoderType, driveTrainConstants, myModules)
+        #swerve.SwerveDrivetrain.__init__(self, driveMotorType, steerMotorType, CANCoderType, driveTrainConstants, myModules)
+        
+        self._drivetrain_id = 0
+        """ID of the native drivetrain instance, used for native calls."""
+        USE_WPILIB = True
 
+        if (
+            isinstance(arg0, list) and isinstance(arg0[0], SwerveModuleConstants) and
+            arg1 is None and
+            arg2 is None and
+            arg3 is None
+        ):
+            # Self(drivetrain_constants, modules)
+            modules: list[SwerveModuleConstants] = arg0
+
+            native_drive_constants = drivetrain_constants._create_native_instance()
+            native_module_constants = SwerveModuleConstants._create_native_instance(modules)
+
+            self._drivetrain_id = Native.api_instance().c_ctre_phoenix6_swerve_create_drivetrain(
+                native_drive_constants,
+                native_module_constants,
+                len(modules),
+            )
+
+            Native.instance().c_ctre_phoenix6_free_memory(ctypes.byref(ctypes.cast(native_drive_constants, ctypes.c_char_p)))
+            Native.instance().c_ctre_phoenix6_free_memory(ctypes.byref(ctypes.cast(native_module_constants, ctypes.c_char_p)))
+        elif (
+            isinstance(arg0, (hertz, float)) and
+            isinstance(arg1, list) and isinstance(arg1[0], SwerveModuleConstants) and
+            arg2 is None and
+            arg3 is None
+        ):
+            # Self(drivetrain_constants, odometry_update_frequency, modules)
+            modules: list[SwerveModuleConstants] = arg1
+
+            native_drive_constants = drivetrain_constants._create_native_instance()
+            native_module_constants = SwerveModuleConstants._create_native_instance(modules)
+
+            self._drivetrain_id = Native.api_instance().c_ctre_phoenix6_swerve_create_drivetrain_with_freq(
+                native_drive_constants,
+                arg0,
+                native_module_constants,
+                len(modules),
+            )
+
+            Native.instance().c_ctre_phoenix6_free_memory(ctypes.byref(ctypes.cast(native_drive_constants, ctypes.c_char_p)))
+            Native.instance().c_ctre_phoenix6_free_memory(ctypes.byref(ctypes.cast(native_module_constants, ctypes.c_char_p)))
+        elif (
+            isinstance(arg0, (hertz, float)) and
+            isinstance(arg1, tuple[float, float, float]) and
+            isinstance(arg2, tuple[float, float, float]) and
+            isinstance(arg3, list) and isinstance(arg3[0], SwerveModuleConstants)
+        ):
+            # Self(drivetrain_constants, odometry_update_frequency, odometry_standard_deviation, vision_standard_deviation, modules)
+            modules: list[SwerveModuleConstants] = arg3
+
+            odometry_standard_deviation = (ctypes.c_double * 3)()
+            odometry_standard_deviation[0] = arg1[0]
+            odometry_standard_deviation[1] = arg1[1]
+            odometry_standard_deviation[2] = arg1[2]
+
+            vision_standard_deviation = (ctypes.c_double * 3)()
+            vision_standard_deviation[0] = arg2[0]
+            vision_standard_deviation[1] = arg2[1]
+            vision_standard_deviation[2] = arg2[2]
+
+            native_drive_constants = drivetrain_constants._create_native_instance()
+            native_module_constants = SwerveModuleConstants._create_native_instance(modules)
+
+            self._drivetrain_id = Native.api_instance().c_ctre_phoenix6_swerve_create_drivetrain_with_freq(
+                native_drive_constants,
+                arg0,
+                odometry_standard_deviation,
+                vision_standard_deviation,
+                native_module_constants,
+                len(modules),
+            )
+
+            Native.instance().c_ctre_phoenix6_free_memory(ctypes.byref(ctypes.cast(native_drive_constants, ctypes.c_char_p)))
+            Native.instance().c_ctre_phoenix6_free_memory(ctypes.byref(ctypes.cast(native_module_constants, ctypes.c_char_p)))
+        else:
+            raise TypeError('Invalid arguments for SwerveDrivetrain.__init__')
+
+        self.__modules: list[SwerveModule[DriveMotorT, SteerMotorT, EncoderT]] = []
+        self.__module_locations: list[Translation2d] = []
+        for i, module in enumerate(modules):
+            self.__modules.append(
+                SwerveModule(
+                    drive_motor_type,
+                    steer_motor_type,
+                    encoder_type,
+                    module,
+                    drivetrain_constants.can_bus_name,
+                    self._drivetrain_id,
+                    i
+                )
+            )
+            self.__module_locations.append(Translation2d(module.location_x, module.location_y))
+
+        if USE_WPILIB:
+            if len(modules) == 2:
+                self.__kinematics = SwerveDrive2Kinematics(self.__module_locations[0], self.__module_locations[1])
+            elif len(modules) == 3:
+                self.__kinematics = SwerveDrive3Kinematics(self.__module_locations[0], self.__module_locations[1], self.__module_locations[2])
+            elif len(modules) == 4:
+                self.__kinematics = SwerveDrive4Kinematics(self.__module_locations[0], self.__module_locations[1], self.__module_locations[2], self.__module_locations[3])
+            elif len(modules) == 6:
+                self.__kinematics = SwerveDrive6Kinematics(self.__module_locations[0], self.__module_locations[1], self.__module_locations[2], self.__module_locations[3], self.__module_locations[4], self.__module_locations[5])
+            else:
+                self.__kinematics = None
+
+        self.__control_params = SwerveControlParameters()
+        self.__control_params.drivetrain_id = self._drivetrain_id
+        if USE_WPILIB:
+            self.__control_params.kinematics = self.__kinematics
+        self.__control_params.module_locations = self.__module_locations
+
+        self.__swerve_request: requests.SwerveRequest = requests.Idle()
+        self.__control_handle = None
+
+        self.__telemetry_function: Callable[['MyDriveTrain.SwerveDriveState'], None] = None
+        self.__telemetry_handle = None
+
+        self.__state_lock = RLock()
+        self.__cached_state = self.SwerveDriveState()
+        self.__cached_state.module_states = [SwerveModuleState() for _ in modules]
+        self.__cached_state.module_targets = [SwerveModuleState() for _ in modules]
+        self.__cached_state.module_positions = [SwerveModulePosition() for _ in modules]
+
+        #self.__pigeon2 = Pigeon2(drivetrain_constants.pigeon2_id, drivetrain_constants.can_bus_name)
+        #if USE_WPILIB:
+            #self.__sim_drive = SimSwerveDrivetrain(self.__module_locations, self.__pigeon2.sim_state, modules)
+
+        if drivetrain_constants.pigeon2_configs is not None:
+            for _ in range(_NUM_CONFIG_ATTEMPTS):
+                retval = self.pigeon2.configurator.apply(drivetrain_constants.pigeon2_configs)
+                if retval.is_ok():
+                    break
+            if not retval.is_ok():
+                print(f"Pigeon2 ID {self.pigeon2.device_id} failed to config with error: {retval.name}")
+
+        # do not start thread until after applying Pigeon 2 configs
+        self.__odometry_thread = self.OdometryThread(self._drivetrain_id)
+        self.__odometry_thread.start()
         self.NavX = navx.AHRS.create_spi()
 
 
@@ -240,6 +416,39 @@ class MyDriveTrain(Subsystem, swerve.SwerveDrivetrain):
 
     def get_rotation3d(self):
         return self.NavX.getRotation3d()
+    
+    def set_control(self, request: requests.SwerveRequest):
+        """
+        Applies the specified control request to this swerve drivetrain.
+
+        :param request: Request to apply
+        :type request: requests.SwerveRequest
+        """
+        if self.__swerve_request is not request:
+            self.__swerve_request = request
+
+            if request is None:
+                Native.api_instance().c_ctre_phoenix6_swerve_drivetrain_set_control(self._drivetrain_id, None, None)
+                self.__control_handle = None
+            elif isinstance(request, requests.NativeSwerveRequest):
+                request._apply_native(self._drivetrain_id)
+                self.__control_handle = None
+            else:
+                def control_callback(_, control_params_ptr: ctypes._Pointer):
+                    control_params: SwerveControlParams_t = control_params_ptr.contents
+                    self.__control_params._update_from_native(control_params)
+                    if request:
+                        return request.apply(self.__control_params, self.__modules).value
+                    else:
+                        return StatusCode.OK
+
+                c_control_func_t = ctypes.CFUNCTYPE(ctypes.c_int32, ctypes.c_void_p, ctypes.POINTER(SwerveControlParams_t))
+                c_control_func = c_control_func_t(control_callback)
+
+                Native.api_instance().c_ctre_phoenix6_swerve_drivetrain_set_control(self._drivetrain_id, None, c_control_func)
+                self.__control_handle = c_control_func
+        elif isinstance(request, requests.NativeSwerveRequest):
+            request._apply_native(self._drivetrain_id)
     
 
 

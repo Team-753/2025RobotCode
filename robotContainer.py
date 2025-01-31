@@ -31,7 +31,7 @@ class RobotContainer:
         self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
         self.kDriveConstants = swerve.SwerveDrivetrainConstants()
-        self.kDriveConstants.can_bus_name = ""
+        self.kDriveConstants.can_bus_name = "rio"
         self.driveTrain = MyDriveTrain(hardware.TalonFX, hardware.TalonFX, hardware.CANcoder, self.kDriveConstants, myModules)
         self.drive = (swerve.requests.FieldCentric()
             .with_deadband(self._max_speed * 0.1)
@@ -131,9 +131,9 @@ class RobotContainer:
             self.drivetrain.runOnce(lambda: self.drivetrain.seed_field_centric())
         )
 
-        self.drivetrain.register_telemetry(
+        '''self.drivetrain.register_telemetry(
             lambda state: self._logger.telemeterize(state)
-        )
+        )'''
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.
