@@ -31,7 +31,7 @@ class Vision:
         target_data = self.GetTargetData()
 
         if target_data:
-            print(f"🔍 Target Detected! ID: {target_data['id']}, Distance: {target_data['distance']:.2f}m, "
+            print(f"Target Detected! ID: {target_data['id']}, Distance: {target_data['distance']:.2f}m, "
                   f"Yaw: {target_data['yaw']:.2f}°, Pitch: {target_data['pitch']:.2f}°")
         else:
             print("No Target Detected")
