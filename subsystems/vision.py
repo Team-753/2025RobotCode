@@ -9,15 +9,15 @@ class Vision:
         if not result.hasTargets():  # If no targets detected, return None
             return None
 
-        # Extracting the best target (the one PhotonVision determines is best)
-        best_target = result.getBestTarget()
-        
         # Extracting useful data
-        target_id = best_target.getFiducialId()  # AprilTag ID
-        yaw = best_target.getYaw()  # Horizontal angle offset
-        pitch = best_target.getPitch()  # Vertical angle offset
-        distance = best_target.getBestCameraToTarget().getTranslation().getNorm()  # Distance in meters
+        targets = result.getTargets()  # Gets all detected targets
+        first_target = targets[0]  # Use the first target in the list
         
+        target_id = first_target.getFiducialId()  # AprilTag ID
+        yaw = first_target.getYaw()  # Horizontal angle offset
+        pitch = first_target.getPitch()  # Vertical angle offset
+        distance = first_target.getCameraToTarget().getTranslation().getNorm()  # Distance in meters
+
         # Returning as a dictionary
         return {
             "id": target_id,
