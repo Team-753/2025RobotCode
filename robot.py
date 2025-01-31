@@ -5,6 +5,7 @@ from phoenix6 import hardware, controls, configs, StatusCode
 from wpimath.units import seconds
 from robotContainer import RobotContainer
 from commands.defaultDriveCommand import DefaultDriveCommand
+from subsystems.vision import Vision
 import commands2
 
 #note to self: assign aux subsystems, get real numbers on the drivetrain from Nolan
@@ -15,6 +16,7 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def __init__(self, period: float = 0.02) -> None:
         super().__init__(period)
+        self.vision = Vision()
 
     def robotInit(self) -> None:
 
@@ -56,8 +58,8 @@ class MyRobot(commands2.TimedCommandRobot):
         #self.robotContainer.driveTrain.setDefaultCommand(DefaultDriveCommand(self.robotContainer.driveTrain))
 
     def teleopPeriodic(self) -> None:
-       #self.robotContainer.teleopPeriodic()
-       pass
+        self.vision.PrintTargetData()
+        #self.robotContainer.teleopPeriodic()
 
     def autonomousInit(self):
         return super().autonomousInit()
