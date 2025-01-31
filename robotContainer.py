@@ -31,6 +31,7 @@ class RobotContainer:
         self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
         self.kDriveConstants = swerve.SwerveDrivetrainConstants()
+        self.kDriveConstants.can_bus_name = ""
         self.driveTrain = MyDriveTrain(hardware.TalonFX, hardware.TalonFX, hardware.CANcoder, self.kDriveConstants, myModules)
         self.drive = (swerve.requests.FieldCentric()
             .with_deadband(self._max_speed * 0.1)
@@ -78,13 +79,13 @@ class RobotContainer:
             self.drivetrain.apply_request(
                 lambda: (
                     self.drive.with_velocity_x(
-                        -self._joystick.getLeftY() * self._max_speed
+                        self._joystick.getLeftY() * self._max_speed * -1
                     )  # Drive forward with negative Y (forward)
                     .with_velocity_y(
-                        -self._joystick.getLeftX() * self._max_speed
+                        self._joystick.getLeftX() * self._max_speed * -1
                     )  # Drive left with negative X (left)
                     .with_rotational_rate(
-                        -self._joystick.getRightX() * self._max_angular_rate
+                        self._joystick.getRightX() * self._max_angular_rate * -1
                     )  # Drive counterclockwise with negative X (left)
                 )
             )
@@ -168,7 +169,7 @@ class RobotContainer:
         pass
 
     def teleopPeriodic(self):
-        pass
+        print(self._joystick.getLeftX())
 
     def testInit(self):
         pass
