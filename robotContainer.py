@@ -78,6 +78,7 @@ class RobotContainer:
         self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
         self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
 
+        #if statements probably dont work in the container but we'll ask sannika
         self.elevatorJoystick = self.AuxController.getLeftY()
         if (self.elevatorJoystick > .2):
             elevatorUp(self.elevator)
