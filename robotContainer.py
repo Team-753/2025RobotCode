@@ -16,9 +16,13 @@ from subsystems.swerveModule import myModules
 from commands.cannonCommand import place, intake
 from commands.AlgaeCommand import GrabAlgae, ReleaseAlgae, ExtendPiston, RetractPiston
 from commands.elevatorCommand import ElevatorJoystickCommand
+from commands.ClimberCommand import ExtendClimber, ReleaseClimber
+
+
 from subsystems.cannon import CannonSubsystem
 from subsystems.algae import AlgaeSquisher
 from subsystems.elevator import elevatorSubSystem
+from subsystems.Climber import ClimberSubsystem
 
 from pathplannerlib.auto import AutoBuilder
 from phoenix6 import swerve, hardware
@@ -62,6 +66,7 @@ class RobotContainer:
         self.cannon = CannonSubsystem()
         self.algae = AlgaeSquisher()
         self.elevator = elevatorSubSystem()
+        self.climber = ClimberSubsystem()
 
         # Path follower
         """self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
@@ -86,7 +91,15 @@ class RobotContainer:
 
         self.AuxController.leftBumper().onTrue(
             commands2.cmd.runOnce(
-                lambda: self.toggleAlgaePiston(), self.algae
+                lambda: self.ToggleAlgaePiston(), self.algae
+            )
+        )
+
+        self.climbersExtended = False
+
+        self.AuxController.rightBumper().onTrue(
+            commands2.cmd.runOnce(
+                lambda: self.ToggleClimberPistons(), self.climber
             )
         )
         
@@ -161,13 +174,21 @@ class RobotContainer:
             lambda state: self._logger.telemeterize(state)
         )'''
 
-    def toggleAlgaePiston(self):
+    def ToggleAlgaePiston(self):
         if self.algaePistonExtended:
             ExtendPiston(self.algae)
         else:
             RetractPiston(self.algae)
         
         self.pistonExtended = not self.pistonExtended  # Toggle state
+
+    def ToggleClimberPistons(self):
+        if self.climbersExtended:
+            ExtendClimber(self.climber)
+        else:
+            ReleaseClimber(self.climber)
+        
+        self.climbersExtended = not self.climbersExtended  # Toggle state
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.
