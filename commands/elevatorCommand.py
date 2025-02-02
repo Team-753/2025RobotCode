@@ -3,23 +3,24 @@ from subsystems.elevator import elevatorSubSystem,posElevatorSubsystem
 class elevatorUp(commands2.Command,):
     def __init__(self, kElevSub:elevatorSubSystem):
         super().__init__()
-        self.addRequirements
+        self.addRequirements(kElevSub)
         self.eSub=kElevSub
     def execute(self):
-        self.eSub.goUp
+        self.eSub.goUp()
         return super().execute()
     def end(self, interrupted:bool):
         self.eSub.idle
 class elevatorDown(commands2.Command,):
     def __init__(self, kElevSub:elevatorSubSystem):
         super().__init__()
-        self.addRequirements
+        self.addRequirements(kElevSub)
         self.eSub=kElevSub
     def execute(self):
-        self.eSub.goDown
+        self.eSub.goDown()
         return super().execute()
     def end(self, interrupted:bool):
         self.eSub.idle
+#maybe works
 class elevatorToPos(commands2.Command,):
     def __init__(self, kElevSub:posElevatorSubsystem):
         super().__init__()

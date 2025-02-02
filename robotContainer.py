@@ -12,8 +12,13 @@ from commands2.sysid import SysIdRoutine
 from telemetry import Telemetry
 from tuner_constants import TunerConstants
 from subsystems.swerveModule import myModules
+
 from commands.cannonCommand import place, intake
+from commands.AlgaeCommand import GrabAlgae, ReleaseAlgae, ExtendPiston, RetractPiston
+from commands.elevatorCommand import elevatorUp, elevatorDown
 from subsystems.cannon import CannonSubsystem
+from subsystems.algae import AlgaeSquisher
+from subsystems.elevator import elevatorSubSystem
 
 from pathplannerlib.auto import AutoBuilder
 from phoenix6 import swerve, hardware
@@ -55,6 +60,8 @@ class RobotContainer:
 
         self.drivetrain = TunerConstants.create_drivetrain()
         self.cannon = CannonSubsystem()
+        self.algae = AlgaeSquisher()
+        self.elevator = elevatorSubSystem()
 
         # Path follower
         """self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
@@ -66,6 +73,31 @@ class RobotContainer:
 
     def configureButtonBindings(self) -> None:
         self.AuxController.rightTrigger().whileTrue(place(self.cannon)) 
+        self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
+
+        self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
+        self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
+
+        self.elevatorJoystick = self.AuxController.getLeftY()
+        if (self.elevatorJoystick > .2):
+            elevatorUp(self.elevator)
+        elif (self.elevatorJoystick < -.2):
+            elevatorDown(self.elevator)
+        else:
+            pass
+        #---------------------------------------------------------------
+
+        self.pistonExtened = False
+        if (self.AuxController.leftBumper()):
+            if self.pistonExtened():
+                AlgaeSquisher.PullPistonBack()
+                self.pistonExtened = False
+            else:
+                AlgaeSquisher.ExtendPiston()
+                self.pistonExtened = True
+
+
+
         """
         Use this method to define your button->command mappings. Buttons can be created by
         instantiating a :GenericHID or one of its subclasses (Joystick or XboxController),
