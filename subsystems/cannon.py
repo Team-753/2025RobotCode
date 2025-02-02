@@ -10,11 +10,9 @@ class CannonSubsystem(commands2.Subsystem):
         
 
     def place(self):
-        print(self.intakeMotor)
         self.intakeMotor.set(1)
         
     def intake(self):
-        print(self.intakeMotor)
         self.intakeMotor.set(-1)
 
     def stop(self):
@@ -22,13 +20,11 @@ class CannonSubsystem(commands2.Subsystem):
 
 
     def spinup(self):
-        print(self.pivotMotor)
         self.pivotMotor.set(1)
 
     def spindown(self):
-        print(self.pivotMotor)
         self.pivotMotor.set(-1)
 
-    def stop(self):
+    def angleStop(self):
         self.pivotMotor.set(0)
         

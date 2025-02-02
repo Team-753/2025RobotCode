@@ -78,7 +78,7 @@ class RobotContainer:
         self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
         self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
 
-        #if statements probably dont work in the container but we'll ask sannika
+        #also entirely chat gpt code uhhhhhhh sorry
         ElevatorJoystickCommand(self.elevator, self.AuxController.getLeftY())
 
         #might work for getting pistons to flip i dont know entirely The man ChatGPT Code
