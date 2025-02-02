@@ -15,7 +15,7 @@ from subsystems.swerveModule import myModules
 
 from commands.cannonCommand import place, intake
 from commands.AlgaeCommand import GrabAlgae, ReleaseAlgae, ExtendPiston, RetractPiston
-from commands.elevatorCommand import elevatorUp, elevatorDown
+from commands.elevatorCommand import ElevatorJoystickCommand
 from subsystems.cannon import CannonSubsystem
 from subsystems.algae import AlgaeSquisher
 from subsystems.elevator import elevatorSubSystem
@@ -79,24 +79,17 @@ class RobotContainer:
         self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
 
         #if statements probably dont work in the container but we'll ask sannika
-        self.elevatorJoystick = self.AuxController.getLeftY()
-        if (self.elevatorJoystick > .2):
-            elevatorUp(self.elevator)
-        elif (self.elevatorJoystick < -.2):
-            elevatorDown(self.elevator)
-        else:
-            pass
-        #---------------------------------------------------------------
+        ElevatorJoystickCommand(self.elevator, self.AuxController.getLeftY())
 
-        self.pistonExtened = False
-        if (self.AuxController.leftBumper()):
-            if self.pistonExtened():
-                AlgaeSquisher.PullPistonBack()
-                self.pistonExtened = False
-            else:
-                AlgaeSquisher.ExtendPiston()
-                self.pistonExtened = True
+        #might work for getting pistons to flip i dont know entirely The man ChatGPT Code
+        self.algaePistonExtended = False
 
+        self.AuxController.leftBumper().onTrue(
+            commands2.cmd.runOnce(
+                lambda: self.toggleAlgaePiston(), self.algae
+            )
+        )
+        
 
 
         """
@@ -167,6 +160,14 @@ class RobotContainer:
         '''self.drivetrain.register_telemetry(
             lambda state: self._logger.telemeterize(state)
         )'''
+
+    def toggleAlgaePiston(self):
+        if self.algaePistonExtended:
+            ExtendPiston(self.algae)
+        else:
+            RetractPiston(self.algae)
+        
+        self.pistonExtended = not self.pistonExtended  # Toggle state
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.
