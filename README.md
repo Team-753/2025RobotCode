@@ -1,7 +1,3 @@
-# 2025RobotCode
-Team 753's 2025 Robot Code
+This is an experimental branch. This environment is used to test out new code without using the main branch. 
 
-HOW TO RUN CODE:
-First initiate a virtual environment in a recent python version.
-Run the following commands verbatim:
-'pip install robotpy' then 'robotpy sync'
+To start, enable venv, and do robotpy sync 
