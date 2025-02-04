@@ -1,4 +1,4 @@
-from subsystems.drivetrain import MyDriveTrain
+from subsystems.drivetrain import DriveTrainSubSystem
 from commands.defaultDriveCommand import DefaultDriveCommand
 import commands2
 import wpilib
@@ -9,9 +9,7 @@ import commands2
 import commands2.button
 import commands2.cmd
 from commands2.sysid import SysIdRoutine
-from telemetry import Telemetry
-from tuner_constants import TunerConstants
-from subsystems.swerveModule import myModules
+
 
 from commands.cannonCommand import place, intake
 from commands.AlgaeCommand import GrabAlgae, ReleaseAlgae, ExtendPiston, RetractPiston
@@ -39,30 +37,16 @@ class RobotContainer:
         #declaring the subsystems and setting up the drivetrain control
         self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
-        self.kDriveConstants = swerve.SwerveDrivetrainConstants()
-        self.kDriveConstants.can_bus_name = "rio"
-        self.driveTrain = MyDriveTrain(hardware.TalonFX, hardware.TalonFX, hardware.CANcoder, self.kDriveConstants, myModules)
-        self.drive = (swerve.requests.FieldCentric()
-            .with_deadband(self._max_speed * 0.1)
-            .with_rotational_deadband(
-                self._max_angular_rate * 0.1
-            )  # Add a 10% deadband
-            .with_drive_request_type(
-                swerve.SwerveModule.DriveRequestType.OPEN_LOOP_VOLTAGE))
+        self.driveTrain = DriveTrainSubSystem(self.joystick)
+        
         #self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
         self.scheduler = commands2.CommandScheduler()
 
-        self._brake = swerve.requests.SwerveDriveBrake()
-        self._point = swerve.requests.PointWheelsAt()
-        self._forward_straight = (
-            swerve.requests.RobotCentric()
-            .with_drive_request_type(
-                swerve.SwerveModule.DriveRequestType.OPEN_LOOP_VOLTAGE))
-        self._logger = Telemetry(self._max_speed)
-
+        
+          
         self._joystick = commands2.button.CommandXboxController(0)
 
-        self.drivetrain = TunerConstants.create_drivetrain()
+
         self.cannon = CannonSubsystem()
         self.algae = AlgaeSquisher()
         self.elevator = elevatorSubSystem()
@@ -101,73 +85,6 @@ class RobotContainer:
             commands2.cmd.runOnce(
                 lambda: self.ToggleClimberPistons(), self.climber
             )
-        )
-        
-
-
-        """
-        Use this method to define your button->command mappings. Buttons can be created by
-        instantiating a :GenericHID or one of its subclasses (Joystick or XboxController),
-        and then passing it to a JoystickButton.
-        """
-
-        # Note that X is defined as forward according to WPILib convention,
-        # and Y is defined as to the left according to WPILib convention.
-        self.drivetrain.setDefaultCommand(
-            # Drivetrain will execute this command periodically
-            self.drivetrain.apply_request(
-                lambda: (
-                    self.drive.with_velocity_x(
-                        self._joystick.getLeftY() * self._max_speed * -1
-                    )  # Drive forward with negative Y (forward)
-                    .with_velocity_y(
-                        self._joystick.getLeftX() * self._max_speed * -1
-                    )  # Drive left with negative X (left)
-                    .with_rotational_rate(
-                        self._joystick.getRightX() * self._max_angular_rate * -1
-                    )  # Drive counterclockwise with negative X (left)
-                )
-            )
-        )
-
-        self._joystick.a().whileTrue(self.drivetrain.apply_request(lambda: self._brake))
-        self._joystick.b().whileTrue(
-            self.drivetrain.apply_request(
-                lambda: self._point.with_module_direction(
-                    Rotation2d(-self._joystick.getLeftY(), -self._joystick.getLeftX())
-                )
-            )
-        )
-
-        self._joystick.pov(0).whileTrue(
-            self.drivetrain.apply_request(
-                lambda: self._forward_straight.with_velocity_x(0.5).with_velocity_y(0)
-            )
-        )
-        self._joystick.pov(180).whileTrue(
-            self.drivetrain.apply_request(
-                lambda: self._forward_straight.with_velocity_x(-0.5).with_velocity_y(0)
-            )
-        )
-
-        # Run SysId routines when holding back/start and X/Y.
-        # Note that each routine should be run exactly once in a single log.
-        (self._joystick.back() & self._joystick.y()).whileTrue(
-            self.drivetrain.sys_id_dynamic(SysIdRoutine.Direction.kForward)
-        )
-        (self._joystick.back() & self._joystick.x()).whileTrue(
-            self.drivetrain.sys_id_dynamic(SysIdRoutine.Direction.kReverse)
-        )
-        (self._joystick.start() & self._joystick.y()).whileTrue(
-            self.drivetrain.sys_id_quasistatic(SysIdRoutine.Direction.kForward)
-        )
-        (self._joystick.start() & self._joystick.x()).whileTrue(
-            self.drivetrain.sys_id_quasistatic(SysIdRoutine.Direction.kReverse)
-        )
-
-        # reset the field-centric heading on left bumper press
-        self._joystick.leftBumper().onTrue(
-            self.drivetrain.runOnce(lambda: self.drivetrain.seed_field_centric())
         )
 
         '''self.drivetrain.register_telemetry(
@@ -224,7 +141,7 @@ class RobotContainer:
         pass
 
     def teleopPeriodic(self):
-        print(self._joystick.getLeftX())
+        pass
 
     def testInit(self):
         pass
