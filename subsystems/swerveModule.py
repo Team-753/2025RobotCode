@@ -12,8 +12,7 @@ class SwerveModule:
 # this class defines our wheels, the swerve modules and some ways we can control them.
     def __init__(self, driveID: int, turnID: int, coderID: int, coderOffset: float, invertedness: bool) -> None:
         
-        #create a zero position to start with
-        self.desiredState = kinematics.SwerveModuleState(0, geometry.Rotation2d())
+      
         
         #defining motor and cancoder identities on the can chain.
         self.driveMotor = hardware.TalonFX(driveID)
@@ -31,7 +30,7 @@ class SwerveModule:
         canCoderConfigs = phoenix6.configs.CANcoderConfiguration()
 
         canCoderConfigs.magnet_sensor.absolute_sensor_discontinuity_point = 1
-        canCoderConfigs.magnet_sensor.magnet_offset = self.encoderOffset
+        #canCoderConfigs.magnet_sensor.magnet_offset = self.encoderOffset
         
         self.canCoder.configurator.apply(canCoderConfigs)
 
@@ -67,17 +66,18 @@ class SwerveModule:
         #turnMotorConfigs.feedback.rotor_to_sensor_ratio = rc.SwerveModules.turningGearRatio
         turnMotorConfigs.closed_loop_general.continuous_wrap = True
         turnMotorConfigs.feedback.feedback_rotor_offset = self.canCoder.get_absolute_position().value * -1
-        if self.inverted == True:
-            turnMotorConfigs.motor_output.inverted = signals.InvertedValue.CLOCKWISE_POSITIVE
+        '''if self.inverted == True:
+            turnMotorConfigs.motor_output.inverted = signals.InvertedValue.CLOCKWISE_POSITIVE'''
 
         turnMotorConfigs.current_limits.supply_current_limit = 38 #find a real number for this
 
         self.turnMotor.configurator.apply(turnMotorConfigs)
+          #create a zero position to start with
+        self.desiredState = kinematics.SwerveModuleState(0, geometry.Rotation2d(self.canCoder.get_absolute_position().value * math.tau))
 
         #starting in a zero position
         #self.turnMotor.set_control(self.position.with_position(0))
-        self.turnMotor.set_position(0)
-        self.desiredState.angle = geometry.Rotation2d(0) 
+        self.setState(self.desiredState) 
     def getWheelAngleRadians(self):
         #a function i should get rid of. converts from rotations to degrees and then to radians.
         value = self.turnMotor.get_position().value / 360

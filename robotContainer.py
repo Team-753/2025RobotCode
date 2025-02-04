@@ -13,13 +13,13 @@ from commands2.sysid import SysIdRoutine
 
 from commands.cannonCommand import place, intake
 from commands.AlgaeCommand import GrabAlgae, ReleaseAlgae, ExtendPiston, RetractPiston
-from commands.elevatorCommand import ElevatorJoystickCommand
+#from commands.elevatorCommand import ElevatorJoystickCommand
 from commands.ClimberCommand import ExtendClimber, ReleaseClimber
 
 
 from subsystems.cannon import CannonSubsystem
 from subsystems.algae import AlgaeSquisher
-from subsystems.elevator import elevatorSubSystem
+#from subsystems.elevator import elevatorSubSystem
 from subsystems.Climber import ClimberSubsystem
 
 from pathplannerlib.auto import AutoBuilder
@@ -39,18 +39,17 @@ class RobotContainer:
         self.AuxController = commands2.button.CommandXboxController(1)
         self.driveTrain = DriveTrainSubSystem(self.joystick)
         
-        #self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
         self.scheduler = commands2.CommandScheduler()
 
         
           
-        self._joystick = commands2.button.CommandXboxController(0)
+    
 
-
-        self.cannon = CannonSubsystem()
-        self.algae = AlgaeSquisher()
-        self.elevator = elevatorSubSystem()
-        self.climber = ClimberSubsystem()
+        #self.cannon = CannonSubsystem()
+        #self.algae = AlgaeSquisher()
+        #self.elevator = elevatorSubSystem()
+        #self.climber = ClimberSubsystem()
 
         # Path follower
         """self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
@@ -61,7 +60,7 @@ class RobotContainer:
 
 
     def configureButtonBindings(self) -> None:
-        self.AuxController.rightTrigger().whileTrue(place(self.cannon)) 
+        '''self.AuxController.rightTrigger().whileTrue(place(self.cannon)) 
         self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
 
         self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
@@ -87,9 +86,7 @@ class RobotContainer:
             )
         )
 
-        '''self.drivetrain.register_telemetry(
-            lambda state: self._logger.telemeterize(state)
-        )'''
+        
 
     def ToggleAlgaePiston(self):
         if self.algaePistonExtended:
@@ -105,7 +102,8 @@ class RobotContainer:
         else:
             ReleaseClimber(self.climber)
         
-        self.climbersExtended = not self.climbersExtended  # Toggle state
+        self.climbersExtended = not self.climbersExtended  # Toggle state'''
+        pass
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.
