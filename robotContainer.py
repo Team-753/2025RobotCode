@@ -12,8 +12,17 @@ from commands2.sysid import SysIdRoutine
 from telemetry import Telemetry
 from tuner_constants import TunerConstants
 from subsystems.swerveModule import myModules
+
 from commands.cannonCommand import place, intake
+from commands.AlgaeCommand import GrabAlgae, ReleaseAlgae, ExtendPiston, RetractPiston
+from commands.elevatorCommand import ElevatorJoystickCommand
+from commands.ClimberCommand import ExtendClimber, ReleaseClimber
+
+
 from subsystems.cannon import CannonSubsystem
+from subsystems.algae import AlgaeSquisher
+from subsystems.elevator import elevatorSubSystem
+from subsystems.Climber import ClimberSubsystem
 
 from pathplannerlib.auto import AutoBuilder
 from phoenix6 import swerve, hardware
@@ -55,6 +64,9 @@ class RobotContainer:
 
         self.drivetrain = TunerConstants.create_drivetrain()
         self.cannon = CannonSubsystem()
+        self.algae = AlgaeSquisher()
+        self.elevator = elevatorSubSystem()
+        self.climber = ClimberSubsystem()
 
         # Path follower
         """self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
@@ -66,6 +78,33 @@ class RobotContainer:
 
     def configureButtonBindings(self) -> None:
         self.AuxController.rightTrigger().whileTrue(place(self.cannon)) 
+        self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
+
+        self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
+        self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
+
+        #also entirely chat gpt code uhhhhhhh sorry
+        ElevatorJoystickCommand(self.elevator, self.AuxController.getLeftY())
+
+        #might work for getting pistons to flip i dont know entirely The man ChatGPT Code
+        self.algaePistonExtended = False
+
+        self.AuxController.leftBumper().onTrue(
+            commands2.cmd.runOnce(
+                lambda: self.ToggleAlgaePiston(), self.algae
+            )
+        )
+
+        self.climbersExtended = False
+
+        self.AuxController.rightBumper().onTrue(
+            commands2.cmd.runOnce(
+                lambda: self.ToggleClimberPistons(), self.climber
+            )
+        )
+        
+
+
         """
         Use this method to define your button->command mappings. Buttons can be created by
         instantiating a :GenericHID or one of its subclasses (Joystick or XboxController),
@@ -134,6 +173,22 @@ class RobotContainer:
         '''self.drivetrain.register_telemetry(
             lambda state: self._logger.telemeterize(state)
         )'''
+
+    def ToggleAlgaePiston(self):
+        if self.algaePistonExtended:
+            ExtendPiston(self.algae)
+        else:
+            RetractPiston(self.algae)
+        
+        self.pistonExtended = not self.pistonExtended  # Toggle state
+
+    def ToggleClimberPistons(self):
+        if self.climbersExtended:
+            ExtendClimber(self.climber)
+        else:
+            ReleaseClimber(self.climber)
+        
+        self.climbersExtended = not self.climbersExtended  # Toggle state
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.
