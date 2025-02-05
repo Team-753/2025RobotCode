@@ -21,6 +21,10 @@ class SwerveModule:
         self.encoderOffset = coderOffset
         self.inverted = invertedness
 
+        #create a zero position to start with
+        self.desiredState = kinematics.SwerveModuleState(0, geometry.Rotation2d(0))
+
+
         #defining control modes for the motors
         self.velocity = controls.VelocityVoltage(0).with_slot(0)
         self.position = controls.PositionVoltage(0).with_slot(1)
@@ -65,16 +69,23 @@ class SwerveModule:
         turnMotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.turningGearRatio #check swerve drive specs to get a real number
         #turnMotorConfigs.feedback.rotor_to_sensor_ratio = rc.SwerveModules.turningGearRatio
         turnMotorConfigs.closed_loop_general.continuous_wrap = True
-        turnMotorConfigs.feedback.feedback_rotor_offset = self.canCoder.get_absolute_position().value * -1
-        '''if self.inverted == True:
-            turnMotorConfigs.motor_output.inverted = signals.InvertedValue.CLOCKWISE_POSITIVE'''
+        #turnMotorConfigs.feedback.feedback_rotor_offset = self.canCoder.get_absolute_position().value
+        
 
         turnMotorConfigs.current_limits.supply_current_limit = 38 #find a real number for this
 
         self.turnMotor.configurator.apply(turnMotorConfigs)
-          #create a zero position to start with
-        self.desiredState = kinematics.SwerveModuleState(0, geometry.Rotation2d(self.canCoder.get_absolute_position().value * math.tau))
 
+        self.turnMotor.set_position(self.canCoder.get_absolute_position().value)
+        print("can coder position " + str(self.canCoder.get_absolute_position().value))
+        print("mechanism position " + str(self.turnMotor.get_position().value))
+        print("rotor position " + str(self.turnMotor.get_rotor_position().value))
+        '''if self.inverted == True:
+            turnMotorConfigs.motor_output.inverted = signals.InvertedValue.CLOCKWISE_POSITIVE'''
+
+        self.desiredState.angle = geometry.Rotation2d(self.turnMotor.get_position().value)
+          
+        
         #starting in a zero position
         #self.turnMotor.set_control(self.position.with_position(0))
         self.setState(self.desiredState) 
@@ -100,21 +111,19 @@ class SwerveModule:
         #where are we relative to where we started, haha nope really just the same as above
         return kinematics.SwerveModulePosition(self.driveMotor.get_position().value * rc.driveConstants.wheelDiameter * math.pi, self.getTurnWheelState())
     
-    def setState(self, desiredState: kinematics.SwerveModuleState)-> None:
+    def setState(self, optimizedDesiredState: kinematics.SwerveModuleState)-> None:
         #getting the wheel to where we want it to be
-        optimizedDesiredState = desiredState
         optimizedDesiredState.optimize(geometry.Rotation2d(self.turnMotor.get_position().value))
         #driveMotorVelocity = optimizedDesiredState. / (rc.driveConstants.wheelDiameter * math.pi)
         #turnMotorPosition = optimizedDesiredState.angle / math.tau
         driveMotorVelocity = optimizedDesiredState.speed * math.pi
         turnMotorPosition = optimizedDesiredState.angle.radians()/ math.tau
-        #print("desired positition " + str(turnMotorPosition))
+        print("desired positition " + str(turnMotorPosition))
+        print("current position " + str(self.turnMotor.get_position().value))
         #self.turnMotor.set_control(self.velocity.with_velocity(turnMotorPosition))
         self.driveMotor.set_control(self.velocity.with_velocity(driveMotorVelocity))
         self.turnMotor.set_control(self.position.with_position(turnMotorPosition))
-        #self.turnMotor.set_position(turnMotorPosition)
-        self.desiredState = optimizedDesiredState
-
+        
     def setNuetral(self)-> None:
         #stop spinning the motors (coast them)
         self.driveMotor.set_control(self.brake)

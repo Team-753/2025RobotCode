@@ -7,8 +7,8 @@ class robotDimensions:
 class SwerveModules:
 
     drivingGearRatio = 5.68 # find a real number
-    turningGearRatio = 7.2 # find a real number
-    #turning gear notes from motor to output: 10: 30: 20: 12: 72
+    turningGearRatio = 13.3714 # find a real number
+    #turning gear notes from motor to output: 10: 30: 22/16 : 88
     #contiued: 1/3* 3/2 * 5/3 * 1/6
 
     class frontLeft:
