@@ -1,27 +1,31 @@
 import wpilib
 import commands2
-class RobotContainer:
 
+
+class RobotContainer:
+    def __init__(self):
+        pass
+    
     def getAutonomousCommand(self) -> commands2.Command:
         pass
 
-    def disabledInit(self):
+    def getDisabledInit(self):
         pass
 
-    def autonomousInit(self):
+    def getAutonomousInit(self):
         pass
 
-    def autonousPeriodic(self):
+    def getAutonousPeriodic(self):
         pass
 
-    def teleopInit(self):
+    def getTeleopInit(self):
         pass
 
-    def teleopPeriodic(self):
+    def getTeleopPeriodic(self):
         pass
 
-    def testInit(self):
+    def getTestInit(self):
         pass
 
-    def testPeriodic(self):
+    def getTestPeriodic(self):
         pass
