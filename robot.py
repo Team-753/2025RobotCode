@@ -1,29 +1,34 @@
-
 import wpilib
-import wpilib.drive
-
+from subsystems.vision import Vision
 
 class MyRobot(wpilib.TimedRobot):
     def robotInit(self):
-        """This function will run logic immediately """
-        pass
-    def autonomousInit(self):
-        """This function is run once each time the robot enters autonomous mode."""
-        pass
-    def autonomousPeriodic(self):
-        """This function is called periodically during autonomous."""
-        pass
-    def teleopInit(self):
-        """This function is called once each time the robot enters teleoperated mode."""
-        pass
+        self.vision_system = Vision()
+
     def teleopPeriodic(self):
-        """This function is called periodically during teleoperated mode."""
+        # Just call update() each loop. Vision handles everything internally
+        self.vision_system.update()
+
+    # All other methods can remain empty or add your own logic
+    def autonomousInit(self):
         pass
+
+    def autonomousPeriodic(self):
+        pass
+    
+    def teleopInit(self):
+        pass
+
     def testInit(self):
-        """This function is called once each time the robot enters test mode."""
         pass
+
     def testPeriodic(self):
-        """This function is called periodically during test mode."""
+        pass
+    
+    def robotPeriodic(self):
+        pass
+
+    def disabledPeriodic(self):
         pass
 
 if __name__ == "__main__":
