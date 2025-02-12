@@ -1,7 +1,7 @@
 import rev,wpilib,commands2
 from RobotConfig import elevator
 
-class elevatorSubSystem(commands2.subsystem):
+class elevatorSubSystem(commands2.Subsystem):
     def __init__(self):
         #gets ID
         lMotorID=elevator.leftMotorID
@@ -21,7 +21,7 @@ class elevatorSubSystem(commands2.subsystem):
         self.rMotor.set(0)
 
 
-class advElevatorSubsystem(commands2.subsystem):
+class advElevatorSubsystem(commands2.Subsystem):
     def __init__(self,myJoystick:commands2.button.CommandXboxController):
         lMotorID=elevator.leftMotorID
         rMotorID=elevator.rightMotorID
@@ -32,7 +32,7 @@ class advElevatorSubsystem(commands2.subsystem):
     def setSpeed(self):
         self.lMotor.set(self.joystick.getLeftY())
 
-class posElevatorSubsystem(commands2.subsystem):
+class posElevatorSubsystem(commands2.Subsystem):
     def __init__(self):
         #gets ID
         lMotorID=elevator.leftMotorID
