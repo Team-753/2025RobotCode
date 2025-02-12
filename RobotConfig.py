@@ -45,13 +45,10 @@ class coralCannon:
     pivotMotorID = 15
     
 class Climber:
-    piston1Forward = 1
-    piston1Reverse = 2
-    
-    piston2Forward = 3
-    piston2Reverse = 4
+    solenoidForward = 2
+    solenoidReverse = 3
 
-    pistonsHaveExtended = bool
+    pneumaticsHubID = 20
 
 class algaeSquisher:
     squisherPistonForward = 5

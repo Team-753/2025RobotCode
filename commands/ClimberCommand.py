@@ -42,26 +42,53 @@ class ReleaseClimber(commands2.Command):
 
 #Flips the pistons on an on and off position 
 
-'''
+
 class FlipClimber(commands2.Command):
     def __init__(self, kclimberSubsystem: ClimberSubsystem):
         super().__init__()
-        self.add
+        self.addRequirements(kclimberSubsystem)
         #The Boolean flip on whether or not we have extended the pistons
-        self.hasExtended = RobotConfig.Climber.pistonsHaveExtended
-
+        self.hasExtended = False
         self.climber = kclimberSubsystem
     def initialize(self):
-        if(not self.hasExtended):
+        self.hasExtended = not self.hasExtended
+        print(self.hasExtended)
+        if(self.hasExtended):
             self.climber.GoUp()
-            self.hasExtended = True
+            print("Climb")
         else:
             self.climber.GoDown()
-            self.hasExtended = False
+            print("Unclimb")
+
     def execute(self):
         pass
+
     def end(self, interrupted):
         print("Has moved pistons")
     
-        '''
+
+class FlipCompressor(commands2.Command):
+    def __init__(self, kclimberSubsystem: ClimberSubsystem):
+        super().__init__()
+        self.addRequirements(kclimberSubsystem)
+        self.hasTurnedOn = False
+        #The Boolean flip on whether or not we have turned on the compressor
+        self.climber = kclimberSubsystem
+    def initialize(self):
+        self.hasTurnedOn = not self.hasTurnedOn
+        print(self.hasTurnedOn)
+        if(self.hasTurnedOn):
+            self.climber.CompressorOn()
+            print("Compressor On")
+        else:
+            self.climber.CompressorOff()
+            print("Compressor Off")
+
+    def execute(self):
+        pass
+
+    def end(self, interrupted):
+        print("Has flipped compressor")
+    
+
         
