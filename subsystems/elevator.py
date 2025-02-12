@@ -10,13 +10,15 @@ class elevatorSubSystem(commands2.subsystem):
         self.lMotor=rev.SparkMax(lMotorID,rev.SparkMax.MotorType.kBrushless)
         self.rMotor=rev.SparkMax(rMotorID,rev.SparkMax.MotorType.kBrushless)
         #read it
-        self.rMotor.follow(self.lMotor,True)
     def goUp(self):
         self.lMotor.set(0.1)
+        self.rMotor.set(0.1)
     def goDown(self):
         self.lMotor.set(-0.1)
+        self.rMotor.set(-0.1)
     def idle(self):
         self.lMotor.set(0)
+        self.rMotor.set(0)
 
 
 class advElevatorSubsystem(commands2.subsystem):
