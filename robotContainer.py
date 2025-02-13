@@ -12,7 +12,7 @@ from commands2.sysid import SysIdRoutine
 
 
 from commands.cannonCommand import place, intake
-from commands.AlgaeCommand import GrabAlgae, ReleaseAlgae, ExtendPiston, RetractPiston
+from commands.AlgaeCommand import GrabAlgae, ReleaseAlgae, FlipAlgaeSquisher
 from commands.elevatorCommand import elevatorUp,elevatorDown
 from commands.ClimberCommand import FlipClimber, FlipCompressor
 
@@ -47,9 +47,14 @@ class RobotContainer():
     
 
         #self.cannon = CannonSubsystem()
-        #self.algae = AlgaeSquisher()
+        self.algae = AlgaeSquisher()
         self.elevator = elevatorSubSystem()
         self.climber = ClimberSubsystem()
+        
+        
+        #sets the climber down off rip
+        self.climber.GoDown()
+        self.algae.PullPistonBack()
 
         # Path follower
         """self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
@@ -66,9 +71,9 @@ class RobotContainer():
         #self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
         self.AuxController.rightBumper().whileTrue(FlipClimber(self.climber))
     
-        self.AuxController.leftBumper().whileTrue(FlipCompressor(self.climber))
-        self.AuxController.rightTrigger().whileTrue(elevatorUp(self.elevator))
-        self.AuxController.leftTrigger().whileTrue(elevatorDown(self.elevator))
+        self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.algae))
+        #self.AuxController.rightTrigger().whileTrue(elevatorUp(self.elevator))
+        #self.AuxController.leftTrigger().whileTrue(elevatorDown(self.elevator))
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.

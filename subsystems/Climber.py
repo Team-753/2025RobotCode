@@ -20,7 +20,7 @@ class ClimberSubsystem(commands2.Subsystem):
     
     def GoDown(self):
         #sets both solenoids to their lowered position
-        self.climber.set(wpilib.DoubleSolenoid.Value.kForward)
+        self.climber.set(wpilib.DoubleSolenoid.Value.kReverse)
 
 
     def CompressorOn(self):

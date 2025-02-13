@@ -51,8 +51,8 @@ class Climber:
     pneumaticsHubID = 20
 
 class algaeSquisher:
-    squisherPistonForward = 5
-    squisherPistonReverse = 6
+    squisherPistonForward = 0
+    squisherPistonReverse = 1
 
     squisherMotorID = 2123904
 

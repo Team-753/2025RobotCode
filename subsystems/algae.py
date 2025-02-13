@@ -13,7 +13,8 @@ class AlgaeSquisher(commands2.Subsystem):
 
 
         #initialize the piston
-        self.algaePiston = wpilib.DoubleSolenoid(wpilib.PneumaticsModuleType.REVPH, rc.algaeSquisher.squisherPistonForward, rc.algaeSquisher.squisherPistonReverse)
+        self.pnuematicsHub = wpilib.PneumaticHub(20)
+        self.algaePiston = self.pnuematicsHub.makeDoubleSolenoid(rc.algaeSquisher.squisherPistonForward,rc.algaeSquisher.squisherPistonReverse)
 
     
 

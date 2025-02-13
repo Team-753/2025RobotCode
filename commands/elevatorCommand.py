@@ -9,6 +9,7 @@ class elevatorUp(commands2.Command):
         self.eSub=kElevSub
     def execute(self):
         self.eSub.goUp()
+        print("Going down")
     def end(self, interrupted):
         self.eSub.idle()
     
@@ -20,6 +21,7 @@ class elevatorDown(commands2.Command):
         self.eSub=kElevSub
     def execute(self):
         self.eSub.goDown()
+        print("Going up")
         
     def end(self, interrupted):
         self.eSub.idle()
