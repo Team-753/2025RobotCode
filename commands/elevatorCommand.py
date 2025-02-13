@@ -29,12 +29,13 @@ class elevatorDown(commands2.Command):
 
 #maybe works
 class elevatorToPos(commands2.Command):
-    def __init__(self, kElevSub:posElevatorSubsystem):
+    def __init__(self, kElevSub:posElevatorSubsystem,desiredPosition):
         super().__init__()
         self.addRequirements(kElevSub)
         self.eSub=kElevSub
-        self.xbox=wpilib.XboxController(1)
+        self.desPos=desiredPosition
     def execute(self):
-        self.eSub.setPosition(self.xbox.getLeftY())
+        self.eSub.setPosition(self.desPos)
+        print(self.desPos)
         return super().execute()
 

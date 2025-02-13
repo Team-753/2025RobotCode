@@ -20,18 +20,6 @@ class elevatorSubSystem(commands2.Subsystem):
         self.lMotor.set(0)
         self.rMotor.set(0)
 
-
-class advElevatorSubsystem(commands2.Subsystem):
-    def __init__(self,myJoystick:commands2.button.CommandXboxController):
-        lMotorID=elevator.leftMotorID
-        rMotorID=elevator.rightMotorID
-        self.joystick=myJoystick
-        self.lMotor=rev.SparkMax(lMotorID,rev.SparkMax.MotorType.kBrushless)
-        self.rMotor=rev.SparkMax(rMotorID,rev.SparkMax.MotorType.kBrushless)
-        self.rMotor.follow(self.lMotor,True)
-    def setSpeed(self):
-        self.lMotor.set(self.joystick.getLeftY())
-
 class posElevatorSubsystem(commands2.Subsystem):
     def __init__(self):
         #gets ID
@@ -47,4 +35,4 @@ class posElevatorSubsystem(commands2.Subsystem):
         self.processVariable=self.encoder.getPosition()
     def setPosition(self,desiredPos):
         #i have as much confidence this code works as i have confidence we arent secretly ruled over by reptillian overlords
-        self.pid.setReference(desiredPos, rev.SparkMax.ControlType.kPosition,0)
+        self.pid.setReference(desiredPos,rev.SparkMax.ControlType.kPosition)
