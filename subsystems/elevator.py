@@ -9,6 +9,10 @@ class elevatorSubSystem(commands2.Subsystem):
         #sets motor based off motorid
         self.lMotor=rev.SparkMax(lMotorID,rev.SparkMax.MotorType.kBrushless)
         self.rMotor=rev.SparkMax(rMotorID,rev.SparkMax.MotorType.kBrushless)
+        config=rev.SparkMaxConfig()
+        config.setIdleMode(rev.SparkMaxConfig.IdleMode.kBrake)
+        self.lMotor.configure(config,rev.SparkMax.ResetMode.kNoResetSafeParameters,rev.SparkMax.PersistMode.kNoPersistParameters)
+        self.rMotor.configure(config,rev.SparkMax.ResetMode.kNoResetSafeParameters,rev.SparkMax.PersistMode.kNoPersistParameters)
         #read it
     def goUp(self):
         self.lMotor.set(0.1)
@@ -29,10 +33,10 @@ class posElevatorSubsystem(commands2.Subsystem):
         self.lMotor=rev.SparkMax(lMotorID,rev.SparkMax.MotorType.kBrushless)
         self.rMotor=rev.SparkMax(rMotorID,rev.SparkMax.MotorType.kBrushless)
              #read it
-        self.lMotor.ControlType.kPosition
         self.pid=self.lMotor.getClosedLoopController()
         self.encoder=self.lMotor.getAbsoluteEncoder()
         self.processVariable=self.encoder.getPosition()
+        #config=self.rMotor
     def setPosition(self,desiredPos):
         #i have as much confidence this code works as i have confidence we arent secretly ruled over by reptillian overlords
         self.pid.setReference(desiredPos,rev.SparkMax.ControlType.kPosition)
