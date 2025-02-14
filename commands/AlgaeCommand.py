@@ -1,37 +1,27 @@
 import commands2
 from subsystems.algae import AlgaeSquisher
 
-#extends the position of the piston
-class ExtendPiston(commands2.Command):  
+
+class FlipAlgaeSquisher(commands2.Command):
     def __init__(self, kalgaeSubsystem: AlgaeSquisher):
-        super.__init__()
+        super().__init__()
         self.addRequirements(kalgaeSubsystem)
-        self.algaeGrabber = kalgaeSubsystem
-    
+        #The Boolean flip on whether or not we have extended the pistons
+        self.hasExtended = False
+        self.algae = kalgaeSubsystem
     def initialize(self):
-        self.algaeGrabber.ExtendPiston()
-    
-    def execute(self):
-        pass
+        self.hasExtended = not self.hasExtended
+        print(self.hasExtended)
+        if(self.hasExtended):
+            self.algae.ExtendPiston()
+            print("algae go out")
+        else:
+            self.algae.PullPistonBack()
+            print("algae comes back")
+            
     def end(self, interrupted):
-        print("Extending piston")
-
-#retracts the piston
-
-class RetractPiston(commands2.Command):  
-    def __init__(self, kalgaeSubsystem: AlgaeSquisher):
-        super.__init__()
-        self.addRequirements(kalgaeSubsystem)
-        self.algaeGrabber = kalgaeSubsystem
-    
-    def initialize(self):
-        self.algaeGrabber.PullPistonBack()
-    
-    def execute(self):
-        pass
-    def end(self, interrupted):
-        print("Piston retracted")
-
+        print("algae moved")
+        return super().end(interrupted)
 
 #spins the motors in to pull in the algae
 class GrabAlgae(commands2.Command):

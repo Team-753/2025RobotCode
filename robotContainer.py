@@ -1,5 +1,5 @@
-from subsystems.drivetrain import DriveTrainSubSystem
-from commands.defaultDriveCommand import DefaultDriveCommand
+#from subsystems.drivetrain import DriveTrainSubSystem
+#from commands.defaultDriveCommand import DefaultDriveCommand
 import commands2
 import wpilib
 import os
@@ -12,34 +12,34 @@ from commands2.sysid import SysIdRoutine
 
 
 from commands.cannonCommand import place, intake
-from commands.AlgaeCommand import GrabAlgae, ReleaseAlgae, ExtendPiston, RetractPiston
-#from commands.elevatorCommand import ElevatorJoystickCommand
-from commands.ClimberCommand import ExtendClimber, ReleaseClimber
+#from commands.AlgaeCommand import GrabAlgae, ReleaseAlgae, FlipAlgaeSquisher
+from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos
+from commands.ClimberCommand import FlipClimber, FlipCompressor
 
 
 from subsystems.cannon import CannonSubsystem
 from subsystems.algae import AlgaeSquisher
-#from subsystems.elevator import elevatorSubSystem
+from subsystems.elevator import elevatorSubSystem,posElevatorSubsystem
 from subsystems.Climber import ClimberSubsystem
 
-from pathplannerlib.auto import AutoBuilder
-from phoenix6 import swerve, hardware
+#from pathplannerlib.auto import AutoBuilder
+#from phoenix6 import swerve, hardware
 from wpilib import SmartDashboard
 from wpimath.geometry import Rotation2d
-from wpimath.units import rotationsToRadians
+#from wpimath.units import rotationsToRadians
 
-class RobotContainer:
+class RobotContainer():
     _max_speed = 1
     _max_angular_rate = 1
     _BLUE_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(0)
     _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
-        self.joystick = commands2.button.CommandJoystick(0)
-        self.AuxController = commands2.button.CommandXboxController(1)
-        self.driveTrain = DriveTrainSubSystem(self.joystick)
+        #self.joystick = commands2.button.CommandJoystick(0)
+        self.AuxController = commands2.button.CommandXboxController(0)
+        #self.driveTrain = DriveTrainSubSystem(self.joystick)
         
-        self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        #self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
         self.scheduler = commands2.CommandScheduler()
 
         
@@ -48,8 +48,13 @@ class RobotContainer:
 
         #self.cannon = CannonSubsystem()
         #self.algae = AlgaeSquisher()
-        #self.elevator = elevatorSubSystem()
-        #self.climber = ClimberSubsystem()
+        self.elevator =posElevatorSubsystem()
+        self.climber = ClimberSubsystem()
+        
+        
+        #sets the climber down off rip
+        self.climber.GoDown()
+        #self.algae.PullPistonBack()
 
         # Path follower
         """self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
@@ -60,50 +65,14 @@ class RobotContainer:
 
 
     def configureButtonBindings(self) -> None:
-        '''self.AuxController.rightTrigger().whileTrue(place(self.cannon)) 
-        self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
-
-        self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
-        self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
-
-        #also entirely chat gpt code uhhhhhhh sorry
-        ElevatorJoystickCommand(self.elevator, self.AuxController.getLeftY())
-
-        #might work for getting pistons to flip i dont know entirely The man ChatGPT Code
-        self.algaePistonExtended = False
-
-        self.AuxController.leftBumper().onTrue(
-            commands2.cmd.runOnce(
-                lambda: self.ToggleAlgaePiston(), self.algae
-            )
-        )
-
-        self.climbersExtended = False
-
-        self.AuxController.rightBumper().onTrue(
-            commands2.cmd.runOnce(
-                lambda: self.ToggleClimberPistons(), self.climber
-            )
-        )
-
-        
-
-    def ToggleAlgaePiston(self):
-        if self.algaePistonExtended:
-            ExtendPiston(self.algae)
-        else:
-            RetractPiston(self.algae)
-        
-        self.pistonExtended = not self.pistonExtended  # Toggle state
-
-    def ToggleClimberPistons(self):
-        if self.climbersExtended:
-            ExtendClimber(self.climber)
-        else:
-            ReleaseClimber(self.climber)
-        
-        self.climbersExtended = not self.climbersExtended  # Toggle state'''
-        pass
+        #self.AuxController.rightTrigger().whileTrue(place(self.cannon)) 
+        #self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
+        #self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
+        #self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
+        #self.AuxController.rightBumper().whileTrue(FlipClimber(self.climber))
+        #self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.algae))
+        self.AuxController.rightTrigger().whileTrue(elevatorToPos(self.elevator,10))
+        self.AuxController.leftTrigger().whileTrue(elevatorToPos(self.elevator,0))
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.
