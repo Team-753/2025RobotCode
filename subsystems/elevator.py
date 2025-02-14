@@ -28,11 +28,13 @@ class posElevatorSubsystem(commands2.Subsystem):
         #sets motor based off motorid
         self.lMotor=rev.SparkMax(lMotorID,rev.SparkMax.MotorType.kBrushless)
         self.rMotor=rev.SparkMax(rMotorID,rev.SparkMax.MotorType.kBrushless)
-             #read it
-        self.lMotor.ControlType.kPosition
+        #read it
         self.pid=self.lMotor.getClosedLoopController()
         self.encoder=self.lMotor.getAbsoluteEncoder()
         self.processVariable=self.encoder.getPosition()
+        config=rev.SparkMaxConfig()
+        config.follow(lMotorID)
+        self.rMotor.configure(config, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
     def setPosition(self,desiredPos):
         #i have as much confidence this code works as i have confidence we arent secretly ruled over by reptillian overlords
         self.pid.setReference(desiredPos,rev.SparkMax.ControlType.kPosition)
