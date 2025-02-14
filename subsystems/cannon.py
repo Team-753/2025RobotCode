@@ -22,6 +22,9 @@ class CannonSubsystem(commands2.Subsystem):
 
     def stop(self):
         self.topMotor.set(0)
+    
+    def idle(self):
+        self.topMotor.IdleMode(0)
 
 
     def spinup(self):

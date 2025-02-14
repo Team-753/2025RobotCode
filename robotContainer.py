@@ -46,7 +46,7 @@ class RobotContainer():
           
     
 
-        #self.cannon = CannonSubsystem()
+        self.cannon = CannonSubsystem()
         self.algae = AlgaeSquisher()
         self.elevator = elevatorSubSystem()
         self.climber = ClimberSubsystem()
@@ -65,8 +65,8 @@ class RobotContainer():
 
 
     def configureButtonBindings(self) -> None:
-        #self.AuxController.rightTrigger().whileTrue(place(self.cannon)) 
-        #self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
+        self.AuxController.rightTrigger().whileTrue(place(self.cannon)) 
+        self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
         self.AuxController.rightBumper().whileTrue(FlipClimber(self.climber))
         self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.climber))
         #self.AuxController.rightTrigger().whileTrue(elevatorUp(self.elevator))
