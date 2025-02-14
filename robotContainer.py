@@ -1,31 +1,37 @@
 import wpilib
 import commands2
+from wpilib import SmartDashboard
 
 
-class RobotContainer:
-    def __init__(self):
+SmartDashboard.putBoolean("Bridge Limit", False())
+
+
+#If you see this, that is good. 
+
+###################################
+class RobotContainer():
+
+    def __init__(self) -> None:
         pass
     
-    def getAutonomousCommand(self) -> commands2.Command:
+    def disabledInit(self):
         pass
 
-    def getDisabledInit(self):
+    def autonomousInit(self):
         pass
 
-    def getAutonomousInit(self):
+    def autonousPeriodic(self):
         pass
 
-    def getAutonousPeriodic(self):
+    def teleopInit(self):
         pass
 
-    def getTeleopInit(self):
+    def teleopPeriodic(self):
         pass
 
-    def getTeleopPeriodic(self):
+    def testInit(self):
         pass
 
-    def getTestInit(self):
+    def testPeriodic(self):
         pass
 
-    def getTestPeriodic(self):
-        pass
