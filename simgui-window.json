@@ -19,12 +19,21 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "7,810",
+<<<<<<< HEAD
+      "Size": "388,176"
+    },
+    "###Joysticks": {
+      "Collapsed": "0",
+      "Pos": "375,697",
+      "Size": "1156,241"
+=======
       "Size": "202,214"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "320,611",
       "Size": "976,278"
+>>>>>>> f9e1e4acae8053aa8b5bbab3901e67c3221f9490
     },
     "###NetworkTables": {
       "Collapsed": "0",
