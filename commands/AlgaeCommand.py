@@ -1,22 +1,23 @@
 import commands2
 from subsystems.algae import AlgaeSquisher
+from subsystems.Climber import ClimberSubsystem
 
 
 class FlipAlgaeSquisher(commands2.Command):
-    def __init__(self, kalgaeSubsystem: AlgaeSquisher):
+    def __init__(self, kClimberSubsystem: ClimberSubsystem):
         super().__init__()
-        self.addRequirements(kalgaeSubsystem)
+        self.addRequirements(kClimberSubsystem)
         #The Boolean flip on whether or not we have extended the pistons
         self.hasExtended = False
-        self.algae = kalgaeSubsystem
+        self.climber = kClimberSubsystem
     def initialize(self):
         self.hasExtended = not self.hasExtended
         print(self.hasExtended)
         if(self.hasExtended):
-            self.algae.ExtendPiston()
+            self.climber.GoOut()
             print("algae go out")
         else:
-            self.algae.PullPistonBack()
+            self.climber.ComeBack()
             print("algae comes back")
             
     def end(self, interrupted):
@@ -26,30 +27,30 @@ class FlipAlgaeSquisher(commands2.Command):
 #spins the motors in to pull in the algae
 class GrabAlgae(commands2.Command):
     def __init__(self, kalgaeSubsystem: AlgaeSquisher):
-        super.__init__()
+        super().__init__()
         self.addRequirements(kalgaeSubsystem)
         self.algaeGrabber = kalgaeSubsystem
     
-    def initialize(self):
-        self.algaeGrabber.GrabAlgae()
-    
     def execute(self):
-        pass
-    def end(self, interrupted):
+        self.algaeGrabber.IntakeAlgae()
         print("Grabbing algae")
+
+
+    def end(self, interrupted):
+        self.algaeGrabber.stop()
+        print("grabbed algae")
 
 
 #spins the motors the other way to release the algae
 class ReleaseAlgae(commands2.Command):
     def __init__(self, kalgaeSubsystem: AlgaeSquisher):
-        super.__init__()
+        super().__init__()
         self.addRequirements(kalgaeSubsystem)
         self.algaeGrabber = kalgaeSubsystem
     
-    def initialize(self):
-        self.algaeGrabber.ReleaseAlgae()
-    
     def execute(self):
-        pass
+        self.algaeGrabber.ReleaseAlgae()
+        print("Releasing ALgae")
     def end(self, interrupted):
-        print("Releasing algae")
+        self.algaeGrabber.stop()
+        print("released algae")

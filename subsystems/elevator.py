@@ -9,6 +9,10 @@ class elevatorSubSystem(commands2.Subsystem):
         #sets motor based off motorid
         self.lMotor=rev.SparkMax(lMotorID,rev.SparkMax.MotorType.kBrushless)
         self.rMotor=rev.SparkMax(rMotorID,rev.SparkMax.MotorType.kBrushless)
+        config=rev.SparkMaxConfig()
+        config.setIdleMode(rev.SparkMaxConfig.IdleMode.kBrake)
+        self.lMotor.configure(config,rev.SparkMax.ResetMode.kNoResetSafeParameters,rev.SparkMax.PersistMode.kNoPersistParameters)
+        self.rMotor.configure(config,rev.SparkMax.ResetMode.kNoResetSafeParameters,rev.SparkMax.PersistMode.kNoPersistParameters)
         #read it
     def goUp(self):
         self.lMotor.set(0.1)

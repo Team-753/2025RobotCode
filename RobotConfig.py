@@ -14,28 +14,28 @@ class SwerveModules:
     class frontLeft:
         driveMotorID = 1
         CANCoderID = 2
-        encoderOffset = 0.7062 
+        encoderOffset = -0.961669921875
         isInverted = False
         turnMotorID = 3
 
     class frontRight:
         driveMotorID = 4
         CANCoderID = 5
-        encoderOffset = 0.184
+        encoderOffset = -0.43896484375
         isInverted = False
         turnMotorID = 6
     
     class rearRight:
         driveMotorID = 7
         CANCoderID = 8
-        encoderOffset = -0.5139
+        encoderOffset = -0.260009765625
         isInverted = False
         turnMotorID = 9
     
     class rearLeft:
         driveMotorID = 10
         CANCoderID = 11
-        encoderOffset = -0.7866
+        encoderOffset = -0.536865234375
         isInverted = False
         turnMotorID = 12
         
@@ -54,7 +54,7 @@ class algaeSquisher:
     squisherPistonForward = 0
     squisherPistonReverse = 1
 
-    squisherMotorID = 2123904
+    squisherMotorID = 18
 
 class elevator:
     leftMotorID= 17
