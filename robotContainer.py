@@ -1,9 +1,5 @@
 import wpilib
 import commands2
-from wpilib import SmartDashboard
-
-
-SmartDashboard.putBoolean("Bridge Limit", False())
 
 
 #If you see this, that is good. 

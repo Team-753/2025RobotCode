@@ -2,33 +2,27 @@ import wpilib
 from wpilib import SmartDashboard
 from subsystems.vision import Vision
 
-
 class MyRobot(wpilib.TimedRobot):
-    def robotInit(self):
+    def __init__(self):
+        # Call the parent class constructor
+        super().__init__()
 
-        SmartDashboard.putNumber("Test", 5())
-        SmartDashboard.putBoolean("Fasle Statement", False())
-        
+        # Initialize your subsystems and other components here
         self.vision_system = Vision()
-
-#######################################
-    def __init__(self) -> None:
-        pass
+        SmartDashboard.putBoolean("False?", False)
 
     def autonomousInit(self):
         pass
 
-    def autonousPeriodic(self):
+    def autonomousPeriodic(self):
         pass
 
     def teleopInit(self):
         pass
 
     def teleopPeriodic(self):
-         
-         SmartDashboard.putBoolean("Target Locked", self.vision_system._isTargetLocked())
-    
-         self.vision_system.update()
+        # Update the vision system
+        self.vision_system.update()
 
     def testInit(self):
         pass
