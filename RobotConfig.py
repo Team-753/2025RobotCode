@@ -54,7 +54,7 @@ class algaeSquisher:
     squisherPistonForward = 0
     squisherPistonReverse = 1
 
-    squisherMotorID = 2123904
+    squisherMotorID = 18
 
 class elevator:
     leftMotorID= 17

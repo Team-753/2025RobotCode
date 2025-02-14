@@ -8,6 +8,8 @@ class ClimberSubsystem(commands2.Subsystem):
         #assigns the double solenoids
         self.pneumaticsHub = wpilib.PneumaticHub(rc.Climber.pneumaticsHubID)
         self.climber = self.pneumaticsHub.makeDoubleSolenoid(rc.Climber.solenoidForward, rc.Climber.solenoidReverse)
+
+        self.algaeSquisher = self.pneumaticsHub.makeDoubleSolenoid(rc.algaeSquisher.squisherPistonForward, rc.algaeSquisher.squisherPistonReverse)
       
         #Assigns the compressor 
         self.compressor = self.pneumaticsHub.makeCompressor()
@@ -21,6 +23,11 @@ class ClimberSubsystem(commands2.Subsystem):
     def GoDown(self):
         #sets both solenoids to their lowered position
         self.climber.set(wpilib.DoubleSolenoid.Value.kReverse)
+    
+    def GoOut(self):
+        self.algaeSquisher.set(wpilib.DoubleSolenoid.Value.kForward)
+    def ComeBack(self):
+        self.algaeSquisher.set(wpilib.DoubleSolenoid.Value.kReverse)
 
 
     def CompressorOn(self):

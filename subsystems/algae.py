@@ -5,31 +5,15 @@ import commands2
 import RobotConfig as rc
 
 class AlgaeSquisher(commands2.Subsystem):
-    def init(self):
+    def __init__(self):
         #initializes the motor
-        self.algaeMotor = rev.SparkMax(rc.algaeSquisher.squisherMotorID)
-        #self.algaeMotor.restoreFactoryDefaults()
-        self.algaeMotor.IdleMode(1)
-
-
-        #initialize the piston
-        self.pnuematicsHub = wpilib.PneumaticHub(20)
-        self.algaePiston = self.pnuematicsHub.makeDoubleSolenoid(rc.algaeSquisher.squisherPistonForward, rc.algaeSquisher.squisherPistonReverse)
-
+        self.algaeMotor = rev.SparkMax(rc.algaeSquisher.squisherMotorID,rev.SparkMax.MotorType.kBrushless)
     
+    def IntakeAlgae(self):
+        self.algaeMotor.set(.5)
 
-    #While calling this function rev the motor in to grab the algae
-    def GrabAlgae(self):
-        self.algaeMotor.set(1)
-    
-    #rev out the algae into processor
     def ReleaseAlgae(self):
-        self.algaeMotor.set(-1)
-    
-    #pull the algae squisher back up
-    def PullPistonBack(self):
-        self.algaePiston.set(wpilib.DoubleSolenoid.Value.kReverse)
+        self.algaeMotor.set(-.5)
 
-     #extend piston out 
-    def ExtendPiston(self):
-        self.algaePiston.set(wpilib.DoubleSolenoid.Value.kForward)
+    def stop(self):
+        self.algaeMotor.set(0)
