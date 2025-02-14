@@ -1,34 +1,39 @@
 import wpilib
+from wpilib import SmartDashboard
 from subsystems.vision import Vision
+
 
 class MyRobot(wpilib.TimedRobot):
     def robotInit(self):
+
+        SmartDashboard.putNumber("Test", 5())
+        SmartDashboard.putBoolean("Fasle Statement", False())
+        
         self.vision_system = Vision()
 
-    def teleopPeriodic(self):
-        # Just call update() each loop. Vision handles everything internally
-        self.vision_system.update()
+#######################################
+    def __init__(self) -> None:
+        pass
 
-    # All other methods can remain empty or add your own logic
     def autonomousInit(self):
         pass
 
-    def autonomousPeriodic(self):
+    def autonousPeriodic(self):
         pass
-    
+
     def teleopInit(self):
         pass
+
+    def teleopPeriodic(self):
+         
+         SmartDashboard.putBoolean("Target Locked", self.vision_system._isTargetLocked())
+    
+         self.vision_system.update()
 
     def testInit(self):
         pass
 
     def testPeriodic(self):
-        pass
-    
-    def robotPeriodic(self):
-        pass
-
-    def disabledPeriodic(self):
         pass
 
 if __name__ == "__main__":
