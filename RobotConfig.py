@@ -57,8 +57,8 @@ class algaeSquisher:
     squisherMotorID = 2123904
 
 class elevator:
-    leftMotorID= 16
-    rightMotorID= 17
+    leftMotorID= 17
+    rightMotorID= 16
 
     
 class driveConstants:
