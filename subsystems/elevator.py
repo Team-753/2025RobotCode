@@ -36,9 +36,20 @@ class posElevatorSubsystem(commands2.Subsystem):
         self.pid=self.lMotor.getClosedLoopController()
         self.encoder=self.lMotor.getAbsoluteEncoder()
         self.processVariable=self.encoder.getPosition()
-        config=rev.SparkMaxConfig()
-        config.follow(lMotorID)
-        self.rMotor.configure(config, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
+
+        configL=rev.SparkMaxConfig()        
+        configL.setIdleMode(rev.SparkMax.IdleMode.kBrake)
+        configL.closedLoop.positionWrappingEnabled(True)
+        configL.closedLoop.P=0.1
+        configL.closedLoop.I=0
+        configL.closedLoop.IMaxAccum(0.5)
+        configL.closedLoop.D=0
+        configR=rev.SparkMaxConfig()
+        configR.follow(lMotorID)
+        configR.setIdleMode(rev.SparkMax.IdleMode.kBrake)
+        self.rMotor.configure(configR, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
+        self.lMotor.configure(configL, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
     def setPosition(self,desiredPos):
         #i have as much confidence this code works as i have confidence we arent secretly ruled over by reptillian overlords
-        self.pid.setReference(desiredPos,rev.SparkMax.ControlType.kPosition)
+        #self.pid.setReference(desiredPos,rev.SparkMax.ControlType.kPosition)
+        print(self.encoder.getPosition(),desiredPos)
