@@ -19,6 +19,7 @@ from commands.ClimberCommand import FlipClimber, FlipCompressor
 
 from subsystems.cannon import CannonSubsystem
 from subsystems.algae import AlgaeSquisher
+from subsystems.elevator import posElevatorSubsystem
 from subsystems.elevator import elevatorSubSystem
 from subsystems.Climber import ClimberSubsystem
 
@@ -44,7 +45,8 @@ class RobotContainer():
 
         self.cannon = CannonSubsystem()
         self.algae = AlgaeSquisher()
-        self.elevator = elevatorSubSystem()
+        #self.elevator = elevatorSubSystem()
+        self.altElevator = posElevatorSubsystem()
         self.climber = ClimberSubsystem()
         
         
@@ -65,8 +67,9 @@ class RobotContainer():
         self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
         self.AuxController.rightBumper().whileTrue(FlipClimber(self.climber))
         self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.climber))
-        #self.AuxController.rightTrigger().whileTrue(elevatorUp(self.elevator))
-        #self.AuxController.leftTrigger().whileTrue(elevatorDown(self.elevator))
+        self.AuxController.a().whileTrue(elevatorToPos(self.altElevator,10))
+        #self.AuxController.leftStick().whileTrue(elevatorUp(self.elevator))
+
 
         self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
         self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
