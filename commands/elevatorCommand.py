@@ -51,6 +51,3 @@ class DefaultElevatorCommand(commands2.Command):
         #print("uh")
         self.elevator.ManualControl(self.elevator.GetJoystickInput())
         #print("manually driving elevator")
-    def end(self, interrupted):
-        self.elevator.Brake()
-        return super().end(interrupted)
