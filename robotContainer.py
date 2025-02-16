@@ -1,5 +1,5 @@
-#from subsystems.drivetrain import DriveTrainSubSystem
-#from commands.defaultDriveCommand import DefaultDriveCommand
+from subsystems.drivetrain import DriveTrainSubSystem
+from commands.defaultDriveCommand import DefaultDriveCommand
 import commands2
 import wpilib
 import os
@@ -35,16 +35,12 @@ class RobotContainer():
     _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
-        #self.joystick = commands2.button.CommandJoystick(0)
-        self.AuxController = commands2.button.CommandXboxController(0)
-        #self.driveTrain = DriveTrainSubSystem(self.joystick)
+        self.joystick = commands2.button.CommandJoystick(0)
+        self.AuxController = commands2.button.CommandXboxController(1)
+        self.driveTrain = DriveTrainSubSystem(self.joystick)
         
-        #self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
         self.scheduler = commands2.CommandScheduler()
-
-        
-          
-    
 
         self.cannon = CannonSubsystem()
         self.algae = AlgaeSquisher()

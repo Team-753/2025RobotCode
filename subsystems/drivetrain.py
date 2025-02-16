@@ -69,9 +69,26 @@ class DriveTrainSubSystem(commands2.Subsystem):
         print('x value: ' + str(self.joystick.getX()))
         print('y value: ' + str(self.joystick.getY()))
         print('z value: ' + str(self.joystick.getZ()))'''
-        return(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband),
-               -wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband),
-               -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband))
+        print("joystick y: " + str(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)))
+        '''if abs(self.joystick.getY()) > constants.yDeadband:
+            deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
+        else:
+            deadbandedY = 0
+        if abs(self.joystick.getX()) > constants.yDeadband:
+            deadbandedX = -wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband)
+        else:
+            deadbandedX = 0
+        if abs(self.joystick.getZ()) > constants.theataDeadband:
+            deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
+        else:
+            deadbandedZ = 0'''
+        
+        deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
+        deadbandedX = -wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband)
+        deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
+        
+
+        return(deadbandedY, deadbandedX, deadbandedZ)
     
     def setSwerveStates(self, xSpeed: float, ySpeed: float, zSpeed: float, fieldOrient = True)-> None:
         #using the input from the get joystick input function to tell the wheels where to go

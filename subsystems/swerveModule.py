@@ -35,6 +35,7 @@ class SwerveModule:
 
         canCoderConfigs.magnet_sensor.absolute_sensor_discontinuity_point = 1
         canCoderConfigs.magnet_sensor.magnet_offset = self.encoderOffset
+        canCoderConfigs.magnet_sensor.sensor_direction = signals.SensorDirectionValue.CLOCKWISE_POSITIVE #can coder invert
         
         self.canCoder.configurator.apply(canCoderConfigs)
 
@@ -63,8 +64,8 @@ class SwerveModule:
         turnMotorConfigs.slot1.k_d = 0.1
         turnMotorConfigs.voltage.peak_forward_voltage = 13
         turnMotorConfigs.voltage.peak_reverse_voltage = -13
-        #turnMotorConfigs.feedback.feedback_remote_sensor_id = coderID
-        #turnMotorConfigs.feedback.feedback_sensor_source = signals.FeedbackSensorSourceValue.REMOTE_CANCODER
+        turnMotorConfigs.feedback.feedback_remote_sensor_id = coderID
+        turnMotorConfigs.feedback.feedback_sensor_source = signals.FeedbackSensorSourceValue.REMOTE_CANCODER
         turnMotorConfigs.motor_output.neutral_mode = signals.NeutralModeValue.COAST
         #turnMotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.turningGearRatio #check swerve drive specs to get a real number
         #turnMotorConfigs.feedback.rotor_to_sensor_ratio = rc.SwerveModules.turningGearRatio
@@ -77,13 +78,13 @@ class SwerveModule:
         self.turnMotor.configurator.apply(turnMotorConfigs)
 
         print("can coder position " + str(self.canCoder.get_absolute_position().value))
-        self.turnMotor.set_position((self.canCoder.get_absolute_position().value * rc.SwerveModules.turningGearRatio))
-        print(" old mechanism position " + str(self.turnMotor.get_position().value/ rc.SwerveModules.turningGearRatio))
+        self.turnMotor.set_position((self.canCoder.get_absolute_position().value))
+        print(" old mechanism position " + str(self.turnMotor.get_position().value))
         print("rotor position " + str(self.turnMotor.get_rotor_position().value))
         '''if self.inverted == True:
             turnMotorConfigs.motor_output.inverted = signals.InvertedValue.CLOCKWISE_POSITIVE'''
         
-        self.turnMotor.set_control(self.position.with_position(self.turnMotor.get_position().value * rc.SwerveModules.turningGearRatio))
+        self.turnMotor.set_control(self.position.with_position(self.turnMotor.get_position().value))
         self.desiredState.angle = geometry.Rotation2d()
           
         
@@ -93,12 +94,12 @@ class SwerveModule:
         print("**********")
     def getWheelAngleRadians(self):
         #a function i should get rid of. converts from rotations to degrees and then to radians.
-        value = self.turnMotor.get_position().value / (360 * rc.SwerveModules.turningGearRatio) 
+        value = self.turnMotor.get_position().value / (360) 
         return math.radians(value)  
     
     def getTurnWheelState(self)-> geometry.Rotation2d:
         #what is the angle of the wheel?
-        return geometry.Rotation2d(self.turnMotor.get_position().value / (math.tau * rc.SwerveModules.turningGearRatio))
+        return geometry.Rotation2d(self.turnMotor.get_position().value / (math.tau))
     
     def getDriveState(self):
         #how fast are we going?
@@ -119,10 +120,10 @@ class SwerveModule:
         #driveMotorVelocity = optimizedDesiredState. / (rc.driveConstants.wheelDiameter * math.pi)
         #turnMotorPosition = optimizedDesiredState.angle / math.tau
         driveMotorVelocity = optimizedDesiredState.speed * math.pi
-        turnMotorPosition = (optimizedDesiredState.angle.radians() * rc.SwerveModules.turningGearRatio) / math.tau
+        turnMotorPosition = optimizedDesiredState.angle.radians() / math.tau
         print("module number " +  str(self.driveMotor.device_id))
         print ("desired positition " + str(turnMotorPosition))
-        print ("current position " + str(self.turnMotor.get_position().value / rc.SwerveModules.turningGearRatio))
+        print ("current position " + str(self.turnMotor.get_position().value))
         print ("new CanCoder position " + str(self.canCoder.get_absolute_position().value))
         #self.turnMotor.set_control(self.velocity.with_velocity(turnMotorPosition))
         self.driveMotor.set_control(self.velocity.with_velocity(driveMotorVelocity))
