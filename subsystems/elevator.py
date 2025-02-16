@@ -23,6 +23,26 @@ class elevatorSubSystem(commands2.Subsystem):
     def idle(self):
         self.lMotor.set(0)
         self.rMotor.set(0)
+    def Brake(self):
+        self.lMotor.IdleMode(1)
+        self.rMotor.IdleMode(1)
+
+        #Gets the joystick y input of the aux controller
+    def GetJoystickInput(self):
+        return(-self.controller.getLeftY())
+    
+    def ManualControl(self, controllerInput):
+        self.joystick = controllerInput
+        if(abs(self.joystick) > .5):
+            if(self.joystick < 0):
+                #Lowers the elevator motors
+                self.goDown()
+                print("elevators moving down based on joystick")
+            elif(self.joystick > 0):
+                #sets the motor to raise
+                self.goUp()
+                print("Elevator going up based on joystick")
+
 
 class posElevatorSubsystem(commands2.Subsystem):
     def __init__(self):
