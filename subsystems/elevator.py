@@ -2,7 +2,7 @@ import rev,wpilib,commands2
 from RobotConfig import elevator
 
 class elevatorSubSystem(commands2.Subsystem):
-    def __init__(self):
+    def __init__(self, auxController: commands2.button.CommandXboxController) -> None:
         #gets ID
         lMotorID=elevator.leftMotorID
         rMotorID=elevator.rightMotorID
@@ -13,6 +13,10 @@ class elevatorSubSystem(commands2.Subsystem):
         config.setIdleMode(rev.SparkMaxConfig.IdleMode.kBrake)
         self.lMotor.configure(config,rev.SparkMax.ResetMode.kNoResetSafeParameters,rev.SparkMax.PersistMode.kNoPersistParameters)
         self.rMotor.configure(config,rev.SparkMax.ResetMode.kNoResetSafeParameters,rev.SparkMax.PersistMode.kNoPersistParameters)
+        #Sets the Aux Controller
+        self.controller = auxController
+
+
         #read it
     def goUp(self):
         self.lMotor.set(0.1)
@@ -23,6 +27,26 @@ class elevatorSubSystem(commands2.Subsystem):
     def idle(self):
         self.lMotor.set(0)
         self.rMotor.set(0)
+    def Brake(self):
+        self.lMotor.IdleMode(1)
+        self.rMotor.IdleMode(1)
+
+        #Gets the joystick y input of the aux controller
+    def GetJoystickInput(self):
+        return(self.controller.getLeftY())
+    
+    def ManualControl(self, controllerInput):
+        self.joystick = controllerInput
+        if(self.joystick > abs(.1)):
+            if(self.joystick < 0):
+                #Lowers the elevator motors
+                self.goDown()
+                print("elevators moving down based on joystick")
+            elif(self.joystick > 0):
+                #sets the motor to raise
+                self.goUp()
+                print("Elevator going up based on joystick")
+
 
 class posElevatorSubsystem(commands2.Subsystem):
     def __init__(self):

@@ -1,5 +1,6 @@
 from subsystems.drivetrain import DriveTrainSubSystem
 from commands.defaultDriveCommand import DefaultDriveCommand
+from commands.defaultElevatorCommand import DefaultElevatorCommand
 import commands2
 import wpilib
 import os
@@ -38,14 +39,18 @@ class RobotContainer():
         #declaring the subsystems and setting up the drivetrain control
         self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
+
         self.driveTrain = DriveTrainSubSystem(self.joystick)
+        self.elevator = elevatorSubSystem(self.AuxController)
         
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        self.elevator.setDefaultCommand(DefaultElevatorCommand(self.elevator))
+        
         self.scheduler = commands2.CommandScheduler()
 
         self.cannon = CannonSubsystem()
         self.algae = AlgaeSquisher()
-        #self.elevator = elevatorSubSystem()
+       
         self.altElevator = posElevatorSubsystem()
         self.climber = ClimberSubsystem()
         

@@ -50,6 +50,9 @@ class Climber:
 
     pneumaticsHubID = 20
 
+class AuxController:
+    USB_ID = 1
+
 class algaeSquisher:
     squisherPistonForward = 0
     squisherPistonReverse = 1
