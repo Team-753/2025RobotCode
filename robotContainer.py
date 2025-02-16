@@ -46,7 +46,7 @@ class RobotContainer():
         self.cannon = CannonSubsystem()
         self.algae = AlgaeSquisher()
         #self.elevator = elevatorSubSystem()
-        self.altElevator = posElevatorSubsystem()
+        #self.altElevator = posElevatorSubsystem()
         self.climber = ClimberSubsystem()
         
         
@@ -67,7 +67,7 @@ class RobotContainer():
         self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
         self.AuxController.rightBumper().whileTrue(FlipClimber(self.climber))
         self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.climber))
-        self.AuxController.a().whileTrue(elevatorToPos(self.altElevator,10))
+        #self.AuxController.a().whileTrue(elevatorToPos(self.altElevator,10))
         #self.AuxController.leftStick().whileTrue(elevatorUp(self.elevator))
 
 
