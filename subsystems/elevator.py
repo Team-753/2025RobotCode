@@ -2,7 +2,7 @@ import rev,wpilib,commands2
 from RobotConfig import elevator
 
 class elevatorSubSystem(commands2.Subsystem):
-    def __init__(self):
+    def __init__(self, auxController: commands2.button.CommandXboxController):
         #gets ID
         lMotorID=elevator.leftMotorID
         rMotorID=elevator.rightMotorID
@@ -13,6 +13,9 @@ class elevatorSubSystem(commands2.Subsystem):
         config.setIdleMode(rev.SparkMaxConfig.IdleMode.kBrake)
         self.lMotor.configure(config,rev.SparkMax.ResetMode.kNoResetSafeParameters,rev.SparkMax.PersistMode.kNoPersistParameters)
         self.rMotor.configure(config,rev.SparkMax.ResetMode.kNoResetSafeParameters,rev.SparkMax.PersistMode.kNoPersistParameters)
+       
+       
+        self.controller = auxController
         #read it
     def goUp(self):
         self.lMotor.set(0.1)
