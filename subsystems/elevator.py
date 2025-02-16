@@ -33,11 +33,11 @@ class elevatorSubSystem(commands2.Subsystem):
 
         #Gets the joystick y input of the aux controller
     def GetJoystickInput(self):
-        return(self.controller.getLeftY())
+        return(-self.controller.getLeftY())
     
     def ManualControl(self, controllerInput):
         self.joystick = controllerInput
-        if(self.joystick > abs(.1)):
+        if(abs(self.joystick) > .5):
             if(self.joystick < 0):
                 #Lowers the elevator motors
                 self.goDown()

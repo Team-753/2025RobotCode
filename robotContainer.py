@@ -1,6 +1,5 @@
 from subsystems.drivetrain import DriveTrainSubSystem
 from commands.defaultDriveCommand import DefaultDriveCommand
-from commands.defaultElevatorCommand import DefaultElevatorCommand
 import commands2
 import wpilib
 import os
@@ -14,7 +13,7 @@ from commands2.sysid import SysIdRoutine
 
 from commands.cannonCommand import place, intake
 from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
-from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos
+from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos, DefaultElevatorCommand
 from commands.ClimberCommand import FlipClimber, FlipCompressor
 
 
@@ -37,13 +36,13 @@ class RobotContainer():
     _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
-        self.joystick = commands2.button.CommandJoystick(0)
+        #self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
 
-        self.driveTrain = DriveTrainSubSystem(self.joystick)
+        #self.driveTrain = DriveTrainSubSystem(self.joystick)
         self.elevator = elevatorSubSystem(self.AuxController)
         
-        self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        #self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
         self.elevator.setDefaultCommand(DefaultElevatorCommand(self.elevator))
         
         self.scheduler = commands2.CommandScheduler()
@@ -51,7 +50,7 @@ class RobotContainer():
         self.cannon = CannonSubsystem()
         self.algae = AlgaeSquisher()
        
-        self.altElevator = posElevatorSubsystem()
+        #self.altElevator = posElevatorSubsystem()
         self.climber = ClimberSubsystem()
         
         
@@ -72,7 +71,7 @@ class RobotContainer():
         self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
         self.AuxController.rightBumper().whileTrue(FlipClimber(self.climber))
         self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.climber))
-        self.AuxController.a().whileTrue(elevatorToPos(self.altElevator,10))
+        #self.AuxController.a().whileTrue(elevatorToPos(self.altElevator,10))
         #self.AuxController.leftStick().whileTrue(elevatorUp(self.elevator))
 
 
