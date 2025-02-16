@@ -36,6 +36,7 @@ class elevatorToPos(commands2.Command):
         self.desPos=desiredPosition
     def execute(self):
         self.eSub.setPosition(self.desPos)
+        self.eSub.getPosition()
         print(self.desPos)
         return super().execute()
 
