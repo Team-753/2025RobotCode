@@ -32,6 +32,18 @@ class intake(commands2.Command):
         self.cannon.idle()
         #add idle for position
 
+class DefaultPivotCommand(commands2.Command):
+    def __init__(self, cannonSubsystem: CannonSubsystem):
+        super().__init__()
+        self.addRequirements(cannonSubsystem)
+        self.cannon = cannonSubsystem
+
+    def execute(self):
+        self.cannon.ManualControl(self.cannon.GetJoystickInput())
+    def end(self, interrupted):
+        self.cannon.angleStop()
+        return super().end(interrupted)
+
 
 
 

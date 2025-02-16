@@ -11,9 +11,9 @@ import commands2.cmd
 from commands2.sysid import SysIdRoutine
 
 
-from commands.cannonCommand import place, intake
+from commands.cannonCommand import place, intake, DefaultPivotCommand
 from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
-from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos
+from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos, DefaultElevatorCommand
 from commands.ClimberCommand import FlipClimber, FlipCompressor
 
 
@@ -36,16 +36,22 @@ class RobotContainer():
     _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
-        self.joystick = commands2.button.CommandJoystick(0)
+        #self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
-        self.driveTrain = DriveTrainSubSystem(self.joystick)
+
+        #self.driveTrain = DriveTrainSubSystem(self.joystick)
+        self.elevator = elevatorSubSystem(self.AuxController)
+        self.cannon = CannonSubsystem(self.AuxController)
+
         
-        self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        #self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        self.elevator.setDefaultCommand(DefaultElevatorCommand(self.elevator))
+        self.cannon.setDefaultCommand(DefaultPivotCommand(self.cannon))
+        
         self.scheduler = commands2.CommandScheduler()
 
-        self.cannon = CannonSubsystem()
         self.algae = AlgaeSquisher()
-        #self.elevator = elevatorSubSystem()
+       
         #self.altElevator = posElevatorSubsystem()
         self.climber = ClimberSubsystem()
         
