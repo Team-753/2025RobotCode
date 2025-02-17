@@ -25,24 +25,7 @@ class elevatorDown(commands2.Command):
         
     def end(self, interrupted):
         self.eSub.idle()
-    
 
-#maybe works
-class elevatorToPos(commands2.Command):
-    def __init__(self, kElevSub:posElevatorSubsystem,desiredPosition):
-        super().__init__()
-        self.addRequirements(kElevSub)
-        self.eSub=kElevSub
-        self.desPos=desiredPosition
-    def initialize(self):
-        self.eSub.setPosition(1)
-        self.eSub.getPosition()
-        return super().initialize()
-    def execute(self):
-        #self.eSub.setPosition(self.desPos)
-        self.eSub.getPosition()
-        #print(self.desPos)
-        return super().execute()
 
 class DefaultElevatorCommand(commands2.Command):
     def __init__(self, elevatorSubSystem: elevatorSubSystem):
@@ -56,7 +39,7 @@ class DefaultElevatorCommand(commands2.Command):
         self.elevator.ManualControl(self.elevator.GetJoystickInput())
         #print("manually driving elevator")
 
-class PidDefaultElevatorCommand(commands2.Command):
+class elevatorToPos(commands2.Command):
     def __init__(self, elevatorSubSystem: posElevatorSubsystem, desPos):
         super().__init__()
         self.addRequirements(elevatorSubSystem)
@@ -64,6 +47,6 @@ class PidDefaultElevatorCommand(commands2.Command):
         self.desiredPos=desPos
     def execute(self):
         self.elevator.getPosition()
-        print(self.elevator.realEncoderPos)
-        self.elevator.setPosition(self.des)
-        #print("manually driving elevator")
+        self.elevator.setPosition(self.desiredPos)
+    def periodic(self):
+        self.elevator.getPosition()

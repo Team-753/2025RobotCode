@@ -76,7 +76,7 @@ class posElevatorSubsystem(commands2.Subsystem):
         #i have as much confidence this code works as i have confidence we arent secretly ruled over by reptillian overlords
         #self.pid.setReference(desiredPos,rev.SparkMax.ControlType.kPosition)
         #print(self.encoder.getPosition(),desiredPos)
-        myPid=wpimath.controller.PIDController(0.3,0.001,0,period=0.02)
+        myPid=wpimath.controller.PIDController(0.3,0.001,0.1,period=0.02)
         myPid.setIZone(0.3)
         myPid.setSetpoint(desiredPos)
         pidOut=myPid.calculate(measurement=self.realEncoderPos)
@@ -88,7 +88,6 @@ class posElevatorSubsystem(commands2.Subsystem):
         self.encoderPos=(1-self.encoder.getPosition())-self.encoderOffset
         encoderDelta=float(self.encoderPos-encoderPast)
         self.realEncoderPos=self.encoderRotations+self.encoderPos
-        print(self.encoderRotations+self.encoderPos,"=====",self.encoderRotations)
         if abs(encoderDelta)>0.7:
             self.encoderRotations+=1*(-encoderDelta/abs(encoderDelta))
 
