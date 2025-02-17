@@ -14,28 +14,35 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #camera settings
         self.stateStdDevs = 0.1, 0.1, 0.1
         self.visionMeasurementsStdDevs = 0., 0.9, 0.9
+
         #set up the joystick and navx sensor
         self.joystick = joystick
         self.navx = navx.AHRS.create_spi()
+
         #getting some important constants about the robot declared
         self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
         self.kMaxAngularVelocity = rc.driveConstants.RobotSpeeds.maxSpeed /hypot(rc.robotDimensions.trackWidth / 2, rc.robotDimensions.wheelBase / 2)
         self.wheelBase = rc.robotDimensions.wheelBase
         self.trackWidth = rc.robotDimensions.trackWidth
+
         #defining the location of each swerve module on the can chain
         self.frontLeft = SwerveModule(rc.SwerveModules.frontLeft.driveMotorID, rc.SwerveModules.frontLeft.turnMotorID, rc.SwerveModules.frontLeft.CANCoderID, rc.SwerveModules.frontLeft.encoderOffset, rc.SwerveModules.frontLeft.isInverted)
         self.frontRight = SwerveModule(rc.SwerveModules.frontRight.driveMotorID, rc.SwerveModules.frontRight.turnMotorID, rc.SwerveModules.frontRight.CANCoderID, rc.SwerveModules.frontRight.encoderOffset, rc.SwerveModules.frontRight.isInverted)
         self.rearLeft = SwerveModule(rc.SwerveModules.rearLeft.driveMotorID, rc.SwerveModules.rearLeft.turnMotorID, rc.SwerveModules.rearLeft.CANCoderID, rc.SwerveModules.rearLeft.encoderOffset, rc.SwerveModules.rearLeft.isInverted)
         self.rearRight = SwerveModule(rc.SwerveModules.rearRight.driveMotorID, rc.SwerveModules.rearRight.turnMotorID, rc.SwerveModules.rearRight.CANCoderID, rc.SwerveModules.rearRight.encoderOffset, rc.SwerveModules.rearRight.isInverted)
+        
         #renaming some variables so they are easier to use
         teleopConstants = rc.driveConstants.poseConstants
+        
         #setting up how we send info to the wheels about the position of the turn motor
         rotationConstants = rc.driveConstants.ThetaPIDConstants.translationPIDConstants
         self.rotationPID = controller.PIDController(rotationConstants.kP, rotationConstants.kI, rotationConstants.kD, rotationConstants.period)
         self.rotationPID.enableContinuousInput(-pi, pi)
+        
         #a pose helps the robot know where it is, the alliance thing is for autos
         self.poseTolerance = geometry.Pose2d(geometry.Translation2d(x=teleopConstants.xPoseToleranceMeters, y=teleopConstants.yPoseToleranceMeters), geometry.Rotation2d(teleopConstants.thetaPoseToleranceRadians))
         self.alliance = wpilib.DriverStation.Alliance.kBlue
+        
         #classes to help proccess info about where the robot is and how fast and in what direction it is moving
         self.KINEMATICS = kinematics.SwerveDrive4Kinematics(geometry.Translation2d(float(self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(self.trackWidth / 2), float(-self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(-self.wheelBase / 2)))
         self.poseEstimatior = estimator.SwerveDrive4PoseEstimator(kinematics.SwerveDrive4Kinematics(geometry.Translation2d(float(self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(self.trackWidth / 2), float(-self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(-self.wheelBase / 2))), 
@@ -70,21 +77,9 @@ class DriveTrainSubSystem(commands2.Subsystem):
         print('y value: ' + str(self.joystick.getY()))
         print('z value: ' + str(self.joystick.getZ()))'''
         print("joystick y: " + str(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)))
-        '''if abs(self.joystick.getY()) > constants.yDeadband:
-            deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
-        else:
-            deadbandedY = 0
-        if abs(self.joystick.getX()) > constants.yDeadband:
-            deadbandedX = -wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband)
-        else:
-            deadbandedX = 0
-        if abs(self.joystick.getZ()) > constants.theataDeadband:
-            deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
-        else:
-            deadbandedZ = 0'''
         
         deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
-        deadbandedX = -wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband)
+        deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband) #need to invert the x direction?
         deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
         
 
@@ -103,14 +98,10 @@ class DriveTrainSubSystem(commands2.Subsystem):
     
     def joystickDrive(self, inputs: tuple[float])-> None:
         #proccessing the joystick input values and sending them to the set swerve states function
-        #print ("joystick drive is running.")
         xSpeed, ySpeed, zSpeed, = (inputs[0] * self.kMaxSpeed,
                                    inputs[1] * self.kMaxSpeed,
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
-        '''print("x speed: " + str(xSpeed))
-        print("Y speed: " + str(ySpeed))
-        print("Z speed: " + str(zSpeed))'''
-        #self.frontRight.turnMotor.set_control(self.frontRight.position.with_position(1))
+        print(self.navx.getAngle())
         self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
     def stationary(self)-> None:
         #stop the robot by breaking all the motors

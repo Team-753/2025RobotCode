@@ -1,4 +1,4 @@
-import commands2 ,wpilib
+import commands2,wpilib
 from subsystems.elevator import elevatorSubSystem,posElevatorSubsystem
 
 
@@ -54,6 +54,3 @@ class DefaultElevatorCommand(commands2.Command):
         #print("uh")
         self.elevator.ManualControl(self.elevator.GetJoystickInput())
         #print("manually driving elevator")
-    def end(self, interrupted):
-        self.elevator.Brake()
-        return super().end(interrupted)

@@ -2,7 +2,7 @@ import rev,wpilib,commands2
 from RobotConfig import elevator
 
 class elevatorSubSystem(commands2.Subsystem):
-    def __init__(self):
+    def __init__(self, auxController: commands2.button.CommandXboxController):
         #gets ID
         lMotorID=elevator.leftMotorID
         rMotorID=elevator.rightMotorID
@@ -13,19 +13,23 @@ class elevatorSubSystem(commands2.Subsystem):
         config.setIdleMode(rev.SparkMaxConfig.IdleMode.kBrake)
         self.lMotor.configure(config,rev.SparkMax.ResetMode.kNoResetSafeParameters,rev.SparkMax.PersistMode.kNoPersistParameters)
         self.rMotor.configure(config,rev.SparkMax.ResetMode.kNoResetSafeParameters,rev.SparkMax.PersistMode.kNoPersistParameters)
+       
+       
+        self.controller = auxController
         #read it
     def goUp(self):
-        self.lMotor.set(0.1)
-        self.rMotor.set(0.1)
+        self.lMotor.set(0.13)
+        self.rMotor.set(0.13)
     def goDown(self):
-        self.lMotor.set(-0.1)
-        self.rMotor.set(-0.1)
-    def idle(self):
         self.lMotor.set(0)
         self.rMotor.set(0)
+    def idle(self):
+        self.lMotor.set(.06)
+        self.rMotor.set(.06)
     def Brake(self):
         self.lMotor.IdleMode(1)
         self.rMotor.IdleMode(1)
+        print("Breaking")
 
         #Gets the joystick y input of the avux controller
     def GetJoystickInput(self):
@@ -42,7 +46,8 @@ class elevatorSubSystem(commands2.Subsystem):
                 #sets the motor to raise
                 self.goUp()
                 print("Elevator going up based on joystick")
-
+        else:
+            self.idle()
 
 class posElevatorSubsystem(commands2.Subsystem):
     def __init__(self):
