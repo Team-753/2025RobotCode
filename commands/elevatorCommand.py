@@ -34,10 +34,13 @@ class elevatorToPos(commands2.Command):
         self.addRequirements(kElevSub)
         self.eSub=kElevSub
         self.desPos=desiredPosition
+    def initialize(self):
+        #put goto here
+        return super().initialize()
     def execute(self):
-        self.eSub.setPosition(self.desPos)
+        #self.eSub.setPosition(self.desPos)
         self.eSub.getPosition()
-        print(self.desPos)
+        #print(self.desPos)
         return super().execute()
 
 class DefaultElevatorCommand(commands2.Command):
