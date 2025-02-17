@@ -35,7 +35,8 @@ class elevatorToPos(commands2.Command):
         self.eSub=kElevSub
         self.desPos=desiredPosition
     def initialize(self):
-        #put goto here
+        self.eSub.setPosition(1)
+        self.eSub.getPosition()
         return super().initialize()
     def execute(self):
         #self.eSub.setPosition(self.desPos)
@@ -53,4 +54,16 @@ class DefaultElevatorCommand(commands2.Command):
     def execute(self):
         #print("uh")
         self.elevator.ManualControl(self.elevator.GetJoystickInput())
+        #print("manually driving elevator")
+
+class PidDefaultElevatorCommand(commands2.Command):
+    def __init__(self, elevatorSubSystem: posElevatorSubsystem, desPos):
+        super().__init__()
+        self.addRequirements(elevatorSubSystem)
+        self.elevator = elevatorSubSystem
+        self.desiredPos=desPos
+    def execute(self):
+        self.elevator.getPosition()
+        print(self.elevator.realEncoderPos)
+        self.elevator.setPosition(self.des)
         #print("manually driving elevator")
