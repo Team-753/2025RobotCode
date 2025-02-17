@@ -40,18 +40,17 @@ class RobotContainer():
         self.AuxController = commands2.button.CommandXboxController(1)
 
         self.driveTrain = DriveTrainSubSystem(self.joystick)
-        self.elevator = elevatorSubSystem(self.AuxController)
+        #self.elevator = elevatorSubSystem(self.AuxController)
         self.cannon = CannonSubsystem(self.AuxController)
-
         
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
-        self.elevator.setDefaultCommand(DefaultElevatorCommand(self.elevator))
+        #self.elevator.setDefaultCommand(DefaultElevatorCommand(self.elevator))
         self.cannon.setDefaultCommand(DefaultPivotCommand(self.cannon))
         
         self.scheduler = commands2.CommandScheduler()
 
         self.algae = AlgaeSquisher()
-       
+        self.positionElevator = posElevatorSubsystem()
         #self.altElevator = posElevatorSubsystem()
         self.climber = ClimberSubsystem()
         
@@ -73,7 +72,12 @@ class RobotContainer():
         self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
         self.AuxController.rightBumper().whileTrue(FlipClimber(self.climber))
         self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.climber))
-        #self.AuxController.a().whileTrue(elevatorToPos(self.altElevator,10))
+        self.AuxController.a().onTrue(elevatorToPos(self.positionElevator,1))
+        self.AuxController.b().onTrue(elevatorToPos(self.positionElevator,2))
+        self.AuxController.y().onTrue(elevatorToPos(self.positionElevator,3))
+        self.AuxController.x().onTrue(elevatorToPos(self.positionElevator,3.8))
+        self.AuxController.rightStick().onTrue(elevatorToPos(self.positionElevator,0))
+        self.AuxController.leftStick().onTrue(DefaultPivotCommand.s)
         #self.AuxController.leftStick().whileTrue(elevatorUp(self.elevator))
 
 
