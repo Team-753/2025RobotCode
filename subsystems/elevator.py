@@ -31,7 +31,7 @@ class elevatorSubSystem(commands2.Subsystem):
         self.rMotor.IdleMode(1)
         print("Breaking")
 
-        #Gets the joystick y input of the aux controller
+        #Gets the joystick y input of the avux controller
     def GetJoystickInput(self):
         return(-self.controller.getLeftY())
     
@@ -61,32 +61,32 @@ class posElevatorSubsystem(commands2.Subsystem):
         self.pid=self.lMotor.getClosedLoopController()
         self.encoder=self.lMotor.getAbsoluteEncoder()
         self.processVariable=self.encoder.getPosition()
-
+        self.lMotor.IdleMode(0)
+        self.rMotor.IdleMode(0)
         configL=rev.SparkMaxConfig()        
-        configL.setIdleMode(rev.SparkMax.IdleMode.kBrake)
-        configL.closedLoop.positionWrappingEnabled(True)
-        configL.closedLoop.P=0.1
-        configL.closedLoop.I=0
-        configL.closedLoop.IMaxAccum(0.5)
-        configL.closedLoop.D=0
-        configL.absoluteEncoder.positionConversionFactor(6)
+        #configL.closedLoop.positionWrappingEnabled(True)
+        #configL.closedLoop.P=0.1
+        #configL.closedLoop.I=0
+        #configL.closedLoop.IMaxAccum(0.5)
+        #configL.closedLoop.D=0
         configR=rev.SparkMaxConfig()
         configR.follow(lMotorID)
-        configR.setIdleMode(rev.SparkMax.IdleMode.kBrake)
         self.rMotor.configure(configR, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.lMotor.configure(configL, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
-        self.encoderOffset=self.encoder.getPosition()
+        self.encoderOffset=1-self.encoder.getPosition()
         self.encoderPos=0
         self.encoderRotations=0
+        self.pid.setReference()
     def setPosition(self,desiredPos):
         #i have as much confidence this code works as i have confidence we arent secretly ruled over by reptillian overlords
         #self.pid.setReference(desiredPos,rev.SparkMax.ControlType.kPosition)
-        print(self.encoder.getPosition(),desiredPos)
+        #print(self.encoder.getPosition(),desiredPos)
+        pass
     def getPosition(self):
         encoderPast=self.encoderPos
-        self.encoderPos=self.encoder.getPosition()-self.encoderOffset
-        encoderDelta=self.encoderPos-encoderPast
-        if ((encoderDelta^2)^(1/2))>0.7:
-            print(encoderDelta,self.encoderRotations)
-            self.encoderRotations+=1*(encoderDelta/abs(encoderDelta))
+        self.encoderPos=(1-self.encoder.getPosition())-self.encoderOffset
+        encoderDelta=float(self.encoderPos-encoderPast)
+        print(self.encoderRotations+self.encoderPos,"=====",self.encoderRotations)
+        if abs(encoderDelta)>0.7:
+            self.encoderRotations+=1*(-encoderDelta/abs(encoderDelta))
 
