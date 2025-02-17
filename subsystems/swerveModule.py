@@ -59,9 +59,10 @@ class SwerveModule:
         turnMotorConfigs = phoenix6.configs.TalonFXConfiguration()
 
         #The problem????
-        turnMotorConfigs.slot1.k_p = 2.4
+        turnMotorConfigs.slot1.k_p = 7.2
         turnMotorConfigs.slot1.k_i = 2.4
         turnMotorConfigs.slot1.k_d = 0.0001
+        turnMotorConfigs.slot1.k_s = 0.01
         turnMotorConfigs.voltage.peak_forward_voltage = 13
         turnMotorConfigs.voltage.peak_reverse_voltage = -13
         turnMotorConfigs.feedback.feedback_remote_sensor_id = coderID
