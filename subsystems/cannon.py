@@ -29,13 +29,15 @@ class CannonSubsystem(commands2.Subsystem):
 
 
     def spinup(self):
-        self.pivotMotor.set(0.05)
+        self.pivotMotor.set(-0.1)
 
     def spindown(self):
-        self.pivotMotor.set(-0.05)
+        self.pivotMotor.set(0.1)
 
     def angleStop(self):
         self.pivotMotor.IdleMode(1)
+    def angleIdle(self):
+        self.pivotMotor.set(0)
     def GetJoystickInput(self):
         return(-self.controller.getRightY())
     
@@ -50,3 +52,5 @@ class CannonSubsystem(commands2.Subsystem):
                 #sets the motor to raise
                 self.spindown()
                 print("spinning down")
+        else:
+            self.angleIdle()
