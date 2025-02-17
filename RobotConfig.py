@@ -14,14 +14,14 @@ class SwerveModules:
     class frontLeft:
         driveMotorID = 1
         CANCoderID = 2
-        encoderOffset = -0.04248046875
+        encoderOffset = -0.0380859375
         isInverted = False
         turnMotorID = 3
 
     class frontRight:
         driveMotorID = 4
         CANCoderID = 5
-        encoderOffset = -0.60888671875
+        encoderOffset = -0.56103515625
         isInverted = False
         turnMotorID = 6
     
@@ -35,7 +35,7 @@ class SwerveModules:
     class rearLeft:
         driveMotorID = 10
         CANCoderID = 11
-        encoderOffset = -0.50634765625
+        encoderOffset = -0.45849609375
         isInverted = False
         turnMotorID = 12
         
