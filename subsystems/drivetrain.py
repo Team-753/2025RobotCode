@@ -105,7 +105,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
                                    inputs[1] * self.kMaxSpeed,
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
         print(self.navx.getAngle())
-        self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
+        self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
     
     def stationary(self)-> None:
         #stop the robot by breaking all the motors
