@@ -9,9 +9,6 @@ class MyRobot(commands2.TimedCommandRobot):
     def robotInit(self):
         self.robotContainer = RobotContainer()
         
-        
-
-        #self.motor2.
     def teleopPeriodic(self):
         pass
     def teleopInit(self):
