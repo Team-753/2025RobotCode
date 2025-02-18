@@ -22,11 +22,11 @@ class intake(commands2.Command):
         super().__init__()
         self.addRequirements(cannonSubsystem)
         self.cannon = cannonSubsystem
-        print("intake command is running")
+        #print("intake command is running")
 
     def execute(self):
         self.cannon.intake()
-        print("intaking")
+        #print("intaking")
         #add intake position function
 
     def end(self, interrupted: bool):

@@ -42,9 +42,9 @@ class elevatorSubSystem(commands2.Subsystem):
         self.rMotor.IdleMode(1)
         
     def Brake(self):
-        self.lMotor.set(.06)
-        self.rMotor.set(.06)
-        print("Breaking")
+        self.lMotor.set(.05)
+        self.rMotor.set(.05)
+        #print("Breaking")
 
         #Gets the joystick y input of the avux controller
     def GetJoystickInput(self):
@@ -56,11 +56,11 @@ class elevatorSubSystem(commands2.Subsystem):
             if(self.joystick < 0):
                 #Lowers the elevator motors
                 self.goDown()
-                print("elevators moving down based on joystick")
+                #print("elevators moving down based on joystick")
             elif(self.joystick > 0):
                 #sets the motor to raise
                 self.goUp()
-                print("Elevator going up based on joystick")
+                #print("Elevator going up based on joystick")
         elif(self.realEncoderPos < 1):
             self.idle()
         else:
@@ -69,8 +69,8 @@ class elevatorSubSystem(commands2.Subsystem):
         #i have as much confidence this code works as i have confidence we arent secretly ruled over by reptillian overlords
         #self.pid.setReference(desiredPos,rev.SparkMax.ControlType.kPosition)
         #print(self.encoder.getPosition(),desiredPos)
-        myPid=wpimath.controller.PIDController(0.3,0.05,0.0,period=0.02)
-        myPid.setIZone(0.3)
+        myPid=wpimath.controller.PIDController(0.3,0.08,0.0,period=0.02)
+        myPid.setIZone(0.15)
         myPid.setSetpoint(desiredPos)
         pidOut=myPid.calculate(measurement=self.realEncoderPos)
         self.lMotor.set(pidOut+0.1)
@@ -81,7 +81,7 @@ class elevatorSubSystem(commands2.Subsystem):
         self.encoderPos=(1-self.encoder.getPosition())-self.encoderOffset
         encoderDelta=float(self.encoderPos-encoderPast)
         self.realEncoderPos=self.encoderRotations+self.encoderPos
-        print("my position",self.realEncoderPos)
+        #print("my position",self.realEncoderPos)
         if abs(encoderDelta)>0.7:
             self.encoderRotations+=1*(-encoderDelta/abs(encoderDelta))
 
