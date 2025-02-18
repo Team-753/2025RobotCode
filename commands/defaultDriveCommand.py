@@ -8,9 +8,9 @@ class DefaultDriveCommand(commands2.Command):
         super().__init__()
         self.addRequirements(driveTrainSubSystem)
         self.driveTrain = driveTrainSubSystem
-        print("default drive command is running.")
+        #print("default drive command is running.")
 
     def execute(self):
-        print("ahhh")
+        #print("ahhh")
         self.driveTrain.joystickDrive(self.driveTrain.getJoystickInput())
-        print("calling the joystick inputs")
+        #print("calling the joystick inputs")

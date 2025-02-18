@@ -78,10 +78,10 @@ class SwerveModule:
 
         self.turnMotor.configurator.apply(turnMotorConfigs)
 
-        print("can coder position " + str(self.canCoder.get_absolute_position().value))
+        #print("can coder position " + str(self.canCoder.get_absolute_position().value))
         self.turnMotor.set_position((self.canCoder.get_absolute_position().value))
-        print(" old mechanism position " + str(self.turnMotor.get_position().value))
-        print("rotor position " + str(self.turnMotor.get_rotor_position().value))
+        #print(" old mechanism position " + str(self.turnMotor.get_position().value))
+        #print("rotor position " + str(self.turnMotor.get_rotor_position().value))
         '''if self.inverted == True:
             turnMotorConfigs.motor_output.inverted = signals.InvertedValue.CLOCKWISE_POSITIVE'''
         
@@ -92,7 +92,7 @@ class SwerveModule:
         #starting in a zero position
         #self.turnMotor.set_control(self.position.with_position(0))
         #self.setState(self.desiredState) 
-        print("**********")
+        #print("**********")
     def getWheelAngleRadians(self):
         #a function i should get rid of. converts from rotations to degrees and then to radians.
         value = self.turnMotor.get_position().value / (360) 
@@ -122,10 +122,10 @@ class SwerveModule:
         #turnMotorPosition = optimizedDesiredState.angle / math.tau
         driveMotorVelocity = optimizedDesiredState.speed * math.pi
         turnMotorPosition = optimizedDesiredState.angle.radians() / math.tau
-        print("module number " +  str(self.driveMotor.device_id))
-        print ("desired positition " + str(turnMotorPosition))
-        print ("current position " + str(self.turnMotor.get_position().value))
-        print ("new CanCoder position " + str(self.canCoder.get_absolute_position().value))
+        #print("module number " +  str(self.driveMotor.device_id))
+        #print ("desired positition " + str(turnMotorPosition))
+        #print ("current position " + str(self.turnMotor.get_position().value))
+        #print ("new CanCoder position " + str(self.canCoder.get_absolute_position().value))
         #self.turnMotor.set_control(self.velocity.with_velocity(turnMotorPosition))
         self.driveMotor.set_control(self.velocity.with_velocity(driveMotorVelocity))
         self.turnMotor.set_control(self.position.with_position(turnMotorPosition))

@@ -1,5 +1,5 @@
 import commands2,wpilib
-from subsystems.elevator import elevatorSubSystem,posElevatorSubsystem
+from subsystems.elevator import elevatorSubSystem
 
 
 class elevatorUp(commands2.Command):
@@ -40,7 +40,7 @@ class DefaultElevatorCommand(commands2.Command):
         #print("manually driving elevator")
 
 class elevatorToPos(commands2.Command):
-    def __init__(self, elevatorSubSystem: posElevatorSubsystem, desPos):
+    def __init__(self, elevatorSubSystem: elevatorSubSystem, desPos):
         super().__init__()
         self.addRequirements(elevatorSubSystem)
         self.elevator = elevatorSubSystem

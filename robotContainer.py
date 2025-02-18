@@ -11,7 +11,7 @@ import commands2.cmd
 from commands2.sysid import SysIdRoutine
 
 
-from commands.cannonCommand import place, intake, DefaultPivotCommand
+from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition
 from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
 from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos, DefaultElevatorCommand
 from commands.ClimberCommand import FlipClimber, FlipCompressor
@@ -19,7 +19,6 @@ from commands.ClimberCommand import FlipClimber, FlipCompressor
 
 from subsystems.cannon import CannonSubsystem
 from subsystems.algae import AlgaeSquisher
-from subsystems.elevator import posElevatorSubsystem
 from subsystems.elevator import elevatorSubSystem
 from subsystems.Climber import ClimberSubsystem
 
@@ -40,18 +39,17 @@ class RobotContainer():
         self.AuxController = commands2.button.CommandXboxController(1)
 
         self.driveTrain = DriveTrainSubSystem(self.joystick)
-        #self.elevator = elevatorSubSystem(self.AuxController)
+        self.elevator = elevatorSubSystem(self.AuxController)
         self.cannon = CannonSubsystem(self.AuxController)
         
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
-        #self.elevator.setDefaultCommand(DefaultElevatorCommand(self.elevator))
+        self.elevator.setDefaultCommand(DefaultElevatorCommand(self.elevator))
         self.cannon.setDefaultCommand(DefaultPivotCommand(self.cannon))
         
         self.scheduler = commands2.CommandScheduler()
 
         self.algae = AlgaeSquisher()
-        self.positionElevator = posElevatorSubsystem()
-        #self.altElevator = posElevatorSubsystem()
+
         self.climber = ClimberSubsystem()
         
         
@@ -72,12 +70,13 @@ class RobotContainer():
         self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
         self.AuxController.rightBumper().whileTrue(FlipClimber(self.climber))
         self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.climber))
-        self.AuxController.a().onTrue(elevatorToPos(self.positionElevator,1))
-        self.AuxController.b().onTrue(elevatorToPos(self.positionElevator,2))
-        self.AuxController.y().onTrue(elevatorToPos(self.positionElevator,3))
-        self.AuxController.x().onTrue(elevatorToPos(self.positionElevator,3.8))
-        self.AuxController.rightStick().onTrue(elevatorToPos(self.positionElevator,0))
-        self.AuxController.leftStick().onTrue(DefaultPivotCommand.s)
+        self.AuxController.a().onTrue(elevatorToPos(self.elevator,1.3))
+        #self.AuxController.b().onTrue(elevatorToPos(self.elevator,2))
+        #self.AuxController.y().onTrue(elevatorToPos(self.elevator,3))
+        self.AuxController.x().onTrue(elevatorToPos(self.elevator,0.5))
+        #self.AuxController.start().onTrue(elevatorToPos(self.elevator,0.5))
+        self.AuxController.rightStick().onTrue(elevatorToPos(self.elevator,0.0))
+        self.AuxController.leftStick().onTrue(cannonToPosition(self.cannon,0.5))
         #self.AuxController.leftStick().whileTrue(elevatorUp(self.elevator))
 
 
