@@ -66,11 +66,11 @@ class RobotContainer():
 
 
     def configureButtonBindings(self) -> None:
-        self.AuxController.rightTrigger().whileTrue(place(self.cannon)) 
-        self.AuxController.leftTrigger().whileTrue(intake(self.cannon))
+        #self.AuxController.rightTrigger(0.2).whileTrue(place(self.cannon)) 
+        #self.AuxController.leftTrigger(0.2).whileTrue(intake(self.cannon))
         self.AuxController.rightBumper().whileTrue(FlipClimber(self.climber))
         self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.climber))
-        self.AuxController.a().onTrue(elevatorToPos(self.elevator,0.1))
+        self.AuxController.a().onTrue(elevatorToPos(self.elevator,0.4))
         self.AuxController.b().onTrue(elevatorToPos(self.elevator,1.5))
         self.AuxController.y().onTrue(elevatorToPos(self.elevator,3.7))
         self.AuxController.x().onTrue(elevatorToPos(self.elevator,0.1))

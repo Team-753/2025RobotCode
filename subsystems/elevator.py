@@ -66,9 +66,6 @@ class elevatorSubSystem(commands2.Subsystem):
         else:
             self.Brake()
     def setPosition(self,desiredPos):
-        #i have as much confidence this code works as i have confidence we arent secretly ruled over by reptillian overlords
-        #self.pid.setReference(desiredPos,rev.SparkMax.ControlType.kPosition)
-        #print(self.encoder.getPosition(),desiredPos)
         myPid=wpimath.controller.PIDController(0.3,0.08,0.0,period=0.02)
         myPid.setIZone(0.15)
         myPid.setSetpoint(desiredPos)

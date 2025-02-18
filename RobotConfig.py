@@ -45,8 +45,8 @@ class coralCannon:
     pivotMotorID = 15
     
 class Climber:
-    solenoidForward = 2
-    solenoidReverse = 3
+    solenoidForward = 3
+    solenoidReverse = 2
 
     pneumaticsHubID = 20
 
