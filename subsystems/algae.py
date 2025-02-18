@@ -10,10 +10,10 @@ class AlgaeSquisher(commands2.Subsystem):
         self.algaeMotor = rev.SparkMax(rc.algaeSquisher.squisherMotorID,rev.SparkMax.MotorType.kBrushless)
     
     def IntakeAlgae(self):
-        self.algaeMotor.set(.5)
+        self.algaeMotor.set(-.75)
 
     def ReleaseAlgae(self):
-        self.algaeMotor.set(-.5)
+        self.algaeMotor.set(.75)
 
     def stop(self):
         self.algaeMotor.set(0)

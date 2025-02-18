@@ -79,7 +79,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         print('x value: ' + str(self.joystick.getX()))
         print('y value: ' + str(self.joystick.getY()))
         print('z value: ' + str(self.joystick.getZ()))'''
-        print("joystick y: " + str(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)))
+        #print("joystick y: " + str(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)))
         
         deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
         deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband) #need to invert the x direction?
@@ -104,7 +104,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         xSpeed, ySpeed, zSpeed, = (inputs[0] * self.kMaxSpeed,
                                    inputs[1] * self.kMaxSpeed,
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
-        print(self.navx.getAngle())
+        #print(self.navx.getAngle())
         self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
     
     def stationary(self)-> None:

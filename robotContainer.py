@@ -11,7 +11,7 @@ import commands2.cmd
 from commands2.sysid import SysIdRoutine
 
 
-from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition
+from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition, PivotDown, PivotUp
 from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
 from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos, DefaultElevatorCommand
 from commands.ClimberCommand import FlipClimber, FlipCompressor
@@ -39,12 +39,10 @@ class RobotContainer():
         self.AuxController = commands2.button.CommandXboxController(1)
 
         self.driveTrain = DriveTrainSubSystem(self.joystick)
-        self.elevator = elevatorSubSystem(self.AuxController)
-        self.cannon = CannonSubsystem(self.AuxController)
+        self.elevator = elevatorSubSystem()
+        self.cannon = CannonSubsystem()
         
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
-        self.elevator.setDefaultCommand(DefaultElevatorCommand(self.elevator))
-        self.cannon.setDefaultCommand(DefaultPivotCommand(self.cannon))
         
         self.scheduler = commands2.CommandScheduler()
 
@@ -66,14 +64,27 @@ class RobotContainer():
 
 
     def configureButtonBindings(self) -> None:
-        #self.AuxController.rightTrigger(0.2).whileTrue(place(self.cannon)) 
-        #self.AuxController.leftTrigger(0.2).whileTrue(intake(self.cannon))
+        self.AuxController.rightTrigger(0.5).whileTrue(place(self.cannon)) 
+        self.AuxController.leftTrigger(0.5).whileTrue(intake(self.cannon))
+        
+        
         self.AuxController.rightBumper().whileTrue(FlipClimber(self.climber))
         self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.climber))
+        
+        
         self.AuxController.a().onTrue(elevatorToPos(self.elevator,0.4))
         self.AuxController.b().onTrue(elevatorToPos(self.elevator,1.5))
-        self.AuxController.y().onTrue(elevatorToPos(self.elevator,3.7))
+        self.AuxController.y().onTrue(elevatorToPos(self.elevator,3.9))
         self.AuxController.x().onTrue(elevatorToPos(self.elevator,0.1))
+        
+        self.AuxController.axisGreaterThan(1,.5).whileTrue(elevatorDown(self.elevator))
+        self.AuxController.axisGreaterThan(1,-.5).whileTrue(elevatorUp(self.elevator))
+        
+        self.AuxController.axisGreaterThan(5,-.5).whileTrue(PivotUp(self.cannon))
+        self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
+        
+        
+        
         #self.AuxController.start().onTrue(elevatorToPos(self.elevator,0.5))
         self.AuxController.rightStick().onTrue(elevatorToPos(self.elevator,0.0))
         self.AuxController.leftStick().onTrue(cannonToPosition(self.cannon,0.5))

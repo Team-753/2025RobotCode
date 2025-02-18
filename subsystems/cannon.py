@@ -5,7 +5,7 @@ import RobotConfig
 
 class CannonSubsystem(commands2.Subsystem):
     
-    def __init__(self, auxController: commands2.button.CommandXboxController):
+    def __init__(self):
         self.topMotor = rev.SparkMax(RobotConfig.coralCannon.TopMotorID, rev.SparkMax.MotorType.kBrushed)
         self.bottomMotor = rev.SparkMax(RobotConfig.coralCannon.BottomMotorID, rev.SparkMax.MotorType.kBrushed)
         config = rev.SparkMaxConfig()
@@ -13,7 +13,6 @@ class CannonSubsystem(commands2.Subsystem):
         self.bottomMotor.configure(config, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.pivotMotor = rev.SparkMax(RobotConfig.coralCannon.pivotMotorID, rev.SparkMax.MotorType.kBrushless)
         self.encoder = self.pivotMotor.getAbsoluteEncoder()
-        self.controller = auxController
 
     def place(self):
         print("cannon is placing")
@@ -26,7 +25,7 @@ class CannonSubsystem(commands2.Subsystem):
         self.topMotor.set(0)
     
     def idle(self):
-        self.topMotor.IdleMode(0)
+        self.topMotor.set(0)
 
 
     def spinup(self):
@@ -39,25 +38,11 @@ class CannonSubsystem(commands2.Subsystem):
         self.pivotMotor.IdleMode(1)
     def angleIdle(self):
         self.pivotMotor.set(-0.017)
-    def GetJoystickInput(self):
-        return(-self.controller.getRightY())
+
     def goToPos(self,desPos):
         myPid=wpimath.controller.PIDController(0.1,0.001,0,period=0.02)
         myPid.setIZone(0.2)
         myPid.setSetpoint(desPos)
         pidOut=myPid.calculate(self.encoder.getPosition())
         #self.pivotMotor.set(pidOut)
-        print(self.encoder.getPosition())
-    def ManualControl(self, controllerInput):
-        self.joystick = controllerInput
-        if(abs(self.joystick) > .5):
-            if(self.joystick > 0):
-                #Lowers the elevator motors
-                self.spinup()
-                print("spinning up")
-            elif(self.joystick < 0):
-                #sets the motor to raise
-                self.spindown()
-                print("spinning down")
-        else:
-            self.angleIdle()
+        #print(self.encoder.getPosition())

@@ -3,11 +3,7 @@ import wpimath.controller
 from RobotConfig import elevator
 
 class elevatorSubSystem(commands2.Subsystem):
-    def __init__(self, auxController: commands2.button.CommandXboxController):
-        #gets ID
-        lMotorID=elevator.leftMotorID
-        rMotorID=elevator.rightMotorID
-        #sets motor based off motorid
+    def __init__(self):
         #gets ID
         lMotorID=elevator.leftMotorID
         rMotorID=elevator.rightMotorID
@@ -25,12 +21,10 @@ class elevatorSubSystem(commands2.Subsystem):
         configR.follow(lMotorID)
         self.rMotor.configure(configR, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.lMotor.configure(configL, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
-        self.encoderOffset=1-self.encoder.getPosition()
         self.encoderPos=0
         self.encoderRotations=0
-        self.controller = auxController
         self.realEncoderPos = 0
-        #read it
+        self.encoderOffset = self.encoder.getPosition()     #read it
     def goUp(self):
         self.lMotor.set(0.13)
         self.rMotor.set(0.13)
@@ -47,31 +41,13 @@ class elevatorSubSystem(commands2.Subsystem):
         #print("Breaking")
 
         #Gets the joystick y input of the avux controller
-    def GetJoystickInput(self):
-        return(-self.controller.getLeftY())
-    
-    def ManualControl(self, controllerInput):
-        self.joystick = controllerInput
-        if(abs(self.joystick) > .5):
-            if(self.joystick < 0):
-                #Lowers the elevator motors
-                self.goDown()
-                #print("elevators moving down based on joystick")
-            elif(self.joystick > 0):
-                #sets the motor to raise
-                self.goUp()
-                #print("Elevator going up based on joystick")
-        elif(self.realEncoderPos < 1):
-            self.idle()
-        else:
-            self.Brake()
+
     def setPosition(self,desiredPos):
         myPid=wpimath.controller.PIDController(0.3,0.08,0.0,period=0.02)
         myPid.setIZone(0.15)
         myPid.setSetpoint(desiredPos)
         pidOut=myPid.calculate(measurement=self.realEncoderPos)
         self.lMotor.set(pidOut+0.1)
-        print(pidOut)
         pass
     def getPosition(self):
         encoderPast=self.encoderPos
