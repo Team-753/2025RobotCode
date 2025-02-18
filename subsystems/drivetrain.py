@@ -45,9 +45,10 @@ class DriveTrainSubSystem(commands2.Subsystem):
         
         #classes to help proccess info about where the robot is and how fast and in what direction it is moving
         self.KINEMATICS = kinematics.SwerveDrive4Kinematics(geometry.Translation2d(float(self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(self.trackWidth / 2), float(-self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(-self.wheelBase / 2)))
-        self.poseEstimatior = estimator.SwerveDrive4PoseEstimator(kinematics.SwerveDrive4Kinematics(geometry.Translation2d(float(self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(self.trackWidth / 2), float(-self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(-self.wheelBase / 2))), 
-                                                                  self.getNavxRotation2d(), self.getSwerveModulePositions(), geometry.Pose2d(0, 0, geometry.Rotation2d()), self.stateStdDevs, self.visionMeasurementsStdDevs)
-        
+        #self.poseEstimatior = estimator.SwerveDrive4PoseEstimator(kinematics.SwerveDrive4Kinematics(geometry.Translation2d(float(self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(self.trackWidth / 2), float(-self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(-self.wheelBase / 2))), 
+                                                                  #self.getNavxRotation2d(), self.getSwerveModulePositions(), geometry.Pose2d(0, 0, geometry.Rotation2d()), self.stateStdDevs, self.visionMeasurementsStdDevs)
+        self.poseEstimatior = estimator.SwerveDrive4PoseEstimator(self.KINEMATICS, self.getNavxRotation2d(), self.getSwerveModulePositions(), geometry.Pose2d(geometry.Translation2d(), geometry.Rotation2d()), self.stateStdDevs, self.visionMeasurementsStdDevs)
+
         self.field = wpilib.Field2d()
         #wpilib.SmartDashboard.putData("Field: ", self.field)
         
@@ -66,9 +67,11 @@ class DriveTrainSubSystem(commands2.Subsystem):
     def resetPose(self, poseToSet: geometry.Pose2d)-> None:
         #we broke our pose so we are resetting it with our current location as 0
         self.poseEstimatior.resetPosition(self.getNavxRotation2d(), self.getSwerveModulePositions(), poseToSet)
+    
     def resetFieldOrient(self)-> None:
         #this doesnt do anything useful
         self.navx.reset()
+    
     def getJoystickInput(self)-> tuple[float]:
         #getting input from the joysticks and changing it so that we can use it
         constants = rc.driveConstants.joystickConstants
@@ -103,18 +106,21 @@ class DriveTrainSubSystem(commands2.Subsystem):
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
         print(self.navx.getAngle())
         self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
+    
     def stationary(self)-> None:
         #stop the robot by breaking all the motors
         self.frontLeft.stop()
         self.frontRight.stop()
         self.rearLeft.stop()
         self.rearRight.stop()
+    
     def coast(self)-> None:
         # coast the robot
         self.frontLeft.setNuetral()
         self.frontRight.setNuetral()
         self.rearLeft.setNuetral()
         self.rearRight.setNuetral()
+    
     def getRobotRelativeChassisSpeeds(self):
         #where are all the wheels relative to where they started, not really sure what this is for
         states = (self.frontLeft.getPosition(), self.frontRight.getPosition(), self.rearLeft.getPosition(), self.rearRight.getPosition())
@@ -123,3 +129,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
     def getCurrentPose(self)-> geometry.Pose2d:
         # updating the current position of the robot
         return self.poseEstimatior.getEstimatedPosition()
+    
+    def periodic(self):
+        currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
+        self.field.setRobotPose(currentPose)

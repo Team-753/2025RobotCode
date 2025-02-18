@@ -122,10 +122,10 @@ class SwerveModule:
         #turnMotorPosition = optimizedDesiredState.angle / math.tau
         driveMotorVelocity = optimizedDesiredState.speed * math.pi
         turnMotorPosition = optimizedDesiredState.angle.radians() / math.tau
-        #print("module number " +  str(self.driveMotor.device_id))
-        #print ("desired positition " + str(turnMotorPosition))
-        #print ("current position " + str(self.turnMotor.get_position().value))
-        #print ("new CanCoder position " + str(self.canCoder.get_absolute_position().value))
+        '''print("module number " +  str(self.driveMotor.device_id))
+        print ("desired positition " + str(turnMotorPosition))
+        print ("current position " + str(self.turnMotor.get_position().value))
+        print ("new CanCoder position " + str(self.canCoder.get_absolute_position().value))'''
         #self.turnMotor.set_control(self.velocity.with_velocity(turnMotorPosition))
         self.driveMotor.set_control(self.velocity.with_velocity(driveMotorVelocity))
         self.turnMotor.set_control(self.position.with_position(turnMotorPosition))
