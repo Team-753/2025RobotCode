@@ -1,5 +1,6 @@
-import rev
+import rev,wpimath
 import commands2
+import wpimath.controller
 import RobotConfig
 
 class CannonSubsystem(commands2.Subsystem):
@@ -11,7 +12,7 @@ class CannonSubsystem(commands2.Subsystem):
         config.follow(RobotConfig.coralCannon.TopMotorID, True)
         self.bottomMotor.configure(config, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.pivotMotor = rev.SparkMax(RobotConfig.coralCannon.pivotMotorID, rev.SparkMax.MotorType.kBrushless)
-        
+        self.encoder = self.pivotMotor.getAbsoluteEncoder()
         self.controller = auxController
 
     def place(self):
@@ -37,10 +38,16 @@ class CannonSubsystem(commands2.Subsystem):
     def angleStop(self):
         self.pivotMotor.IdleMode(1)
     def angleIdle(self):
-        self.pivotMotor.set(0)
+        self.pivotMotor.set(-0.017)
     def GetJoystickInput(self):
         return(-self.controller.getRightY())
-    
+    def goToPos(self,desPos):
+        myPid=wpimath.controller.PIDController(0.1,0.001,0,period=0.02)
+        myPid.setIZone(0.2)
+        myPid.setSetpoint(desPos)
+        pidOut=myPid.calculate(self.encoder.getPosition())
+        #self.pivotMotor.set(pidOut)
+        print(self.encoder.getPosition())
     def ManualControl(self, controllerInput):
         self.joystick = controllerInput
         if(abs(self.joystick) > .5):

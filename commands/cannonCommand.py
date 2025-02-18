@@ -15,6 +15,7 @@ class place(commands2.Command):
 
     def end(self, interrupted: bool):
         self.cannon.idle()
+        return super().end(interrupted)
 
 class intake(commands2.Command):
     def __init__(self, cannonSubsystem: CannonSubsystem):
@@ -30,6 +31,7 @@ class intake(commands2.Command):
 
     def end(self, interrupted: bool):
         self.cannon.idle()
+        return super().end(interrupted)
         #add idle for position
 
 class DefaultPivotCommand(commands2.Command):
@@ -43,9 +45,15 @@ class DefaultPivotCommand(commands2.Command):
     def end(self, interrupted):
         self.cannon.angleStop()
         return super().end(interrupted)
-
-
-
+class cannonToPosition(commands2.Command):
+    def __init__(self, cannonSubsystem: CannonSubsystem, desPos):
+        super().__init__()
+        self.addRequirements(cannonSubsystem)
+        self.cannon = cannonSubsystem
+        self.desiredPosition=desPos
+    def execute(self):
+        self.cannon.goToPos(self.desiredPosition)
+        return super().execute()
 
 
     
