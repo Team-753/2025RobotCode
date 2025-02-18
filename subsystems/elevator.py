@@ -28,9 +28,11 @@ class elevatorSubSystem(commands2.Subsystem):
     def goUp(self):
         self.lMotor.set(0.13)
         self.rMotor.set(0.13)
+        print("Going up")
     def goDown(self):
         self.lMotor.set(0)
         self.rMotor.set(0)
+        print("going down")
     def idle(self):
         self.lMotor.IdleMode(1)
         self.rMotor.IdleMode(1)

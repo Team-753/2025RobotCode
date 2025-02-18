@@ -39,15 +39,15 @@ class RobotContainer():
         self.AuxController = commands2.button.CommandXboxController(1)
 
         self.driveTrain = DriveTrainSubSystem(self.joystick)
-        self.elevator = elevatorSubSystem()
-        self.cannon = CannonSubsystem()
+        
         
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
         
         self.scheduler = commands2.CommandScheduler()
 
         self.algae = AlgaeSquisher()
-
+        self.elevator = elevatorSubSystem()
+        self.cannon = CannonSubsystem()
         self.climber = ClimberSubsystem()
         
         
@@ -78,9 +78,9 @@ class RobotContainer():
         self.AuxController.x().onTrue(elevatorToPos(self.elevator,0.1))
         
         self.AuxController.axisGreaterThan(1,.5).whileTrue(elevatorDown(self.elevator))
-        self.AuxController.axisGreaterThan(1,-.5).whileTrue(elevatorUp(self.elevator))
+        self.AuxController.axisLessThan(1,-.5).whileTrue(elevatorUp(self.elevator))
         
-        self.AuxController.axisGreaterThan(5,-.5).whileTrue(PivotUp(self.cannon))
+        self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
         
         
