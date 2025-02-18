@@ -15,23 +15,23 @@ class place(commands2.Command):
 
     def end(self, interrupted: bool):
         self.cannon.idle()
-        return super().end(interrupted)
+        #return super().end(interrupted)
 
 class intake(commands2.Command):
     def __init__(self, cannonSubsystem: CannonSubsystem):
         super().__init__()
         self.addRequirements(cannonSubsystem)
         self.cannon = cannonSubsystem
-        print("intake command is running")
+        #print("intake command is running")
 
     def execute(self):
         self.cannon.intake()
-        print("intaking")
+        #print("intaking")
         #add intake position function
 
     def end(self, interrupted: bool):
         self.cannon.idle()
-        return super().end(interrupted)
+        #return super().end(interrupted)
         #add idle for position
 
 class DefaultPivotCommand(commands2.Command):
