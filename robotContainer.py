@@ -39,14 +39,14 @@ class RobotContainer():
         self.AuxController = commands2.button.CommandXboxController(1)
 
         self.driveTrain = DriveTrainSubSystem(self.joystick)
-        
+        self.elevator = elevatorSubSystem()
         
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        self.elevator.setDefaultCommand(DefaultElevatorCommand(self.elevator))
         
         self.scheduler = commands2.CommandScheduler()
 
         self.algae = AlgaeSquisher()
-        self.elevator = elevatorSubSystem()
         self.cannon = CannonSubsystem()
         self.climber = ClimberSubsystem()
         
