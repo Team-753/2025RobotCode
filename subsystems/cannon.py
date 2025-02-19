@@ -13,7 +13,7 @@ class CannonSubsystem(commands2.Subsystem):
         self.bottomMotor.configure(config, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.pivotMotor = rev.SparkMax(RobotConfig.coralCannon.pivotMotorID, rev.SparkMax.MotorType.kBrushless)
         self.encoder = self.pivotMotor.getAbsoluteEncoder()
-
+        self.pivotMotor.IdleMode(0)
     def place(self):
         print("cannon is placing")
         self.topMotor.set(0.5)
@@ -35,7 +35,7 @@ class CannonSubsystem(commands2.Subsystem):
         self.pivotMotor.set(0.1)
 
     def angleStop(self):
-        self.pivotMotor.IdleMode(1)
+        self.pivotMotor.set(-0.017)
     def angleIdle(self):
         self.pivotMotor.set(-0.017)
 
@@ -45,4 +45,4 @@ class CannonSubsystem(commands2.Subsystem):
         myPid.setSetpoint(desPos)
         pidOut=myPid.calculate(self.encoder.getPosition())
         #self.pivotMotor.set(pidOut)
-        #print(self.encoder.getPosition())
+        print("AAAAAAAAAAAAAAAAAAAAAAH",self.encoder.getPosition())

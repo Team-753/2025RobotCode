@@ -14,13 +14,13 @@ class elevatorSubSystem(commands2.Subsystem):
         self.pid=self.lMotor.getClosedLoopController()
         self.encoder=self.lMotor.getAbsoluteEncoder()
         self.processVariable=self.encoder.getPosition()
-        self.lMotor.IdleMode(1)
-        self.rMotor.IdleMode(1)
         configL=rev.SparkMaxConfig()        
         configR=rev.SparkMaxConfig()
         configR.follow(lMotorID)
         self.rMotor.configure(configR, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.lMotor.configure(configL, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
+        self.lMotor.IdleMode(1)
+        self.rMotor.IdleMode(1)
         self.encoderPos=0
         self.encoderRotations=0
         self.realEncoderPos = 0
@@ -35,7 +35,9 @@ class elevatorSubSystem(commands2.Subsystem):
         print("going down")
     def idle(self):
         self.lMotor.IdleMode(1)
+        self.lMotor.set(0.05)
         self.rMotor.IdleMode(1)
+        self.lMotor.set(0.05)
         
     def Brake(self):
         self.lMotor.set(.05)
@@ -56,7 +58,7 @@ class elevatorSubSystem(commands2.Subsystem):
         self.encoderPos=(1-self.encoder.getPosition())-self.encoderOffset
         encoderDelta=float(self.encoderPos-encoderPast)
         self.realEncoderPos=self.encoderRotations+self.encoderPos
-        #print("my position",self.realEncoderPos)
+        print("my position",self.realEncoderPos)
         if abs(encoderDelta)>0.7:
             self.encoderRotations+=1*(-encoderDelta/abs(encoderDelta))
 

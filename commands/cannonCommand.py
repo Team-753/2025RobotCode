@@ -86,6 +86,7 @@ class cannonToPosition(commands2.Command):
         self.desiredPosition=desPos
     def execute(self):
         self.cannon.goToPos(self.desiredPosition)
+        print("stuff")
         return super().execute()
 
 
