@@ -35,9 +35,7 @@ class DefaultElevatorCommand(commands2.Command):
         #print("default elevator command Running.")
 
     def execute(self):
-        #print("uh")
-        self.elevator.ManualControl(self.elevator.GetJoystickInput())
-        #print("manually driving elevator")
+        self.elevator.elevatorPid()
 
 class elevatorToPos(commands2.Command):
     def __init__(self, elevatorSubSystem: elevatorSubSystem, desPos):
@@ -46,7 +44,4 @@ class elevatorToPos(commands2.Command):
         self.elevator = elevatorSubSystem
         self.desiredPos=desPos
     def execute(self):
-        self.elevator.getPosition()
         self.elevator.setPosition(self.desiredPos)
-    def periodic(self):
-        self.elevator.getPosition()

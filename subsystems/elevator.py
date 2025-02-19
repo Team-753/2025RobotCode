@@ -1,7 +1,14 @@
-import rev,wpilib,commands2,wpimath
+import rev,wpilib,commands2,wpimath,math
 import wpimath.controller
 from RobotConfig import elevator
-
+def constrain(var,min,max):
+    if var>max:
+        return max
+    elif var<min:
+        return min
+    else:
+        return var
+    
 class elevatorSubSystem(commands2.Subsystem):
     def __init__(self):
         #gets ID
@@ -25,41 +32,44 @@ class elevatorSubSystem(commands2.Subsystem):
         self.encoderRotations=0
         self.realEncoderPos = 0
         self.encoderOffset = self.encoder.getPosition()     #read it
-    def goUp(self):
-        self.lMotor.set(0.13)
-        self.rMotor.set(0.13)
-        print("Going up")
-    def goDown(self):
-        self.lMotor.set(0)
-        self.rMotor.set(0)
-        print("going down")
-    def idle(self):
-        self.lMotor.IdleMode(1)
-        self.lMotor.set(0.05)
-        self.rMotor.IdleMode(1)
-        self.lMotor.set(0.05)
-        
-    def Brake(self):
-        self.lMotor.set(.05)
-        self.rMotor.set(.05)
-        #print("Breaking")
-
-        #Gets the joystick y input of the avux controller
-
+        self.desiredPos=0
     def setPosition(self,desiredPos):
-        myPid=wpimath.controller.PIDController(0.3,0.08,0.0,period=0.02)
-        myPid.setIZone(0.15)
-        myPid.setSetpoint(desiredPos)
-        pidOut=myPid.calculate(measurement=self.realEncoderPos)
-        self.lMotor.set(pidOut+0.1)
-        pass
-    def getPosition(self):
+        self.desiredPos=desiredPos
+    def elevatorPid(self):
+        #UPDATE ENCODER POS
         encoderPast=self.encoderPos
         self.encoderPos=(1-self.encoder.getPosition())-self.encoderOffset
         encoderDelta=float(self.encoderPos-encoderPast)
         self.realEncoderPos=self.encoderRotations+self.encoderPos
-        print("my position",self.realEncoderPos)
+        print("elevator position",self.realEncoderPos,self.encoderOffset)
         if abs(encoderDelta)>0.7:
             self.encoderRotations+=1*(-encoderDelta/abs(encoderDelta))
+        #RUN ELEVATOR PID
+        myPid=wpimath.controller.PIDController(0.3,0.08,0.0,period=0.02)
+        myPid.setIZone(0.15)
+        self.desiredPos=constrain(self.desiredPos,0,3.9)
+        myPid.setSetpoint(self.desiredPos)
+        #DECELELELELRATE ELEVATOR ON DOWN
+        if pidOut<0:
+            pidOut=pidOut*constrain(abs(self.realEncoderPos-self.desiredPos),0.1,1)
+        pass
+        pidOut=myPid.calculate(measurement=self.realEncoderPos)
+        self.lMotor.set(pidOut+0.1)
+    def goUp(self):
+        self.desiredPos=self.desiredPos+0.01
+        print("Going up",self.desiredPos)
+    def goDown(self):
+        self.desiredPos=self.desiredPos-0.01
+        print("going down")
+    def idle(self):
+        self.lMotor.IdleMode(1)
+        self.rMotor.IdleMode(1)
+        
+    def Brake(self):
+        #print("Breaking")
+        pass
+        #Gets the joystick y input of the avux controller
+
+
 
  
