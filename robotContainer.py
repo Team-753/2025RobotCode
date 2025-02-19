@@ -74,7 +74,7 @@ class RobotContainer():
         
         self.AuxController.a().onTrue(elevatorToPos(self.elevator,0.4))
         self.AuxController.b().onTrue(elevatorToPos(self.elevator,1.5))
-        self.AuxController.y().onTrue(elevatorToPos(self.elevator,3.9))
+        self.AuxController.y().onTrue(elevatorToPos(self.elevator,4))
         self.AuxController.x().onTrue(elevatorToPos(self.elevator,0.1))
         
         self.AuxController.axisGreaterThan(1,.5).whileTrue(elevatorDown(self.elevator))
