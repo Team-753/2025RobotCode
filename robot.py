@@ -1,34 +1,34 @@
 import wpilib
+import commands2
+
+from wpilib.cameraserver import CameraServer
+from robotContainer import RobotContainer
 from wpilib import SmartDashboard
-from subsystems.vision import Vision
 
-class MyRobot(wpilib.TimedRobot):
-    def __init__(self):
-        # Call the parent class constructor
-        super().__init__()
 
-        # Initialize your subsystems and other components here
-        self.vision_system = Vision()
-        SmartDashboard.putBoolean("False?", False)
 
-    def autonomousInit(self):
+class MyRobot(commands2.TimedCommandRobot):
+    def __init__(self, period=.02):
+        super().__init__(period)
         pass
+        
 
-    def autonomousPeriodic(self):
+    def robotInit(self):
+        self.robotContainer = RobotContainer()
+        SmartDashboard.setDefaultBoolean("Locked(1)", False)
+        SmartDashboard.setDefaultBoolean("Locked(2)", False)
+
+        
+
+    def teleopPeriodic(self):
+
         pass
 
     def teleopInit(self):
-        pass
+        SmartDashboard.putBoolean("Locked(1)", True)
+        SmartDashboard.putBoolean("Locked(2)", True)
 
-    def teleopPeriodic(self):
-        # Update the vision system
-        self.vision_system.update()
-
-    def testInit(self):
-        pass
-
-    def testPeriodic(self):
-        pass
-
-if __name__ == "__main__":
-    wpilib.run(MyRobot)
+    def disabledInit(self):
+        SmartDashboard.putBoolean("Locked(1)", False)
+        SmartDashboard.putBoolean("Locked(2)", False)
+        return super().disabledInit()
