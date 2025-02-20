@@ -8,6 +8,7 @@ class elevatorUp(commands2.Command):
         self.addRequirements(kElevSub)
         self.eSub=kElevSub
     def execute(self):
+        self.eSub.elevatorPid()
         self.eSub.goUp()
         #print("Going down")
     def end(self, interrupted):
@@ -20,6 +21,7 @@ class elevatorDown(commands2.Command):
         self.addRequirements(kElevSub)
         self.eSub=kElevSub
     def execute(self):
+        self.eSub.elevatorPid()
         self.eSub.goDown()
         #print("Going up")
         
@@ -44,4 +46,5 @@ class elevatorToPos(commands2.Command):
         self.elevator = elevatorSubSystem
         self.desiredPos=desPos
     def execute(self):
+        self.elevator.elevatorPid()
         self.elevator.setPosition(self.desiredPos)

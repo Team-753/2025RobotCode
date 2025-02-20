@@ -41,13 +41,12 @@ class elevatorSubSystem(commands2.Subsystem):
         self.encoderPos=(1-self.encoder.getPosition())-self.encoderOffset
         encoderDelta=float(self.encoderPos-encoderPast)
         self.realEncoderPos=self.encoderRotations+self.encoderPos
-        print("elevator position",self.realEncoderPos,self.encoderOffset)
         if abs(encoderDelta)>0.7:
             self.encoderRotations+=1*(-encoderDelta/abs(encoderDelta))
         #RUN ELEVATOR PID
         myPid=wpimath.controller.PIDController(0.3,0.08,0.1,period=0.02)
         myPid.setIZone(0.15)
-        self.desiredPos=constrain(self.desiredPos,0,3.9)
+        #self.desiredPos=constrain(self.desiredPos,0,3.9)
         myPid.setSetpoint(self.desiredPos)
         #DECELELELELRATE ELEVATOR ON DOWN
         pidOut=myPid.calculate(measurement=self.realEncoderPos)
@@ -55,6 +54,8 @@ class elevatorSubSystem(commands2.Subsystem):
             #pidOut=pidOut*constrain(abs(self.realEncoderPos-self.desiredPos),0.1,1)
             myPid.setP(constrain(abs(self.realEncoderPos-self.desiredPos)*0.6,0.1,0.3))
         pass
+        self.lMotor.set(pidOut+0.05)
+        print("elevator position",self.realEncoderPos,pidOut)
         self.lMotor.set(pidOut+0.05)
     def goUp(self):
         self.desiredPos=self.desiredPos+0.02

@@ -50,7 +50,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.poseEstimatior = estimator.SwerveDrive4PoseEstimator(self.KINEMATICS, self.getNavxRotation2d(), self.getSwerveModulePositions(), geometry.Pose2d(geometry.Translation2d(), geometry.Rotation2d()), self.stateStdDevs, self.visionMeasurementsStdDevs)
 
         self.field = wpilib.Field2d()
-        #wpilib.SmartDashboard.putData("Field: ", self.field)
+        wpilib.SmartDashboard.putData("Field: ", self.field)
         
     def getNavxRotation2d(self)-> geometry.Rotation2d:
         #getting the direction the robot is facing relative to where we started for field orient
@@ -82,7 +82,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #print("joystick y: " + str(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)))
         
         deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
-        deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband) #need to invert the x direction?
+        deadbandedX = -wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband) #need to invert the x direction?
         deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
         
 
@@ -92,12 +92,17 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #using the input from the get joystick input function to tell the wheels where to go
         if fieldOrient:
             SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition().rotation()))
+
         else:
             SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds(xSpeed, ySpeed, zSpeed))
         self.frontLeft.setState(SwerveModuleStates[0])
         self.frontRight.setState(SwerveModuleStates[1])
         self.rearLeft.setState(SwerveModuleStates[2])
         self.rearRight.setState(SwerveModuleStates[3])
+        #wpilib.SmartDashboard.putData("current rotation", self.poseEstimatior.getEstimatedPosition().rotation().degrees())
+        print("current state: " + str(self.poseEstimatior.getEstimatedPosition().rotation().degrees()))
+        print("navx position: " + str(self.navx.getRotation2d().degrees))
+
     
     def joystickDrive(self, inputs: tuple[float])-> None:
         #proccessing the joystick input values and sending them to the set swerve states function
@@ -105,7 +110,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
                                    inputs[1] * self.kMaxSpeed,
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
         #print(self.navx.getAngle())
-        self.setSwerveStates(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition())
+        self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
     
     def stationary(self)-> None:
         #stop the robot by breaking all the motors
