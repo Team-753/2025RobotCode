@@ -50,11 +50,12 @@ class elevatorSubSystem(commands2.Subsystem):
         myPid.setSetpoint(self.desiredPos)
         #DECELELELELRATE ELEVATOR ON DOWN
         pidOut=myPid.calculate(measurement=self.realEncoderPos)
+        if self.desiredPos<0.1 and self.realEncoderPos<0.1:
+            pidOut=-0.05
         if pidOut<0:
             #pidOut=pidOut*constrain(abs(self.realEncoderPos-self.desiredPos),0.1,1)
             myPid.setP(constrain(abs(self.realEncoderPos-self.desiredPos)*0.6,0.1,0.3))
         pass
-        self.lMotor.set(pidOut+0.05)
         print("elevator position",self.realEncoderPos,pidOut)
         self.lMotor.set(pidOut+0.05)
     def goUp(self):
