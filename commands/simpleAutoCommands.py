@@ -4,12 +4,13 @@ from wpimath import geometry
 from wpilib import Timer
 
 class superSimpleAuto(commands2.Command):
-    def __init__(self, driveTrainSubSystem: DriveTrainSubSystem, directions: tuple):
+    def __init__(self, driveTrainSubSystem: DriveTrainSubSystem, directions: tuple, stopTime):
         super().__init__()
         self.addRequirements(driveTrainSubSystem)
         self.driveTrain = driveTrainSubSystem
         self.timer = Timer
         self.directions = directions
+        self.endTime = stopTime
     
     def initialize(self):
         self.timer.reset()
@@ -19,7 +20,7 @@ class superSimpleAuto(commands2.Command):
         self.driveTrain.joystickDrive(self.directions)
     
     def isFinished(self):
-        if self.timer.get() > 15:
+        if self.timer.get() > self.endTime:
             return True
         
     def end(self, interrupted: bool):
