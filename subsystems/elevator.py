@@ -57,6 +57,7 @@ class elevatorSubSystem(commands2.Subsystem):
             myPid.setP(constrain(abs(self.realEncoderPos-self.desiredPos)*0.6,0.1,0.3))
         pass
         print("elevator position",self.realEncoderPos,pidOut)
+        pidOut=constrain(pidOut,-0.2,0.2)
         self.lMotor.set(pidOut+0.05)
     def goUp(self):
         self.desiredPos=self.desiredPos+0.02
