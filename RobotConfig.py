@@ -1,8 +1,8 @@
 from wpimath import geometry
 
 class robotDimensions:
-    trackWidth = 0.5
-    wheelBase = 0.5
+    trackWidth = 0.7366
+    wheelBase = 0.7366
 
 class SwerveModules:
 
@@ -65,7 +65,7 @@ class elevator:
 
     
 class driveConstants:
-    wheelDiameter = 3
+    wheelDiameter = 0.1016
 
     class joystickConstants:
         USB_ID = 0

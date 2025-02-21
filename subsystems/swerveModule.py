@@ -42,7 +42,7 @@ class SwerveModule:
         #defining and applying configs for motors
         MotorConfigs = phoenix6.configs.TalonFXConfiguration()
 
-        MotorConfigs.slot0.k_p = 0.1
+        MotorConfigs.slot0.k_p = 1
         MotorConfigs.slot0.k_i = 0.0
         MotorConfigs.slot0.k_d = 0.0
         MotorConfigs.slot0.k_s = 0.11

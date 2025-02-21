@@ -12,8 +12,8 @@ import RobotConfig as rc
 class DriveTrainSubSystem(commands2.Subsystem):
     def __init__(self, joystick: commands2.button.CommandJoystick) -> None:
         #camera settings
-        self.stateStdDevs = 0.1, 0.1, 0.1
-        self.visionMeasurementsStdDevs = 0., 0.9, 0.9
+        self.stateStdDevs = 0.0, 0.0, 0.0
+        self.visionMeasurementsStdDevs = 1.0, 1.0, 1.0
 
         #set up the joystick and navx sensor
         self.joystick = joystick
@@ -34,7 +34,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #renaming some variables so they are easier to use
         teleopConstants = rc.driveConstants.poseConstants
         
-        #setting up how we send info to the wheels about the position of the turn motor
+        #setting up how we send info to the wheels about the position of the turn motor, this is mostly for if we want a theta override function for auto place
         rotationConstants = rc.driveConstants.ThetaPIDConstants.translationPIDConstants
         self.rotationPID = controller.PIDController(rotationConstants.kP, rotationConstants.kI, rotationConstants.kD, rotationConstants.period)
         self.rotationPID.enableContinuousInput(-pi, pi)
@@ -104,6 +104,8 @@ class DriveTrainSubSystem(commands2.Subsystem):
         print("navx position: " + str(self.navx.getRotation2d().degrees))
         wpilib.SmartDashboard.putBoolean("have navx: ", self.navx.isConnected())
         wpilib.SmartDashboard.putNumber("last rotation: ", self.getCurrentPose().rotation().degrees())
+        wpilib.SmartDashboard.putNumber("x distance: ", self.getCurrentPose().translation().X())
+        wpilib.SmartDashboard.putNumber("y distance: ", self.getCurrentPose().translation().Y())
 
 
     
