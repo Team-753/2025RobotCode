@@ -99,9 +99,12 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.frontRight.setState(SwerveModuleStates[1])
         self.rearLeft.setState(SwerveModuleStates[2])
         self.rearRight.setState(SwerveModuleStates[3])
-        #wpilib.SmartDashboard.putData("current rotation", self.poseEstimatior.getEstimatedPosition().rotation().degrees())
+        wpilib.SmartDashboard.putNumber("current rotation", self.poseEstimatior.getEstimatedPosition().rotation().degrees().__float__())
         print("current state: " + str(self.poseEstimatior.getEstimatedPosition().rotation().degrees()))
         print("navx position: " + str(self.navx.getRotation2d().degrees))
+        wpilib.SmartDashboard.putBoolean("have navx: ", self.navx.isConnected())
+        wpilib.SmartDashboard.putNumber("last rotation: ", self.getCurrentPose().rotation().degrees())
+
 
     
     def joystickDrive(self, inputs: tuple[float])-> None:

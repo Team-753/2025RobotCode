@@ -68,6 +68,7 @@ class SwerveModule:
         turnMotorConfigs.feedback.feedback_remote_sensor_id = coderID
         turnMotorConfigs.feedback.feedback_sensor_source = signals.FeedbackSensorSourceValue.REMOTE_CANCODER
         turnMotorConfigs.motor_output.neutral_mode = signals.NeutralModeValue.COAST
+        #turnMotorConfigs.motor_output.inverted = signals.InvertedValue.CLOCKWISE_POSITIVE #trying to fix backward swerve
         #turnMotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.turningGearRatio #check swerve drive specs to get a real number
         #turnMotorConfigs.feedback.rotor_to_sensor_ratio = rc.SwerveModules.turningGearRatio
         turnMotorConfigs.closed_loop_general.continuous_wrap = True
