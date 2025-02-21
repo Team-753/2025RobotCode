@@ -16,6 +16,8 @@ from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
 from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos, DefaultElevatorCommand
 from commands.ClimberCommand import FlipClimber, FlipCompressor
 
+from commands.simpleAutoCommands import *
+
 
 from subsystems.cannon import CannonSubsystem
 from subsystems.algae import AlgaeSquisher
@@ -56,8 +58,9 @@ class RobotContainer():
         self.climber.ComeBack()
 
         # Path follower
-        """self._auto_chooser = AutoBuilder.buildAutoChooser("Tests")
-        SmartDashboard.putData("Auto Mode", self._auto_chooser)"""
+        self._auto_chooser = wpilib.SendableChooser()
+        self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [0, 1, 0], 2))
+        SmartDashboard.putData("Auto Mode", self._auto_chooser)
 
         # Configure the button bindings
         self.configureButtonBindings()
@@ -99,9 +102,9 @@ class RobotContainer():
 
         :returns: the command to run in autonomous
         """
-        pass
-        #return self._auto_chooser.getSelected()
-    
+        
+        path = self._auto_chooser.getSelected()
+        return path
       
 
     def checkJoystickInput(self, kInput: float):

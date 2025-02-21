@@ -1,57 +1,9 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "SPARK MAX [13]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [15]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [15] ABSOLUTE ENCODER": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [16]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [17]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX (v6)[1]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX (v6)[3]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX (v6)[3]/Rotor Sensor": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX (v6)[6]": {
-        "header": {
-          "open": true
-        }
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
+      "/SmartDashboard/Auto Mode": "String Chooser",
       "/SmartDashboard/Field: ": "Field2d",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
@@ -60,7 +12,36 @@
     }
   },
   "NetworkTables": {
+    "LiveWindow": {
+      ".status": {
+        "open": true
+      }
+    },
+    "Shuffleboard": {
+      ".metadata": {
+        "open": true
+      }
+    },
+    "SmartDashboard": {
+      "Auto Mode": {
+        "open": true,
+        "string[]##v_/SmartDashboard/Auto Mode/options": {
+          "open": true
+        }
+      },
+      "Field: ": {
+        "open": true
+      },
+      "open": true
+    },
+    "combined": true,
     "transitory": {
+      "Shuffleboard": {
+        ".metadata": {
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "Field: ": {
           "double[]##v_/SmartDashboard/Field: /Robot": {
@@ -73,7 +54,22 @@
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
     "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
+    "shuffleboard@1": {
       "Publishers": {
         "open": true
       },

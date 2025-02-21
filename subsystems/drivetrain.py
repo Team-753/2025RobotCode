@@ -9,6 +9,7 @@ from math import hypot, radians, pi, atan2
 from typing import List
 import commands2
 import RobotConfig as rc
+import math
 class DriveTrainSubSystem(commands2.Subsystem):
     def __init__(self, joystick: commands2.button.CommandJoystick) -> None:
         #camera settings
@@ -54,7 +55,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         
     def getNavxRotation2d(self)-> geometry.Rotation2d:
         #getting the direction the robot is facing relative to where we started for field orient
-        return self.navx.getRotation2d()
+        return geometry.Rotation2d(math.tau - self.navx.getRotation2d().radians()) #this inverts the reading from the navx which lets the robot work with the inverted cancoders. likely not neccesary next year.
     
     def getPose(self)-> geometry.Pose2d:
         #figuring out where the robot is relative to where we started
@@ -82,7 +83,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #print("joystick y: " + str(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)))
         
         deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
-        deadbandedX = -wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband) #need to invert the x direction?
+        deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband) #need to invert the x direction this accounts for inverted cancoders
         deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
         
 
@@ -99,13 +100,14 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.frontRight.setState(SwerveModuleStates[1])
         self.rearLeft.setState(SwerveModuleStates[2])
         self.rearRight.setState(SwerveModuleStates[3])
-        wpilib.SmartDashboard.putNumber("current rotation", self.poseEstimatior.getEstimatedPosition().rotation().degrees().__float__())
+        wpilib.SmartDashboard.putNumber("current rotation", self.poseEstimatior.getEstimatedPosition().rotation().degrees())
         print("current state: " + str(self.poseEstimatior.getEstimatedPosition().rotation().degrees()))
         print("navx position: " + str(self.navx.getRotation2d().degrees))
         wpilib.SmartDashboard.putBoolean("have navx: ", self.navx.isConnected())
         wpilib.SmartDashboard.putNumber("last rotation: ", self.getCurrentPose().rotation().degrees())
         wpilib.SmartDashboard.putNumber("x distance: ", self.getCurrentPose().translation().X())
         wpilib.SmartDashboard.putNumber("y distance: ", self.getCurrentPose().translation().Y())
+        wpilib.SmartDashboard.putNumber("navx position: ", self.getNavxRotation2d().degrees())
 
 
     

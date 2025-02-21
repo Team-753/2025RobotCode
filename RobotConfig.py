@@ -71,7 +71,7 @@ class driveConstants:
         USB_ID = 0
         xDeadband = 0.1
         yDeadband = 0.1
-        theataDeadband = 0.15
+        theataDeadband = 0.2
 
     class RobotSpeeds:
         maxSpeed = 4.8
