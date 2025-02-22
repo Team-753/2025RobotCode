@@ -58,7 +58,8 @@ class elevatorSubSystem(commands2.Subsystem):
         pidOut=constrain(pidOut,-0.1,0.2)
         self.lMotor.set(pidOut+0.05)
         if self.desiredPos<0.1 and self.realEncoderPos<0.1:
-            self.lMotor.stopMotor()
+            self.lMotor.IdleMode(rev.SparkMax.IdleMode.kCoast)
+            self.lMotor.set(0)
     def goUp(self):
         self.desiredPos=self.desiredPos+0.02
         print("Going up",self.desiredPos)
