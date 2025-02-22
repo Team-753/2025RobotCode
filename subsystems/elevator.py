@@ -38,7 +38,7 @@ class elevatorSubSystem(commands2.Subsystem):
     def elevatorPid(self):
         #UPDATE ENCODER POS
         encoderPast=self.encoderPos
-        self.encoderPos=(1-self.encoder.getPosition())-self.encoderOffset
+        self.encoderPos=(1-self.encoder.getPosition())-(1-self.encoderOffset)
         encoderDelta=float(self.encoderPos-encoderPast)
         self.realEncoderPos=self.encoderRotations+self.encoderPos
         if abs(encoderDelta)>0.7:
