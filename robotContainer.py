@@ -13,7 +13,7 @@ from commands2.sysid import SysIdRoutine
 
 from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition, PivotDown, PivotUp
 from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
-from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos, DefaultElevatorCommand
+from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos
 from commands.ClimberCommand import FlipClimber, FlipCompressor
 
 from commands.simpleAutoCommands import *
@@ -44,7 +44,6 @@ class RobotContainer():
         self.elevator = elevatorSubSystem()
         
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
-        #self.elevator.setDefaultCommand(DefaultElevatorCommand(self.elevator))
         
         self.scheduler = commands2.CommandScheduler()
 
