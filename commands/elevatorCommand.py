@@ -45,6 +45,7 @@ class elevatorToPos(commands2.Command):
         self.addRequirements(elevatorSubSystem)
         self.elevator = elevatorSubSystem
         self.desiredPos=desPos
+        print("desirepos" + str(self.desiredPos))
     def execute(self):
         self.elevator.elevatorPid()
         self.elevator.setPosition(self.desiredPos)

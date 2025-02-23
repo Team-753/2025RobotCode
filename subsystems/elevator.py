@@ -11,6 +11,10 @@ def constrain(var,min,max):
     
 class elevatorSubSystem(commands2.Subsystem):
     def __init__(self):
+        '''Chris, I think the way to get this to work is to use rev's built in PID controller
+        Currently we are setting the desired position, but we might also be passing it as a speed.
+        That will mess stuff up. the built in pid controller has a method that will make it a lot easier
+        You can use different values in your PIDs fairly easily by using multiple slots - Sanika'''
         #gets ID
         lMotorID=elevator.leftMotorID
         rMotorID=elevator.rightMotorID
@@ -38,37 +42,40 @@ class elevatorSubSystem(commands2.Subsystem):
     def elevatorPid(self):
         #UPDATE ENCODER POS
         encoderPast=self.encoderPos
-        self.encoderPos=(1-self.encoder.getPosition())-(1-self.encoderOffset)
+        self.encoderPos=(1-(self.encoder.getPosition()-self.encoderOffset))
         encoderDelta=float(self.encoderPos-encoderPast)
         self.realEncoderPos=self.encoderRotations+self.encoderPos
         if abs(encoderDelta)>0.7:
             self.encoderRotations+=1*(-encoderDelta/abs(encoderDelta))
         #RUN ELEVATOR PID
-        myPid=wpimath.controller.PIDController(0.3,0.05,0.05,period=0.02)
-        myPid.setIZone(0.15)
-        #self.desiredPos=constrain(self.desiredPos,0,3.9)
+        myPid=wpimath.controller.PIDController(0.3,0.05,0.00,period=0.02)
+        myPid.setIZone(0.2)
+        self.desiredPos=constrain(self.desiredPos,0,3.9)
         myPid.setSetpoint(self.desiredPos)
         #DECELELELELRATE ELEVATOR ON DOWN
         pidOut=myPid.calculate(measurement=self.realEncoderPos)
-        if (pidOut+0.5)<0:
+        if (pidOut+0.08)<0:
             #pidOut=pidOut*constrain(abs(self.realEncoderPos-self.desiredPos),0.1,1)
             #myPid.setP(constrain(abs(self.realEncoderPos-self.desiredPos)*0.6,0.1,0.3))
             pass
-        print("elevator position",self.realEncoderPos,self.encoder.getPosition(),self.encoderOffset)
-        pidOut=constrain(pidOut,-0.1,0.2)
-        self.lMotor.set(pidOut+0.05)
+        print("elevator position",self.realEncoderPos,pidOut,self.desiredPos)
+        #pidOut=constrain(pidOut,-0.1,0.2)
         if self.desiredPos<0.1 and self.realEncoderPos<0.1:
             self.lMotor.IdleMode(rev.SparkMax.IdleMode.kCoast)
+            #self.rMotor.IdleMode(rev.SparkMax.IdleMode.kCoast)
             self.lMotor.set(0)
+            #self.rMotor.set(0)
+        else: 
+            self.lMotor.set(pidOut+0.08)
     def goUp(self):
-        self.desiredPos=self.desiredPos+0.02
+        self.desiredPos=self.desiredPos+0.03
         print("Going up",self.desiredPos)
     def goDown(self):
-        self.desiredPos=self.desiredPos-0.01
+        self.desiredPos=self.desiredPos-0.03
         print("going down")
     def idle(self):
-        self.lMotor.IdleMode(1)
-        self.rMotor.IdleMode(1)
+        self.lMotor.IdleMode(0)
+        #self.rMotor.IdleMode(1)
         
     def Brake(self):
         #print("Breaking")
