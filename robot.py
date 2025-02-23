@@ -32,10 +32,6 @@ class MyRobot(commands2.TimedCommandRobot):
             SmartDashboard.putBoolean("Locked(1)", False)
             SmartDashboard.putBoolean("Locked(2)", False)
 
-
-        #SmartDashboard.putBoolean("Locked(1)",self.camera.hasDetection()) 
-        #SmartDashboard.putBoolean("Locked(2)",self.camera.hasDetection()) 
-
         pass
 
     def teleopInit(self):
