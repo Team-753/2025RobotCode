@@ -85,7 +85,7 @@ class RobotContainer():
         self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
         
-        self.joystickButton4 = commands2.button.JoystickButton(self.joystick, 4)
+        self.joystickButton4 = self.joystick.button(4)
         self.joystickButton4.whileTrue(SlowDown(self.driveTrain))
         
         

@@ -13,5 +13,8 @@ class MyRobot(commands2.TimedCommandRobot):
         pass
     def teleopInit(self):
         pass
+
+    def disabledInit(self):
+        self.robotContainer.disabledInit()
             
             

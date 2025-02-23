@@ -16,7 +16,7 @@ class DefaultDriveCommand(commands2.Command):
 
 class SlowDown(commands2.Command):
     def __init__(self, driveTrainSubSystem: DriveTrainSubSystem):
-        super().__init__()(self)
+        super().__init__()
         self.addRequirements(driveTrainSubSystem)
         self.driveTrain = driveTrainSubSystem
 
