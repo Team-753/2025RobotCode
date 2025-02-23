@@ -1,5 +1,5 @@
 from subsystems.drivetrain import DriveTrainSubSystem
-from commands.defaultDriveCommand import DefaultDriveCommand
+from commands.defaultDriveCommand import DefaultDriveCommand, SlowDown
 import commands2
 import wpilib
 import os
@@ -84,6 +84,9 @@ class RobotContainer():
         
         self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
+        
+        self.joystickButton4 = self.joystick.button(4)
+        self.joystickButton4.whileTrue(SlowDown(self.driveTrain))
         
         
         

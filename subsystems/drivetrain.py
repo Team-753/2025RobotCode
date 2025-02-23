@@ -25,6 +25,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.kMaxAngularVelocity = rc.driveConstants.RobotSpeeds.maxSpeed /hypot(rc.robotDimensions.trackWidth / 2, rc.robotDimensions.wheelBase / 2)
         self.wheelBase = rc.robotDimensions.wheelBase
         self.trackWidth = rc.robotDimensions.trackWidth
+        self.speedMultiplier = 1
 
         #defining the location of each swerve module on the can chain
         self.frontLeft = SwerveModule(rc.SwerveModules.frontLeft.driveMotorID, rc.SwerveModules.frontLeft.turnMotorID, rc.SwerveModules.frontLeft.CANCoderID, rc.SwerveModules.frontLeft.encoderOffset, rc.SwerveModules.frontLeft.isInverted)
@@ -141,6 +142,12 @@ class DriveTrainSubSystem(commands2.Subsystem):
     def getCurrentPose(self)-> geometry.Pose2d:
         # updating the current position of the robot
         return self.poseEstimatior.getEstimatedPosition()
+    
+    def halfSpeed(self):
+        self.kMaxSpeed = 0.5(rc.driveConstants.RobotSpeeds.maxSpeed)
+
+    def fullSpeed(self):
+        self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
     
     def periodic(self):
         currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
