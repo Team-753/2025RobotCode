@@ -12,7 +12,8 @@ class elevatorUp(commands2.Command):
         #print("Going down")
     def end(self, interrupted):
         #self.eSub.holdPos()
-        self.eSub.idle()
+        self.eSub.constantUp()
+        self.eSub.checkBottom()
         pass
     
     
@@ -23,11 +24,13 @@ class elevatorDown(commands2.Command):
         self.eSub=kElevSub
     def execute(self):
         self.eSub.goDown()
+        
         #print("Going up")
         
     def end(self, interrupted):
         #self.eSub.holdPos()
-        self.eSub.idle()
+        self.eSub.constantUp()
+        self.eSub.checkBottom()
         pass
 
 class elevatorToPos(commands2.Command):
@@ -37,4 +40,8 @@ class elevatorToPos(commands2.Command):
         self.elevator = elevatorSubSystem
         self.desiredPos=desPos
     def execute(self):
-        self.elevator.setPosition(self.desiredPos)
+        if self.desiredPos==0:
+            self.elevator.goToZero()
+            self.elevator.checkBottom()
+        else:
+            self.elevator.setPosition(self.desiredPos)

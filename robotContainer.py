@@ -74,13 +74,13 @@ class RobotContainer():
         self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.climber))
         
         
-        self.AuxController.a().onTrue(elevatorToPos(self.elevator,0.4))
-        self.AuxController.b().onTrue(elevatorToPos(self.elevator,1.5))
-        self.AuxController.y().onTrue(elevatorToPos(self.elevator,4))
-        self.AuxController.x().onTrue(elevatorToPos(self.elevator,0.0))
-        
-        self.AuxController.axisGreaterThan(1,.5).onTrue(elevatorDown(self.elevator))
-        self.AuxController.axisLessThan(1,-.5).onTrue(elevatorUp(self.elevator))
+        self.AuxController.a().onTrue(elevatorToPos(self.elevator,4))
+        self.AuxController.b().onTrue(elevatorToPos(self.elevator,8))
+        self.AuxController.y().onTrue(elevatorToPos(self.elevator,14))
+        self.AuxController.x().onTrue(elevatorToPos(self.elevator,0))
+        #6/1
+        self.AuxController.axisGreaterThan(1,.5).whileTrue(elevatorDown(self.elevator))
+        self.AuxController.axisLessThan(1,-.5).whileTrue(elevatorUp(self.elevator))
         
         self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))

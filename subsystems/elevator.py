@@ -28,27 +28,39 @@ class elevatorSubSystem(commands2.Subsystem):
         configL=rev.SparkMaxConfig()       
         configR=rev.SparkMaxConfig()
         configR.follow(lMotorID)
-        configL.closedLoop.pid(0.1,0,0,slot=rev.ClosedLoopSlot.kSlot0)
+        configL.closedLoop.pid(0.1,0.00015,0.05,slot=rev.ClosedLoopSlot.kSlot0)
+        configL.closedLoop.IMaxAccum(0.1,slot=rev.ClosedLoopSlot.kSlot0)
         configL.closedLoop.setFeedbackSensor(rev.ClosedLoopConfig.FeedbackSensor.kPrimaryEncoder)
         self.rMotor.configure(configR, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.lMotor.configure(configL, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.lMotor.IdleMode(0)
         self.rMotor.IdleMode(0)
-    
+    def checkBottom(self):
+        if self.encoder.getPosition()<0.5:
+            self.lMotor.IdleMode(0)
+            self.lMotor.set(0)
     def setPosition(self,desiredPos):
         self.desiredPos=desiredPos
-        self.pid.setReference(self.desiredPos,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
-        print(self.encoder.getPosition(),self.desiredPos)
+        self.pid.setReference(self.desiredPos,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0,0.5)
+        print(self.encoder.getPosition(),self.desiredPos,self.lMotor.getBusVoltage())
+    def goToZero(self):
+        self.pid.setReference(4,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
+        if self.encoder.getPosition()<4:
+            self.lMotor.set(0.02)
+            if self.encoder.getPosition()<0.5:
+                self.lMotor.set(0)
     def goUp(self):
         self.lMotor.set(0.1)
+        print(self.encoder.getVelocity())
     def goDown(self):
-        self.lMotor.set(0)
+        self.lMotor.set(0.02)
     def holdPos(self):
         self.desiredPos=self.encoder.getPosition()
         self.pid.setReference(self.desiredPos,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
-    def idle(self):
+    def constantUp(self):
         self.lMotor.IdleMode(0)
-        self.lMotor.set(0)
+        self.lMotor.set(0.06)
+        print('wd')
 
 
  
