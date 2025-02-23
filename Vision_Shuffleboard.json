@@ -1,0 +1,223 @@
+{
+    "tabPane": [
+      {
+        "title": "SmartDashboard",
+        "autoPopulate": true,
+        "autoPopulatePrefix": "SmartDashboard/",
+        "widgetPane": {
+          "gridSize": 128.0,
+          "showGrid": true,
+          "hgap": 16.0,
+          "vgap": 16.0,
+          "titleType": 0,
+          "tiles": {
+            "0,0": {
+              "size": [
+                3,
+                1
+              ],
+              "content": {
+                "_type": "Boolean Box",
+                "_source0": "network_table:///SmartDashboard/Locked(1)",
+                "_title": "/SmartDashboard/Locked(1)",
+                "_glyph": 148,
+                "_showGlyph": false,
+                "Colors/Color when true": "#7CFC00FF",
+                "Colors/Color when false": "#8B0000FF"
+              }
+            },
+            "6,0": {
+              "size": [
+                3,
+                1
+              ],
+              "content": {
+                "_type": "Boolean Box",
+                "_source0": "network_table:///SmartDashboard/Locked(2)",
+                "_title": "/SmartDashboard/Locked(2)",
+                "_glyph": 148,
+                "_showGlyph": false,
+                "Colors/Color when true": "#7CFC00FF",
+                "Colors/Color when false": "#8B0000FF"
+              }
+            },
+            "3,0": {
+              "size": [
+                3,
+                3
+              ],
+              "content": {
+                "_type": "Camera Stream",
+                "_source0": "camera_server://limelight-jamal",
+                "_title": "limelight-jamal",
+                "_glyph": 148,
+                "_showGlyph": false,
+                "Crosshair/Show crosshair": true,
+                "Crosshair/Crosshair color": "#FFFFFFFF",
+                "Controls/Show controls": true,
+                "Controls/Rotation": "NONE",
+                "compression": -1.0,
+                "fps": -1,
+                "imageWidth": 0,
+                "imageHeight": 0
+              }
+            },
+            "0,1": {
+              "size": [
+                1,
+                1
+              ],
+              "content": {
+                "_type": "Text View",
+                "_source0": "network_table:///SmartDashboard/limelight-jamal_Interface",
+                "_title": "/SmartDashboard/limelight-jamal_Interface",
+                "_glyph": 148,
+                "_showGlyph": false
+              }
+            },
+            "1,1": {
+              "size": [
+                1,
+                1
+              ],
+              "content": {
+                "_type": "Text View",
+                "_source0": "network_table:///SmartDashboard/limelight-jamal_Stream",
+                "_title": "/SmartDashboard/limelight-jamal_Stream",
+                "_glyph": 148,
+                "_showGlyph": false
+              }
+            },
+            "2,1": {
+              "size": [
+                1,
+                1
+              ],
+              "content": {
+                "_type": "Text View",
+                "_source0": "network_table:///SmartDashboard/limelight-jamal_PipelineName",
+                "_title": "/SmartDashboard/limelight-jamal_PipelineName",
+                "_glyph": 148,
+                "_showGlyph": false
+              }
+            },
+            "6,1": {
+              "size": [
+                2,
+                1
+              ],
+              "content": {
+                "_type": "Field",
+                "_source0": "network_table:///SmartDashboard/Field: ",
+                "_title": "/SmartDashboard/Field: ",
+                "_glyph": 148,
+                "_showGlyph": false,
+                "Game/Game": "k2025Reefscape",
+                "Visuals/Robot Icon Size": 50.0,
+                "Visuals/Show Outside Circles": false
+              }
+            },
+            "8,1": {
+              "size": [
+                1,
+                1
+              ],
+              "content": {
+                "_type": "ComboBox Chooser",
+                "_source0": "network_table:///SmartDashboard/Auto Mode",
+                "_title": "/SmartDashboard/Auto Mode",
+                "_glyph": 148,
+                "_showGlyph": false
+              }
+            },
+            "0,2": {
+              "size": [
+                1,
+                1
+              ],
+              "content": {
+                "_type": "Text View",
+                "_source0": "network_table:///SmartDashboard/current rotation",
+                "_title": "/SmartDashboard/current rotation",
+                "_glyph": 148,
+                "_showGlyph": false
+              }
+            },
+            "1,2": {
+              "size": [
+                1,
+                1
+              ],
+              "content": {
+                "_type": "Boolean Box",
+                "_source0": "network_table:///SmartDashboard/have navx: ",
+                "_title": "/SmartDashboard/have navx: ",
+                "_glyph": 148,
+                "_showGlyph": false,
+                "Colors/Color when true": "#7CFC00FF",
+                "Colors/Color when false": "#8B0000FF"
+              }
+            },
+            "2,2": {
+              "size": [
+                1,
+                1
+              ],
+              "content": {
+                "_type": "Text View",
+                "_source0": "network_table:///SmartDashboard/last rotation: ",
+                "_title": "/SmartDashboard/last rotation: ",
+                "_glyph": 148,
+                "_showGlyph": false
+              }
+            },
+            "6,2": {
+              "size": [
+                1,
+                1
+              ],
+              "content": {
+                "_type": "Text View",
+                "_source0": "network_table:///SmartDashboard/x distance: ",
+                "_title": "/SmartDashboard/x distance: ",
+                "_glyph": 148,
+                "_showGlyph": false
+              }
+            },
+            "7,2": {
+              "size": [
+                1,
+                1
+              ],
+              "content": {
+                "_type": "Text View",
+                "_source0": "network_table:///SmartDashboard/y distance: ",
+                "_title": "/SmartDashboard/y distance: ",
+                "_glyph": 148,
+                "_showGlyph": false
+              }
+            },
+            "8,2": {
+              "size": [
+                1,
+                1
+              ],
+              "content": {
+                "_type": "Text View",
+                "_source0": "network_table:///SmartDashboard/navx position: ",
+                "_title": "/SmartDashboard/navx position: ",
+                "_glyph": 148,
+                "_showGlyph": false
+              }
+            }
+          }
+        }
+      }
+    ],
+    "windowGeometry": {
+      "x": -7.333333492279053,
+      "y": -7.333333492279053,
+      "width": 1294.6666259765625,
+      "height": 694.6666870117188
+    }
+  }
