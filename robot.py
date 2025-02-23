@@ -1,7 +1,5 @@
-import wpilib
 import commands2
-
-from wpilib.cameraserver import CameraServer
+from subsystems.limelight_camera import LimelightCamera
 from robotContainer import RobotContainer
 from wpilib import SmartDashboard
 
@@ -10,6 +8,11 @@ from wpilib import SmartDashboard
 class MyRobot(commands2.TimedCommandRobot):
     def __init__(self, period=.02):
         super().__init__(period)
+        
+
+        self.camera = LimelightCamera("limelight-jamal")  # name of your camera goes in parentheses
+
+
         pass
         
 
@@ -22,13 +25,33 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self):
 
+        if self.camera.hasDetection() == True:
+            SmartDashboard.putBoolean("Locked(1)", True)
+            SmartDashboard.putBoolean("Locked(2)", True)
+        else :
+            SmartDashboard.putBoolean("Locked(1)", False)
+            SmartDashboard.putBoolean("Locked(2)", False)
+
+
+        #SmartDashboard.putBoolean("Locked(1)",self.camera.hasDetection()) 
+        #SmartDashboard.putBoolean("Locked(2)",self.camera.hasDetection()) 
+
         pass
 
     def teleopInit(self):
-        SmartDashboard.putBoolean("Locked(1)", True)
-        SmartDashboard.putBoolean("Locked(2)", True)
+        SmartDashboard.putBoolean("Locked(1)", False)
+        SmartDashboard.putBoolean("Locked(2)", False)
+
+        
+        
 
     def disabledInit(self):
         SmartDashboard.putBoolean("Locked(1)", False)
         SmartDashboard.putBoolean("Locked(2)", False)
         return super().disabledInit()
+    
+    def testInit(self):
+        SmartDashboard.putBoolean("Locked(1)", True)
+        SmartDashboard.putBoolean("Locked(2)", True)
+        
+    
