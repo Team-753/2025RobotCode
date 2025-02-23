@@ -19,7 +19,7 @@ class CannonSubsystem(commands2.Subsystem):
         self.topMotor.set(0.5)
         
     def intake(self):
-        self.topMotor.set(-0.5)
+        self.topMotor.set(-0.25)
 
     def stop(self):
         self.topMotor.set(0)
