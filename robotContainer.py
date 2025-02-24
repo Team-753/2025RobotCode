@@ -74,9 +74,9 @@ class RobotContainer():
         self.AuxController.leftBumper().whileTrue(FlipAlgaeSquisher(self.climber))
         
         
-        self.AuxController.a().onTrue(elevatorToPos(self.elevator,4))
-        self.AuxController.b().onTrue(elevatorToPos(self.elevator,8))
-        self.AuxController.y().onTrue(elevatorToPos(self.elevator,14))
+        self.AuxController.a().onTrue(elevatorToPos(self.elevator,6))
+        self.AuxController.b().onTrue(elevatorToPos(self.elevator,13))
+        self.AuxController.y().onTrue(elevatorToPos(self.elevator,22))
         self.AuxController.x().onTrue(elevatorToPos(self.elevator,0))
         #6/1
         self.AuxController.axisGreaterThan(1,.5).whileTrue(elevatorDown(self.elevator))
@@ -120,7 +120,7 @@ class RobotContainer():
         return kInput
     
     def disabledInit(self):
-        pass
+        elevatorToPos(self.elevator,0)
 
     def autonomousInit(self):
         pass

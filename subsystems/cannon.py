@@ -16,20 +16,22 @@ class CannonSubsystem(commands2.Subsystem):
         self.pivotMotor.IdleMode(0)
     def place(self):
         print("cannon is placing")
-        self.topMotor.set(0.5)
+        self.topMotor.set(-0.35)
         
     def intake(self):
-        self.topMotor.set(-0.25)
+        self.topMotor.set(1)
 
     def stop(self):
         self.topMotor.set(0)
     
     def idle(self):
         self.topMotor.set(0)
+        print("current cannon postition: " + str(self.encoder.getPosition()))
 
 
     def spinup(self):
         self.pivotMotor.set(-0.1)
+        print("current cannon postition: " + str(self.encoder.getPosition()))
 
     def spindown(self):
         self.pivotMotor.set(0.1)
