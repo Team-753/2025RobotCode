@@ -83,7 +83,7 @@ class cannonToPosition(commands2.Command):
         super().__init__()
         self.addRequirements(cannonSubsystem)
         self.cannon = cannonSubsystem
-        self.desiredPosition=desPos
+        self.desiredPosition = desPos
     def execute(self):
         self.cannon.goToPos(self.desiredPosition)
         print("stuff")

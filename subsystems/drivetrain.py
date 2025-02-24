@@ -119,6 +119,22 @@ class DriveTrainSubSystem(commands2.Subsystem):
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
         #print(self.navx.getAngle())
         self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
+
+    def autoDrive(self, chasssisSpeeds: kinematics.ChassisSpeeds, currentPose: geometry.Pose2d, fieldRelative = True):
+        if chasssisSpeeds == kinematics.ChassisSpeeds(0, 0, 0):
+            self.stationary()
+        else:
+            chasssisSpeeds.omega = -chasssisSpeeds.omega
+            if fieldRelative:
+                swerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds.fromFieldRelativeSpeeds(chasssisSpeeds.vx, chasssisSpeeds.vy, chasssisSpeeds.omega, currentPose.rotation()))
+            else:
+                swerveModuleStates = self.KINEMATICS.toSwerveModuleStates(chasssisSpeeds)
+            
+            self.frontLeft.setState(swerveModuleStates[0])
+            self.frontRight.setState(swerveModuleStates[1])
+            self.rearLeft.setState(swerveModuleStates[2])
+            self.rearRight.setState(swerveModuleStates[3])
+            
     
     def stationary(self)-> None:
         #stop the robot by breaking all the motors
