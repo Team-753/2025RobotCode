@@ -102,8 +102,13 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.rearLeft.setState(SwerveModuleStates[2])
         self.rearRight.setState(SwerveModuleStates[3])
         wpilib.SmartDashboard.putNumber("current rotation", self.poseEstimatior.getEstimatedPosition().rotation().degrees())
+<<<<<<< HEAD
         '''print("current state: " + str(self.poseEstimatior.getEstimatedPosition().rotation().degrees()))
         print("navx position: " + str(self.navx.getRotation2d().degrees))'''
+=======
+        #print("current state: " + str(self.poseEstimatior.getEstimatedPosition().rotation().degrees()))
+        #print("navx position: " + str(self.navx.getRotation2d().degrees))
+>>>>>>> 721599c845d114caab09f5935f4bc697f53c4e06
         wpilib.SmartDashboard.putBoolean("have navx: ", self.navx.isConnected())
         wpilib.SmartDashboard.putNumber("last rotation: ", self.getCurrentPose().rotation().degrees())
         wpilib.SmartDashboard.putNumber("x distance: ", self.getCurrentPose().translation().X())
@@ -119,6 +124,22 @@ class DriveTrainSubSystem(commands2.Subsystem):
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
         #print(self.navx.getAngle())
         self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
+
+    def autoDrive(self, chasssisSpeeds: kinematics.ChassisSpeeds, currentPose: geometry.Pose2d, fieldRelative = True):
+        if chasssisSpeeds == kinematics.ChassisSpeeds(0, 0, 0):
+            self.stationary()
+        else:
+            chasssisSpeeds.omega = -chasssisSpeeds.omega
+            if fieldRelative:
+                swerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds.fromFieldRelativeSpeeds(chasssisSpeeds.vx, chasssisSpeeds.vy, chasssisSpeeds.omega, currentPose.rotation()))
+            else:
+                swerveModuleStates = self.KINEMATICS.toSwerveModuleStates(chasssisSpeeds)
+            
+            self.frontLeft.setState(swerveModuleStates[0])
+            self.frontRight.setState(swerveModuleStates[1])
+            self.rearLeft.setState(swerveModuleStates[2])
+            self.rearRight.setState(swerveModuleStates[3])
+            
     
     def stationary(self)-> None:
         #stop the robot by breaking all the motors
@@ -144,7 +165,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         return self.poseEstimatior.getEstimatedPosition()
     
     def halfSpeed(self):
-        self.kMaxSpeed = 0.5(rc.driveConstants.RobotSpeeds.maxSpeed)
+        self.kMaxSpeed = 0.5 * (rc.driveConstants.RobotSpeeds.maxSpeed)
 
     def fullSpeed(self):
         self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed

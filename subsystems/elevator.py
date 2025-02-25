@@ -28,39 +28,45 @@ class elevatorSubSystem(commands2.Subsystem):
         configL=rev.SparkMaxConfig()       
         configR=rev.SparkMaxConfig()
         configR.follow(lMotorID)
-        configL.closedLoop.pid(0.1,0.00015,0.05,slot=rev.ClosedLoopSlot.kSlot0)
+        configL.closedLoop.pid(0.05,0.0000001,0.01,slot=rev.ClosedLoopSlot.kSlot0)
         configL.closedLoop.IMaxAccum(0.1,slot=rev.ClosedLoopSlot.kSlot0)
         configL.closedLoop.setFeedbackSensor(rev.ClosedLoopConfig.FeedbackSensor.kPrimaryEncoder)
+        self.encoder.setPosition(0)
         self.rMotor.configure(configR, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.lMotor.configure(configL, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.lMotor.IdleMode(0)
         self.rMotor.IdleMode(0)
     def checkBottom(self):
-        if self.encoder.getPosition()<0.5:
+        if self.encoder.getPosition()<0.7:
             self.lMotor.IdleMode(0)
             self.lMotor.set(0)
+            #print("MOTOR IDLE")
     def setPosition(self,desiredPos):
         self.desiredPos=desiredPos
-        self.pid.setReference(self.desiredPos,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0,0.5)
-        print(self.encoder.getPosition(),self.desiredPos,self.lMotor.getBusVoltage())
+        self.pid.setReference(self.desiredPos,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0,1.2)
+        #print(self.encoder.getPosition())
     def goToZero(self):
-        self.pid.setReference(4,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
-        if self.encoder.getPosition()<4:
-            self.lMotor.set(0.02)
-            if self.encoder.getPosition()<0.5:
+        if self.encoder.getPosition()<0.7:
                 self.lMotor.set(0)
+                #print("MOTOR IDLE")
+        elif self.encoder.getPosition()<6 and abs(self.encoder.getVelocity())<150:
+            self.lMotor.set(0.03)
+            #print("AT POS")
+        else:
+            self.pid.setReference(6,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
     def goUp(self):
+        #if not self.encoder.getPosition()>26:
         self.lMotor.set(0.1)
-        print(self.encoder.getVelocity())
+        print(self.encoder.getPosition())
     def goDown(self):
         self.lMotor.set(0.02)
+        print(self.encoder.getPosition())
     def holdPos(self):
         self.desiredPos=self.encoder.getPosition()
         self.pid.setReference(self.desiredPos,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
     def constantUp(self):
         self.lMotor.IdleMode(0)
         self.lMotor.set(0.06)
-        print('wd')
 
 
  
