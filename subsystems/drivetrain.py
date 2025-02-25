@@ -102,13 +102,8 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.rearLeft.setState(SwerveModuleStates[2])
         self.rearRight.setState(SwerveModuleStates[3])
         wpilib.SmartDashboard.putNumber("current rotation", self.poseEstimatior.getEstimatedPosition().rotation().degrees())
-<<<<<<< HEAD
-        '''print("current state: " + str(self.poseEstimatior.getEstimatedPosition().rotation().degrees()))
-        print("navx position: " + str(self.navx.getRotation2d().degrees))'''
-=======
-        #print("current state: " + str(self.poseEstimatior.getEstimatedPosition().rotation().degrees()))
-        #print("navx position: " + str(self.navx.getRotation2d().degrees))
->>>>>>> 721599c845d114caab09f5935f4bc697f53c4e06
+
+
         wpilib.SmartDashboard.putBoolean("have navx: ", self.navx.isConnected())
         wpilib.SmartDashboard.putNumber("last rotation: ", self.getCurrentPose().rotation().degrees())
         wpilib.SmartDashboard.putNumber("x distance: ", self.getCurrentPose().translation().X())
