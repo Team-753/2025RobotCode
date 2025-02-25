@@ -9,6 +9,8 @@ class MyRobot(commands2.TimedCommandRobot):
     def __init__(self, period=.02):
         super().__init__(period)
 
+        
+
         self.camera = LimelightCamera("limelight-jamal")  # name of your camera goes in parentheses
         
 

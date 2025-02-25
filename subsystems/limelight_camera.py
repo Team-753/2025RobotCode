@@ -2,17 +2,17 @@
 # Copyright (c) FIRST and other WPILib contributors.
 # Open Source Software; you can modify and/or share it under the terms of
 # the WPILib BSD license file in the root directory of this project.
-
+import commands2
 from wpilib import Timer
-from commands2 import Subsystem
 from ntcore import NetworkTableInstance
 
 
-class LimelightCamera(Subsystem):
+class LimelightCamera(commands2.Subsystem):
     def __init__(self, cameraName: str) -> None:
-        super().__init__()
+        #super().__init__()
 
         self.cameraName = _fix_name(cameraName)
+
 
         instance = NetworkTableInstance.getDefault()
         self.table = instance.getTable(self.cameraName)
@@ -69,7 +69,23 @@ class LimelightCamera(Subsystem):
         self.heartbeating = heartbeating
 
 
+
+
+
+    #Welcome to the Ryan Zone 
+
+    def Track():
+        pass
+
+
+
+
+
+
+
+
 def _fix_name(name: str):
     if not name:
         name = "limelight"
     return name
+
