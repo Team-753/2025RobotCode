@@ -15,11 +15,14 @@ class CannonSubsystem(commands2.Subsystem):
         self.encoder = self.pivotMotor.getAbsoluteEncoder()
         self.pivotMotor.IdleMode(0)
 
-        self.pid = self.topMotor.getClosedLoopController()
-        config.closedLoop.pid(0.1,0.00015,0.01,slot=rev.ClosedLoopSlot.kSlot0)
-        config.closedLoop.IMaxAccum(0.1,slot=rev.ClosedLoopSlot.kSlot0)
-        config.closedLoop.setFeedbackSensor(rev.ClosedLoopConfig.FeedbackSensor.kAbsoluteEncoder)
-
+        pivotConfig = rev.SparkMaxConfig()
+        self.pid = self.pivotMotor.getClosedLoopController()
+        pivotConfig.closedLoop.pid(0.6, 0.0005, 0, slot=rev.ClosedLoopSlot.kSlot0)
+        pivotConfig.closedLoop.IMaxAccum(0.1,slot=rev.ClosedLoopSlot.kSlot0)
+        pivotConfig.closedLoop.setFeedbackSensor(rev.ClosedLoopConfig.FeedbackSensor.kAbsoluteEncoder)
+        pivotConfig.inverted(True)
+        self.pivotMotor.configure(pivotConfig, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
+        
     def place(self):
         print("cannon is placing")
         self.topMotor.set(-0.35)
@@ -36,23 +39,21 @@ class CannonSubsystem(commands2.Subsystem):
 
 
     def spinup(self):
-        self.pivotMotor.set(-0.1)
+        self.pivotMotor.set(0.1)
         print("current cannon postition: " + str(self.encoder.getPosition()))
 
     def spindown(self):
-        self.pivotMotor.set(0.1)
+        self.pivotMotor.set(-0.1)
 
     def angleStop(self):
-        self.pivotMotor.set(-0.017)
+        self.pivotMotor.set(0.016)
     def angleIdle(self):
-        self.pivotMotor.set(-0.017)
+        self.pivotMotor.set(0.016)
 
     def goToPos(self,desPos):
-        '''myPid=wpimath.controller.PIDController(0.1,0.001,0,period=0.02)
-        myPid.setIZone(0.2)
-        myPid.setSetpoint(desPos)
-        pidOut=myPid.calculate(self.encoder.getPosition())'''
         self.desiredPos = desPos
-        #self.pivotMotor.set(pidOut)
-        self.pid.setReference(self.desiredPos, rev.SparkMax.ControlType.kPosition, rev.ClosedLoopSlot.kSlot0)
-        print("AAAAAAAAAAAAAAAAAAAAAAH",self.encoder.getPosition())
+        self.pid.setReference(self.desiredPos, rev.SparkMax.ControlType.kPosition, rev.ClosedLoopSlot.kSlot0, -0.2)
+        print("CANNONING",desPos)
+        
+    def periodic(self):
+        print("cannon position: " + str(self.encoder.getPosition()))

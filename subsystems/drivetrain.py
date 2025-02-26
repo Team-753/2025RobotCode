@@ -119,6 +119,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
         #print(self.navx.getAngle())
         self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
+        print("k",self.kMaxSpeed)
 
     def autoDrive(self, chasssisSpeeds: kinematics.ChassisSpeeds, currentPose: geometry.Pose2d, fieldRelative = True):
         if chasssisSpeeds == kinematics.ChassisSpeeds(0, 0, 0):
@@ -160,8 +161,8 @@ class DriveTrainSubSystem(commands2.Subsystem):
         return self.poseEstimatior.getEstimatedPosition()
     
     def halfSpeed(self):
-        self.kMaxSpeed = 0.5 * (rc.driveConstants.RobotSpeeds.maxSpeed)
-
+        #self.kMaxSpeed = 0.5 * (rc.driveConstants.RobotSpeeds.maxSpeed)
+        pass
     def fullSpeed(self):
         self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
     
