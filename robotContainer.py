@@ -1,5 +1,5 @@
 from subsystems.drivetrain import DriveTrainSubSystem
-from commands.defaultDriveCommand import DefaultDriveCommand, SlowDown
+from commands.defaultDriveCommand import defaultDriveCommand, SlowDown
 import commands2
 import wpilib
 from wpimath import geometry, kinematics, estimator
@@ -38,7 +38,8 @@ class RobotContainer():
         self.AuxController = commands2.button.CommandXboxController(1)
         self.driveTrain = DriveTrainSubSystem(self.joystick)
         self.elevator = elevatorSubSystem()
-        self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
+        # Use the correctly named defaultDriveCommand here.
+        self.driveTrain.setDefaultCommand(defaultDriveCommand(self.driveTrain))
         self.scheduler = commands2.CommandScheduler()
         self.algae = AlgaeSquisher()
         self.cannon = CannonSubsystem()
