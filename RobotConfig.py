@@ -110,3 +110,19 @@ class driveConstants:
             period = 0.05
 
 
+class visionConstants:
+    # The physical mounting offset of the camera relative to the robot’s center (in degrees)
+    x_offset = 1.5  # Adjust based on your hardware setup
+    
+    # Acceptable error (in degrees) to consider the target centered
+    x_tolerance = 2.0  
+
+    # Tuning multipliers for corrections (tweak these as necessary)
+    lateralCorrectionConstant = 0.005  
+    rotationalCorrectionConstant = 0.007  
+
+    # For forward speed control based on tag size
+    forwardSpeedMultiplier = 0.01  
+
+    # Desired tag area when at the correct distance
+    desired_tag_area = 15.0
