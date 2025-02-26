@@ -18,6 +18,7 @@ class superSimpleAuto(commands2.Command):
 
     def execute(self):
         self.driveTrain.joystickDrive(self.directions)
+        print("running auto")
     
     def isFinished(self):
         if self.timer.get() > self.endTime:

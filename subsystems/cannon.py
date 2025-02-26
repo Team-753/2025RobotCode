@@ -17,7 +17,7 @@ class CannonSubsystem(commands2.Subsystem):
 
         pivotConfig = rev.SparkMaxConfig()
         self.pid = self.pivotMotor.getClosedLoopController()
-        pivotConfig.closedLoop.pid(0.6, 0.0005, 0, slot=rev.ClosedLoopSlot.kSlot0)
+        pivotConfig.closedLoop.pid(2.0, 0.000, 0.001, slot=rev.ClosedLoopSlot.kSlot0)
         pivotConfig.closedLoop.IMaxAccum(0.1,slot=rev.ClosedLoopSlot.kSlot0)
         pivotConfig.closedLoop.setFeedbackSensor(rev.ClosedLoopConfig.FeedbackSensor.kAbsoluteEncoder)
         pivotConfig.inverted(True)
@@ -52,8 +52,9 @@ class CannonSubsystem(commands2.Subsystem):
 
     def goToPos(self,desPos):
         self.desiredPos = desPos
-        self.pid.setReference(self.desiredPos, rev.SparkMax.ControlType.kPosition, rev.ClosedLoopSlot.kSlot0, -0.2)
+        self.pid.setReference(self.desiredPos, rev.SparkMax.ControlType.kPosition, rev.ClosedLoopSlot.kSlot0, 0)
         print("CANNONING",desPos)
         
     def periodic(self):
-        print("cannon position: " + str(self.encoder.getPosition()))
+        #print("cannon position: " + str(self.encoder.getPosition()))
+        pass

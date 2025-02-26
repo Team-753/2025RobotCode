@@ -88,6 +88,8 @@ class cannonToPosition(commands2.Command):
         self.cannon.goToPos(self.desiredPosition)
         print("stuff")
         return super().execute()
+    def end(self, interrupted):
+        self.cannon.angleIdle()
 
 
     
