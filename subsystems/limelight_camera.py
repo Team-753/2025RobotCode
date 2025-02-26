@@ -77,11 +77,6 @@ class LimelightCamera(commands2.Subsystem):
 
 
 
-
-
-
-
-
 def _fix_name(name: str):
     if not name:
         name = "limelight"

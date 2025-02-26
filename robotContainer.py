@@ -50,9 +50,8 @@ class RobotContainer():
 
         self.driveTrain = DriveTrainSubSystem(self.joystick)
         self.elevator = elevatorSubSystem()
-        
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
-        
+    
         self.scheduler = commands2.CommandScheduler()
 
         self.algae = AlgaeSquisher()
@@ -106,7 +105,8 @@ class RobotContainer():
         
         #Welcome to the Ryan Zone 
         self.joystickButton2 = self.joystick.button(2)
-        self.joystickButton2.whileTrue(Lock(self.limelight))
+        self.joystickButton2.whileTrue(Lock(self.limelight, self.driveTrain, x_offset=YOUR_OFFSET, x_tolerance=2.0, desired_area=15.0))
+
 
         
         #self.AuxController.start().onTrue(elevatorToPos(self.elevator,0.5))

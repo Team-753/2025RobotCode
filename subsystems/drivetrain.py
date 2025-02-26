@@ -53,6 +53,11 @@ class DriveTrainSubSystem(commands2.Subsystem):
 
         self.field = wpilib.Field2d()
         wpilib.SmartDashboard.putData("Field: ", self.field)
+
+
+        #Welcome to the Ryan Zone 
+        self.joystickOverride = None  # New override variable
+        
         
     def getNavxRotation2d(self)-> geometry.Rotation2d:
         #getting the direction the robot is facing relative to where we started for field orient
@@ -74,21 +79,20 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #this doesnt do anything useful
         self.navx.reset()
     
-    def getJoystickInput(self)-> tuple[float]:
-        #getting input from the joysticks and changing it so that we can use it
-        constants = rc.driveConstants.joystickConstants
-        '''print('getting input.')
-        print('x value: ' + str(self.joystick.getX()))
-        print('y value: ' + str(self.joystick.getY()))
-        print('z value: ' + str(self.joystick.getZ()))'''
-        #print("joystick y: " + str(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)))
+    def getJoystickInput(self)-> tuple[float]: #getting input from the joysticks and changing it so that we can use it
         
-        deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
-        deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband) #need to invert the x direction this accounts for inverted cancoders
-        deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
-        
+        #Override Added (Blame Ryan)
 
-        return(deadbandedY, deadbandedX, deadbandedZ)
+        if self.joystickOverride is not None:
+            return self.joystickOverride
+        # Existing joystick input processing:
+        constants = rc.driveConstants.joystickConstants
+        deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
+        deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband)
+        deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
+        return (deadbandedY, deadbandedX, deadbandedZ)
+
+        
     
     def setSwerveStates(self, xSpeed: float, ySpeed: float, zSpeed: float, fieldOrient = True)-> None:
         #using the input from the get joystick input function to tell the wheels where to go
