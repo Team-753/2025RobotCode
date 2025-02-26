@@ -16,8 +16,11 @@ from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
 from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos
 from commands.ClimberCommand import FlipClimber, FlipCompressor
 
+from commands.VisionCommand import Lock
+
 from commands.simpleAutoCommands import *
 
+from subsystems.limelight_camera import LimelightCamera
 
 from subsystems.cannon import CannonSubsystem
 from subsystems.algae import AlgaeSquisher
@@ -37,6 +40,11 @@ class RobotContainer():
     _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
+
+
+        self.limelight = LimelightCamera("limelight-jamal")
+
+
         self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
 
@@ -78,7 +86,7 @@ class RobotContainer():
         self.AuxController.b().onTrue(elevatorToPos(self.elevator,13))
         self.AuxController.y().onTrue(elevatorToPos(self.elevator,22))
         self.AuxController.x().onTrue(elevatorToPos(self.elevator,0))
-        #6/1'''
+        #6/1
 
         self.AuxController.a().onTrue(cannonToPosition(self.cannon, 0.108))
         self.AuxController.b().onTrue(cannonToPosition(self.cannon, 0.133))
@@ -91,10 +99,15 @@ class RobotContainer():
         self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
         
+
+
         self.joystickButton4 = self.joystick.button(4)
         self.joystickButton4.onTrue(SlowDown(self.driveTrain))
         
-        
+        #Welcome to the Ryan Zone 
+        self.joystickButton2 = self.joystick.button(2)
+        self.joystickButton2.whileTrue(Lock(self.limelight))
+
         
         #self.AuxController.start().onTrue(elevatorToPos(self.elevator,0.5))
         self.AuxController.rightStick().onTrue(elevatorToPos(self.elevator,0.0))
