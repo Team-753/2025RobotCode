@@ -46,10 +46,6 @@ class Lock(commands2.Command):
         area_error = self.desired_tag_area - tag_area
         forward_speed = self.forwardSpeedMultiplier * area_error if area_error > 0 else 0
 
-        print(f"Locking: raw_x={raw_x}, x_offset={self.x_offset}, x_error={x_error}, "
-              f"tag_area={tag_area}, forward_speed={forward_speed}, lateral_speed={lateral_speed}, "
-              f"rotation_speed={rotation_speed}")
-
         self.driveTrain.joystickOverride = (forward_speed, lateral_speed, rotation_speed)
 
     def end(self, interrupted: bool):
