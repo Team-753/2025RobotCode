@@ -66,7 +66,7 @@ class RobotContainer():
 
         # Path follower
         self._auto_chooser = wpilib.SendableChooser()
-        self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [0, 1, 0], 2))
+        self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [0.5, 0, 0], 1))
         SmartDashboard.putData("Auto Mode", self._auto_chooser)
 
         # Configure the button bindings
@@ -142,7 +142,7 @@ class RobotContainer():
         elevatorToPos(self.elevator,0)
 
     def autonomousInit(self):
-        pass
+       pass
 
     def autonousPeriodic(self):
         pass
