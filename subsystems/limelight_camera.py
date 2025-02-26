@@ -6,11 +6,9 @@ import commands2
 from wpilib import Timer
 from ntcore import NetworkTableInstance
 
-
 class LimelightCamera(commands2.Subsystem):
     def __init__(self, cameraName: str) -> None:
-        #super().__init__()
-
+        super().__init__()  # Proper initialization
         self.cameraName = _fix_name(cameraName)
 
 
@@ -74,7 +72,7 @@ class LimelightCamera(commands2.Subsystem):
 
     #Welcome to the Ryan Zone 
 
-    def Track():
+    def Track(self):
         pass
 
 
