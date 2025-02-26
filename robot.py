@@ -23,7 +23,7 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self):
 
-        if self.camera.hasDetection == True:
+        if self.camera.hasDetection() == True:
             SmartDashboard.putBoolean("Locked(1)", True)
             SmartDashboard.putBoolean("Locked(2)", True)
         else :
