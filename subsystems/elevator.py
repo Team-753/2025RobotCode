@@ -44,7 +44,7 @@ class elevatorSubSystem(commands2.Subsystem):
     def setPosition(self,desiredPos):
         self.desiredPos=desiredPos
         self.pid.setReference(self.desiredPos,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0,1.2)
-        #print(self.encoder.getPosition())
+        print("ELEVATING")
     def goToZero(self):
         if self.encoder.getPosition()<0.7:
                 self.lMotor.set(0)
