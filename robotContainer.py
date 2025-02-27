@@ -80,9 +80,16 @@ class RobotContainer():
         self.joystickButton4 = self.joystick.button(4)
         self.joystickButton4.onTrue(SlowDown(self.driveTrain))
         
-        # Bind the Lock command with both limelight and driveTrain.
-        self.joystickButton2 = self.joystick.button(2)
-        self.joystickButton2.whileTrue(Lock(self.limelight, self.driveTrain))
+        #Welcome to the Ryan Zone
+
+        # For forced left (e.g., buttons 5 or 3):
+        self.joystickButtonLeft = self.joystick.button(5)
+        self.joystickButtonLeft.whileTrue(Lock(self.limelight, self.driveTrain, forcedPostLockDirection=-1))
+
+        # For forced right (e.g., buttons 6 or 4):
+        self.joystickButtonRight = self.joystick.button(6)
+        self.joystickButtonRight.whileTrue(Lock(self.limelight, self.driveTrain, forcedPostLockDirection=1))
+
         
         self.AuxController.rightStick().onTrue(elevatorToPos(self.elevator, 0.0))
         self.AuxController.leftStick().onTrue(cannonToPosition(self.cannon, 0.5))

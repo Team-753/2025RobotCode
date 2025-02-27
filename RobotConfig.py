@@ -110,19 +110,15 @@ class driveConstants:
             period = 0.05
 
 
-class visionConstants:
-    # The physical mounting offset of the camera relative to the robot’s center (in degrees)
-    x_offset = 1.5  # Adjust based on your hardware setup
-    
-    # Acceptable error (in degrees) to consider the target centered
-    x_tolerance = 2.0  
+class VisionConstants:
+    # Desired offsets for locking onto the AprilTag.
+    VISION_TX_OFFSET = 11.5   # TX Lock Condition
+    VISION_TY_OFFSET = 13.88  # TY Lock Condition
+    VISION_TA_OFFSET = 16.27  # Desired tag area when locked
 
-    # Tuning multipliers for corrections (tweak these as necessary)
-    lateralCorrectionConstant = 0.005  
-    rotationalCorrectionConstant = 0.007  
+    # Tolerance for determining if the target is "locked"
+    VISION_TOLERANCE = 1.5  # Tolerance for all three parameters
 
-    # For forward speed control based on tag size
-    forwardSpeedMultiplier = 0.01  
-
-    # Desired tag area when at the correct distance
-    desired_tag_area = 15.0
+    # Post-lock adjustments: lateral movement speed and duration (in seconds)
+    POST_LOCK_LATERAL_SPEED = 0.2  # Lateral speed (0 to 1 scale)
+    POST_LOCK_DURATION = 0.5       # Duration in seconds for the post-lock lateral movement
