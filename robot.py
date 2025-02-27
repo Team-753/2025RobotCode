@@ -42,3 +42,7 @@ class MyRobot(commands2.TimedCommandRobot):
         SmartDashboard.putBoolean("Locked(2)", False)
         return super().disabledInit()
     
+    def autonomousInit(self):
+        self.autoCommand = self.robotContainer.getAutonomousCommand()
+        self.autoCommand.schedule()
+    

@@ -123,7 +123,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
         #print(self.navx.getAngle())
         self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
-        print("k",self.kMaxSpeed)
+        #print("k",self.kMaxSpeed)
 
     def autoDrive(self, chasssisSpeeds: kinematics.ChassisSpeeds, currentPose: geometry.Pose2d, fieldRelative = True):
         if chasssisSpeeds == kinematics.ChassisSpeeds(0, 0, 0):
