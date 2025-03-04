@@ -16,11 +16,10 @@ from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
 from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos
 from commands.ClimberCommand import FlipClimber, FlipCompressor
 
-from commands.VisionCommand import Lock
+
 
 from commands.simpleAutoCommands import *
 
-from subsystems.limelight_camera import LimelightCamera
 
 from subsystems.cannon import CannonSubsystem
 from subsystems.algae import AlgaeSquisher
@@ -40,10 +39,6 @@ class RobotContainer():
     _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
-
-
-        self.limelight = LimelightCamera("limelight-jamal")
-
 
         self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
@@ -65,7 +60,7 @@ class RobotContainer():
 
         # Path follower
         self._auto_chooser = wpilib.SendableChooser()
-        self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [0.5, 0, 0], 1))
+        self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [-0.5, 0, 0], 1))
         SmartDashboard.putData("Auto Mode", self._auto_chooser)
 
         # Configure the button bindings
@@ -89,8 +84,8 @@ class RobotContainer():
 
         self.AuxController.a().onTrue(cannonToPosition(self.cannon, 0.108))
         self.AuxController.b().onTrue(cannonToPosition(self.cannon, 0.133))
-        self.AuxController.y().onTrue(cannonToPosition(self.cannon, 0.))
-        self.AuxController.x().onTrue(cannonToPosition(self.cannon, 0.297))
+        self.AuxController.y().onTrue(cannonToPosition(self.cannon, 0.15))
+        self.AuxController.x().onTrue(cannonToPosition(self.cannon, 0.31))
 
         self.AuxController.axisGreaterThan(1,.5).whileTrue(elevatorDown(self.elevator))
         self.AuxController.axisLessThan(1,-.5).whileTrue(elevatorUp(self.elevator))
@@ -100,12 +95,10 @@ class RobotContainer():
         
 
 
-        self.joystickButton4 = self.joystick.button(4)
-        self.joystickButton4.onTrue(SlowDown(self.driveTrain))
+        #self.joystickButton4 = self.joystick.button(4)
+        #self.joystickButton4.onTrue(SlowDown(self.driveTrain))
         
-        #Welcome to the Ryan Zone 
-        self.joystickButton2 = self.joystick.button(2)
-        self.joystickButton2.whileTrue(Lock(self.limelight, self.driveTrain, x_offset=YOUR_OFFSET, x_tolerance=2.0, desired_area=15.0))
+    
 
 
         
