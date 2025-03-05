@@ -28,7 +28,7 @@ class CannonSubsystem(commands2.Subsystem):
         self.topMotor.set(-0.35)
         
     def intake(self):
-        self.topMotor.set(1)
+        self.topMotor.set(1) #full speed
 
     def stop(self):
         self.topMotor.set(0)
@@ -39,7 +39,7 @@ class CannonSubsystem(commands2.Subsystem):
 
 
     def spinup(self):
-        self.pivotMotor.set(0.1)
+        self.pivotMotor.set(0.1) # slow speed, because otherwise things break
         print("current cannon postition: " + str(self.encoder.getPosition()))
 
     def spindown(self):
@@ -50,7 +50,7 @@ class CannonSubsystem(commands2.Subsystem):
     def angleIdle(self):
         self.pivotMotor.set(0.016)
 
-    def goToPos(self,desPos):
+    def goToPos(self,desPos):  #makes the cannon go to the desired position
         self.desiredPos = desPos
         self.pid.setReference(self.desiredPos, rev.SparkMax.ControlType.kPosition, rev.ClosedLoopSlot.kSlot0, 0)
         print("CANNONING",desPos)
