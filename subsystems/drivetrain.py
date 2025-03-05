@@ -80,12 +80,6 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.navx.reset()
     
     def getJoystickInput(self)-> tuple[float]: #getting input from the joysticks and changing it so that we can use it
-        
-        #Override Added (Blame Ryan)
-
-        if self.joystickOverride is not None:
-            return self.joystickOverride
-        # Existing joystick input processing:
         constants = rc.driveConstants.joystickConstants
         deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
         deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband)
@@ -122,8 +116,12 @@ class DriveTrainSubSystem(commands2.Subsystem):
                                    inputs[1] * self.kMaxSpeed,
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
         #print(self.navx.getAngle())
-        self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
-        #print("k",self.kMaxSpeed)
+
+        if self.joystick.getHID().getRawButton(4):
+            self.setSwerveStates(xSpeed * .5, ySpeed * .5, zSpeed* .75, True)
+
+        else:
+            self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
 
     def autoDrive(self, chasssisSpeeds: kinematics.ChassisSpeeds, currentPose: geometry.Pose2d, fieldRelative = True):
         if chasssisSpeeds == kinematics.ChassisSpeeds(0, 0, 0):
