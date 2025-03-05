@@ -11,7 +11,7 @@ import commands2.cmd
 from commands2.sysid import SysIdRoutine
 
 
-from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition, PivotDown, PivotUp
+from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition, PivotDown, PivotUp, TopAlgaeRemoval
 from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
 from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos
 from commands.ClimberCommand import FlipClimber, FlipCompressor
@@ -110,6 +110,7 @@ class RobotContainer():
 
         self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
         self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
+        self.AuxController.pov(90).onTrue(TopAlgaeRemoval(self.cannon))
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.

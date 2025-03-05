@@ -30,6 +30,12 @@ class CannonSubsystem(commands2.Subsystem):
     def intake(self):
         self.topMotor.set(1)
 
+    def topAlgaeRemoval(self):
+        self.topMotor.set(-1)
+
+    def bottomAlgaeRemoval(self):
+        self.topMotor.set(1)
+
     def stop(self):
         self.topMotor.set(0)
     
@@ -47,6 +53,7 @@ class CannonSubsystem(commands2.Subsystem):
 
     def angleStop(self):
         self.pivotMotor.set(0.016)
+        
     def angleIdle(self):
         self.pivotMotor.set(0.016)
 
