@@ -11,10 +11,12 @@ import commands2.cmd
 from commands2.sysid import SysIdRoutine
 
 
-from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition, PivotDown, PivotUp
+from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition, PivotDown, PivotUp, TopAlgaeRemoval
 from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
 from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos
 from commands.ClimberCommand import FlipClimber, FlipCompressor
+
+
 
 from commands.simpleAutoCommands import *
 
@@ -37,14 +39,14 @@ class RobotContainer():
     _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
+
         self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
 
         self.driveTrain = DriveTrainSubSystem(self.joystick)
         self.elevator = elevatorSubSystem()
-        
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
-        
+    
         self.scheduler = commands2.CommandScheduler()
 
         self.algae = AlgaeSquisher()
@@ -58,7 +60,7 @@ class RobotContainer():
 
         # Path follower
         self._auto_chooser = wpilib.SendableChooser()
-        self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [0, 1, 0], 2))
+        self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [-0.5, 0, 0], 1))
         SmartDashboard.putData("Auto Mode", self._auto_chooser)
 
         # Configure the button bindings
@@ -82,8 +84,8 @@ class RobotContainer():
 
         self.AuxController.a().onTrue(cannonToPosition(self.cannon, 0.108))
         self.AuxController.b().onTrue(cannonToPosition(self.cannon, 0.133))
-        self.AuxController.y().onTrue(cannonToPosition(self.cannon, 0.))
-        self.AuxController.x().onTrue(cannonToPosition(self.cannon, 0.297))
+        self.AuxController.y().onTrue(cannonToPosition(self.cannon, 0.15))
+        self.AuxController.x().onTrue(cannonToPosition(self.cannon, 0.31))
 
         self.AuxController.axisGreaterThan(1,.5).whileTrue(elevatorDown(self.elevator))
         self.AuxController.axisLessThan(1,-.5).whileTrue(elevatorUp(self.elevator))
@@ -91,10 +93,14 @@ class RobotContainer():
         self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
         
-        self.joystickButton4 = self.joystick.button(4)
-        self.joystickButton4.whileTrue(SlowDown(self.driveTrain))
+
+
+        #self.joystickButton4 = self.joystick.button(4)
+        #self.joystickButton4.onTrue(SlowDown(self.driveTrain))
         
-        
+    
+
+
         
         #self.AuxController.start().onTrue(elevatorToPos(self.elevator,0.5))
         self.AuxController.rightStick().onTrue(elevatorToPos(self.elevator,0.0))
@@ -104,6 +110,7 @@ class RobotContainer():
 
         self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
         self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
+        self.AuxController.pov(90).onTrue(TopAlgaeRemoval(self.cannon))
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.
@@ -129,7 +136,7 @@ class RobotContainer():
         elevatorToPos(self.elevator,0)
 
     def autonomousInit(self):
-        pass
+       pass
 
     def autonousPeriodic(self):
         pass

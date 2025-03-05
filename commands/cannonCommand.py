@@ -73,6 +73,7 @@ class DefaultPivotCommand(commands2.Command):
 
     def execute(self):
         self.cannon.ManualControl(self.cannon.GetJoystickInput())
+
     def end(self, interrupted):
         self.cannon.angleStop()
         return super().end(interrupted)
@@ -84,10 +85,28 @@ class cannonToPosition(commands2.Command):
         self.addRequirements(cannonSubsystem)
         self.cannon = cannonSubsystem
         self.desiredPosition = desPos
+
     def execute(self):
         self.cannon.goToPos(self.desiredPosition)
         print("stuff")
         return super().execute()
+    
+    def end(self, interrupted):
+        self.cannon.angleIdle()
+
+class TopAlgaeRemoval(commands2.Command):
+    def __init__(self, cannonSubsystem: CannonSubsystem):
+        super().__init__()
+        self.addRequirements(cannonSubsystem)
+        self.cannon = cannonSubsystem
+
+    def execute(self):
+        self.cannon.topAlgaeRemoval()
+        self.cannon.goToPos(self.cannon, 0.15)
+
+    def end(self, interrupted):
+        self.cannon.stop
+        self.cannon.angleStop
 
 
     

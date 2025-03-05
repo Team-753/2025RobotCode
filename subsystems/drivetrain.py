@@ -62,6 +62,10 @@ class DriveTrainSubSystem(commands2.Subsystem):
         """Here lies fancy auto stuff get ready for buggy fun
         ppconfig = RobotConfig.fromGUISettings()
         AutoBuilder.configure(self.getPose, self.resetPose, self.getRobotRelativeChassisSpeeds,)"""
+
+        #Welcome to the Ryan Zone 
+        self.joystickOverride = None  # New override variable
+        
         
     def getNavxRotation2d(self)-> geometry.Rotation2d:
         #getting the direction the robot is facing relative to where we started for field orient
@@ -83,21 +87,14 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #this doesnt do anything useful
         self.navx.reset()
     
-    def getJoystickInput(self)-> tuple[float]:
-        #getting input from the joysticks and changing it so that we can use it
+    def getJoystickInput(self)-> tuple[float]: #getting input from the joysticks and changing it so that we can use it
         constants = rc.driveConstants.joystickConstants
-        '''print('getting input.')
-        print('x value: ' + str(self.joystick.getX()))
-        print('y value: ' + str(self.joystick.getY()))
-        print('z value: ' + str(self.joystick.getZ()))'''
-        #print("joystick y: " + str(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)))
-        
         deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
-        deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband) #need to invert the x direction this accounts for inverted cancoders
+        deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband)
         deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
-        
+        return (deadbandedY, deadbandedX, deadbandedZ)
 
-        return(deadbandedY, deadbandedX, deadbandedZ)
+        
     
     def setSwerveStates(self, xSpeed: float, ySpeed: float, zSpeed: float, fieldOrient = True)-> None:
         #using the input from the get joystick input function to tell the wheels where to go
@@ -111,8 +108,8 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.rearLeft.setState(SwerveModuleStates[2])
         self.rearRight.setState(SwerveModuleStates[3])
         wpilib.SmartDashboard.putNumber("current rotation", self.poseEstimatior.getEstimatedPosition().rotation().degrees())
-        #print("current state: " + str(self.poseEstimatior.getEstimatedPosition().rotation().degrees()))
-        #print("navx position: " + str(self.navx.getRotation2d().degrees))
+
+
         wpilib.SmartDashboard.putBoolean("have navx: ", self.navx.isConnected())
         wpilib.SmartDashboard.putNumber("last rotation: ", self.getCurrentPose().rotation().degrees())
         wpilib.SmartDashboard.putNumber("x distance: ", self.getCurrentPose().translation().X())
@@ -127,7 +124,12 @@ class DriveTrainSubSystem(commands2.Subsystem):
                                    inputs[1] * self.kMaxSpeed,
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
         #print(self.navx.getAngle())
-        self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
+
+        if self.joystick.getHID().getRawButton(4):
+            self.setSwerveStates(xSpeed * .5, ySpeed * .5, zSpeed* .75, True)
+
+        else:
+            self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
 
     def autoDrive(self, chasssisSpeeds: kinematics.ChassisSpeeds, currentPose: geometry.Pose2d, fieldRelative = True):
         if chasssisSpeeds == kinematics.ChassisSpeeds(0, 0, 0):
@@ -169,8 +171,8 @@ class DriveTrainSubSystem(commands2.Subsystem):
         return self.poseEstimatior.getEstimatedPosition()
     
     def halfSpeed(self):
-        self.kMaxSpeed = 0.5 * (rc.driveConstants.RobotSpeeds.maxSpeed)
-
+        #self.kMaxSpeed = 0.5 * (rc.driveConstants.RobotSpeeds.maxSpeed)
+        pass
     def fullSpeed(self):
         self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
     
