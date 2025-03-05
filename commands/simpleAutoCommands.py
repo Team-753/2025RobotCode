@@ -13,6 +13,7 @@ class superSimpleAuto(commands2.Command):
         self.endTime = stopTime
     
     def initialize(self):
+        self.timer.reset()
         self.timer.start()
 
     def execute(self):
@@ -21,12 +22,11 @@ class superSimpleAuto(commands2.Command):
     
     def isFinished(self):
         if self.timer.hasElapsed(self.endTime):
-            self.timer.stop()
-            self.timer.reset()
             return True
+        self.timer.reset()
         
     def end(self, interrupted: bool):
-        self.driveTrain.joystickDrive([0, 0, geometry.Rotation2d()])
+        #self.driveTrain.joystickDrive([0, 0, 0])
         self.timer.stop()
 
     

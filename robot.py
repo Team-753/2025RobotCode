@@ -43,6 +43,7 @@ class MyRobot(commands2.TimedCommandRobot):
         return super().disabledInit()
     
     def autonomousInit(self):
+        self.robotContainer.autonomousInit()
         self.autoCommand = self.robotContainer.getAutonomousCommand()
         self.autoCommand.schedule()
     
