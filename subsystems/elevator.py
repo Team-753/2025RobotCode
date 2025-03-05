@@ -56,10 +56,10 @@ class elevatorSubSystem(commands2.Subsystem):
             self.pid.setReference(4,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
     def goUp(self):
         #if not self.encoder.getPosition()>26:
-        self.lMotor.set(0.1)
+        self.lMotor.set(0.15)
         print(self.encoder.getPosition())
     def goDown(self):
-        self.lMotor.set(0.02)
+        self.lMotor.set(0.017)
         print(self.encoder.getPosition())
     def holdPos(self):
         self.desiredPos=self.encoder.getPosition()
