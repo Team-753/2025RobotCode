@@ -54,6 +54,12 @@ class SwerveModule:
         #MotorConfigs.feedback.rotor_to_sensor_ratio = rc.SwerveModules.drivingGearRatio
         MotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.drivingGearRatio
 
+        #The following configs are for position based drive... might be helpful for autos?
+        MotorConfigs.slot1.k_p = 7.2
+        MotorConfigs.slot1.k_i = 2.4
+        MotorConfigs.slot1.k_d = 0.0001
+        MotorConfigs.slot1.k_s = 0.01
+
         self.driveMotor.configurator.apply(MotorConfigs)
 
         turnMotorConfigs = phoenix6.configs.TalonFXConfiguration()

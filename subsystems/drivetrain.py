@@ -10,6 +10,11 @@ from typing import List
 import commands2
 import RobotConfig as rc
 import math
+
+from pathplannerlib.auto import AutoBuilder
+from pathplannerlib.controller import PPHolonomicDriveController
+from pathplannerlib.config import RobotConfig, PIDConstants
+
 class DriveTrainSubSystem(commands2.Subsystem):
     def __init__(self, joystick: commands2.button.CommandJoystick) -> None:
         #camera settings
@@ -54,6 +59,9 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.field = wpilib.Field2d()
         wpilib.SmartDashboard.putData("Field: ", self.field)
 
+        """Here lies fancy auto stuff get ready for buggy fun
+        ppconfig = RobotConfig.fromGUISettings()
+        AutoBuilder.configure(self.getPose, self.resetPose, self.getRobotRelativeChassisSpeeds,)"""
 
         #Welcome to the Ryan Zone 
         self.joystickOverride = None  # New override variable
