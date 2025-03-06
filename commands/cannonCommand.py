@@ -102,7 +102,22 @@ class TopAlgaeRemoval(commands2.Command):
 
     def execute(self):
         self.cannon.topAlgaeRemoval()
-        self.cannon.goToPos(self.cannon, 0.15)
+        self.cannon.goToPos(self.cannon, 0.2)
+
+    def end(self, interrupted):
+        self.cannon.stop
+        self.cannon.angleStop
+
+
+class BottomAlgaeRemoval(commands2.Command):
+    def __init__(self, cannonSubsystem: CannonSubsystem):
+        super().__init__()
+        self.addRequirements(cannonSubsystem)
+        self.cannon = cannonSubsystem
+
+    def execute(self):
+        self.cannon.bottomAlgaeRemoval()
+        self.cannon.goToPos(self.cannon, 0.13)
 
     def end(self, interrupted):
         self.cannon.stop
