@@ -175,6 +175,11 @@ class DriveTrainSubSystem(commands2.Subsystem):
         pass
     def fullSpeed(self):
         self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
+
+    def getCurrentVel(self):
+        #currently doesnt do anything aah
+        pass
+        
     
     def periodic(self):
         currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
