@@ -18,8 +18,8 @@ from pathplannerlib.config import RobotConfig, PIDConstants
 class DriveTrainSubSystem(commands2.Subsystem):
     def __init__(self, joystick: commands2.button.CommandJoystick) -> None:
         #camera settings
-        self.stateStdDevs = 0.0, 0.0, 0.0
-        self.visionMeasurementsStdDevs = 1.0, 1.0, 1.0
+        self.stateStdDevs = 1.0, 1.0, 1.0
+        self.visionMeasurementsStdDevs = 0.0, 0.0, 0.0
 
         #set up the joystick and navx sensor
         self.joystick = joystick
