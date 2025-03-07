@@ -33,31 +33,31 @@ class TurnToPosition(commands2.Command):
     def isFinished(self):
         return self.angleController.atSetpoint()
     
-    class GoToPosition(commands2.Command):
-        def __init__(self, desiredPos: geometry.Pose2d, driveTrainSubsystem: DriveTrainSubSystem):
-            self.addRequirements(driveTrainSubsystem)
-            self.driveTrain = driveTrainSubsystem
-            self.desiredPos = desiredPos
-            self.constants = trajectory.TrapezoidProfile.Constraints(config.RobotSpeeds.maxSpeed, config.RobotSpeeds.maxAcceleration)
-            self.xController = controller.ProfiledPIDController(config.poseConstants.translationPIDConstants.kP, config.poseConstants.translationPIDConstants.kI, config.poseConstants.translationPIDConstants.kD)
-            self.yController = controller.ProfiledPIDController(config.poseConstants.translationPIDConstants.kP, config.poseConstants.translationPIDConstants.kI, config.poseConstants.translationPIDConstants.kD)
-            self.xController.reset(self.driveTrain.getCurrentPose().X())
-            self.xController.reset(self.driveTrain.getCurrentPose().X())
-            self.xController.setTolerance(config.poseConstants.xPoseToleranceMeters)
-            self.yController.setTolerance(config.poseConstants.yPoseToleranceMeters)
+class GoToPosition(commands2.Command):
+    def __init__(self, desiredPos: geometry.Pose2d, driveTrainSubsystem: DriveTrainSubSystem):
+        self.addRequirements(driveTrainSubsystem)
+        self.driveTrain = driveTrainSubsystem
+        self.desiredPos = desiredPos
+        self.constants = trajectory.TrapezoidProfile.Constraints(config.RobotSpeeds.maxSpeed, config.RobotSpeeds.maxAcceleration)
+        self.xController = controller.ProfiledPIDController(config.poseConstants.translationPIDConstants.kP, config.poseConstants.translationPIDConstants.kI, config.poseConstants.translationPIDConstants.kD)
+        self.yController = controller.ProfiledPIDController(config.poseConstants.translationPIDConstants.kP, config.poseConstants.translationPIDConstants.kI, config.poseConstants.translationPIDConstants.kD)
+        self.xController.reset(self.driveTrain.getCurrentPose().X())
+        self.xController.reset(self.driveTrain.getCurrentPose().X())
+        self.xController.setTolerance(config.poseConstants.xPoseToleranceMeters)
+        self.yController.setTolerance(config.poseConstants.yPoseToleranceMeters)
 
-        def initialize(self):
-            self.targetXState = trajectory.TrapezoidProfile.State(self.desiredPos.X())
-            self.targetYState = trajectory.TrapezoidProfile.State(self.desiredPos.Y())
+    def initialize(self):
+        self.targetXState = trajectory.TrapezoidProfile.State(self.desiredPos.X())
+        self.targetYState = trajectory.TrapezoidProfile.State(self.desiredPos.Y())
         
-        def execute(self):
-            self.toX = self.xController.calculate(self.driveTrain.getCurrentPose().X())
-            self.toY = self.yController.calculate(self.driveTrain.getCurrentPose().Y())
-            self.driveTrain.setSwerveStates(self.toX, self.toY, 0)
+    def execute(self):
+        self.toX = self.xController.calculate(self.driveTrain.getCurrentPose().X())
+        self.toY = self.yController.calculate(self.driveTrain.getCurrentPose().Y())
+        self.driveTrain.setSwerveStates(self.toX, self.toY, 0)
 
-        def end(self):
-            self.driveTrain.stationary()
-
-        def isFinished(self):
-            return self.xController.atSetpoint() and self.yController.atSetpoint()
+    def end(self):
+        self.driveTrain.stationary()
+        
+    def isFinished(self):
+        return self.xController.atSetpoint() and self.yController.atSetpoint()
             
