@@ -96,6 +96,8 @@ class driveConstants:
         thetaPoseToleranceRadians = 0.01745
         teleopVelLimit = 4.25
         teleopAccelLimit = 3
+        autoVelLimit = 2
+        autoAccelLimit = 1
 
     class ThetaPIDConstants:
         autoVelLimit = 2
