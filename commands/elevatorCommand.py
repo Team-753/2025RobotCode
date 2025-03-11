@@ -47,8 +47,8 @@ class elevatorToPos(commands2.Command):
             self.elevator.goToMax()
         else:
             self.elevator.setPosition(self.desiredPos)
-    def isFinished(self):
-        if self.elevator.getPosError<0.2:
+    '''def isFinished(self):
+        if float(self.elevator.getPosError())<0.2:
             return True
         else:
-            return False
+            return False'''

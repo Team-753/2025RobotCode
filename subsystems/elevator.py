@@ -55,12 +55,12 @@ class elevatorSubSystem(commands2.Subsystem):
         else:
             self.pid.setReference(4,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
     def goToMax(self):
-        if self.encoder.getPosition()>23:
-                self.lMotor.set(0.04)
+       # if self.encoder.getPosition()>23:
+            #    self.lMotor.set(0.05)
                 #print("MOTOR IDLE")
-        elif self.encoder.getPosition()>22 and abs(self.encoder.getVelocity())<150:
-            self.lMotor.set(0.05)
-            #print("AT POS")
+        if self.encoder.getPosition()>21 and abs(self.encoder.getVelocity())<150:
+            self.lMotor.set(0.1)
+            print("AT POS")
         else:
             self.pid.setReference(23,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
     def goUp(self):
@@ -77,7 +77,7 @@ class elevatorSubSystem(commands2.Subsystem):
         self.lMotor.IdleMode(0)
         self.lMotor.set(0.06)
     def getPosError(self):
-        return (self.desiredPos()-self.encoder.getPosition())
+        return (float(self.desiredPos())-float(self.encoder.getPosition()))
 
 
  

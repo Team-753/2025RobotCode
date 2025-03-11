@@ -1,4 +1,18 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "SPARK MAX [17]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [17] RELATIVE ENCODER": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
