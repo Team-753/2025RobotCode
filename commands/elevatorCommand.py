@@ -43,5 +43,12 @@ class elevatorToPos(commands2.Command):
         if self.desiredPos==0:
             self.elevator.goToZero()
             self.elevator.checkBottom()
+        elif self.desiredPos == 22:
+            self.elevator.goToMax()
         else:
             self.elevator.setPosition(self.desiredPos)
+    def isFinished(self):
+        if self.elevator.getPosError<0.2:
+            return True
+        else:
+            return False
