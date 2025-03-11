@@ -44,22 +44,22 @@ class elevatorSubSystem(commands2.Subsystem):
     def setPosition(self,desiredPos):
         self.desiredPos=desiredPos
         self.pid.setReference(self.desiredPos,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0,1.2)
-        #print(self.encoder.getPosition())
+        print("ELEVATING")
     def goToZero(self):
         if self.encoder.getPosition()<0.7:
                 self.lMotor.set(0)
                 #print("MOTOR IDLE")
-        elif self.encoder.getPosition()<6 and abs(self.encoder.getVelocity())<150:
-            self.lMotor.set(0.03)
+        elif self.encoder.getPosition()<4 and abs(self.encoder.getVelocity())<150:
+            self.lMotor.set(0.023)
             #print("AT POS")
         else:
-            self.pid.setReference(6,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
+            self.pid.setReference(4,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
     def goUp(self):
         #if not self.encoder.getPosition()>26:
-        self.lMotor.set(0.1)
+        self.lMotor.set(0.15)
         print(self.encoder.getPosition())
     def goDown(self):
-        self.lMotor.set(0.02)
+        self.lMotor.set(0.017)
         print(self.encoder.getPosition())
     def holdPos(self):
         self.desiredPos=self.encoder.getPosition()

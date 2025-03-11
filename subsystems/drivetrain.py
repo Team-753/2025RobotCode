@@ -10,11 +10,16 @@ from typing import List
 import commands2
 import RobotConfig as rc
 import math
+
+from pathplannerlib.auto import AutoBuilder
+from pathplannerlib.controller import PPHolonomicDriveController
+from pathplannerlib.config import RobotConfig, PIDConstants
+
 class DriveTrainSubSystem(commands2.Subsystem):
     def __init__(self, joystick: commands2.button.CommandJoystick) -> None:
         #camera settings
-        self.stateStdDevs = 0.0, 0.0, 0.0
-        self.visionMeasurementsStdDevs = 1.0, 1.0, 1.0
+        self.stateStdDevs = 1.0, 1.0, 1.0
+        self.visionMeasurementsStdDevs = 0.0, 0.0, 0.0
 
         #set up the joystick and navx sensor
         self.joystick = joystick
@@ -53,6 +58,14 @@ class DriveTrainSubSystem(commands2.Subsystem):
 
         self.field = wpilib.Field2d()
         wpilib.SmartDashboard.putData("Field: ", self.field)
+
+        """Here lies fancy auto stuff get ready for buggy fun
+        ppconfig = RobotConfig.fromGUISettings()
+        AutoBuilder.configure(self.getPose, self.resetPose, self.getRobotRelativeChassisSpeeds,)"""
+
+        #Welcome to the Ryan Zone 
+        self.joystickOverride = None  # New override variable
+        
         
     def getNavxRotation2d(self)-> geometry.Rotation2d:
         #getting the direction the robot is facing relative to where we started for field orient
@@ -74,21 +87,14 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #this doesnt do anything useful
         self.navx.reset()
     
-    def getJoystickInput(self)-> tuple[float]:
-        #getting input from the joysticks and changing it so that we can use it
+    def getJoystickInput(self)-> tuple[float]: #getting input from the joysticks and changing it so that we can use it
         constants = rc.driveConstants.joystickConstants
-        '''print('getting input.')
-        print('x value: ' + str(self.joystick.getX()))
-        print('y value: ' + str(self.joystick.getY()))
-        print('z value: ' + str(self.joystick.getZ()))'''
-        #print("joystick y: " + str(-wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)))
-        
         deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
-        deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband) #need to invert the x direction this accounts for inverted cancoders
+        deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband)
         deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
-        
+        return (deadbandedY, deadbandedX, deadbandedZ)
 
-        return(deadbandedY, deadbandedX, deadbandedZ)
+        
     
     def setSwerveStates(self, xSpeed: float, ySpeed: float, zSpeed: float, fieldOrient = True)-> None:
         #using the input from the get joystick input function to tell the wheels where to go
@@ -118,7 +124,12 @@ class DriveTrainSubSystem(commands2.Subsystem):
                                    inputs[1] * self.kMaxSpeed,
                                    inputs[2] * self.kMaxAngularVelocity * rc.driveConstants.RobotSpeeds.manualRotationSpeedFactor)
         #print(self.navx.getAngle())
-        self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
+
+        if self.joystick.getHID().getRawButton(4):
+            self.setSwerveStates(xSpeed * .5, ySpeed * .5, zSpeed* .75, True)
+
+        else:
+            self.setSwerveStates(xSpeed, ySpeed, zSpeed, True)
 
     def autoDrive(self, chasssisSpeeds: kinematics.ChassisSpeeds, currentPose: geometry.Pose2d, fieldRelative = True):
         if chasssisSpeeds == kinematics.ChassisSpeeds(0, 0, 0):
@@ -160,10 +171,15 @@ class DriveTrainSubSystem(commands2.Subsystem):
         return self.poseEstimatior.getEstimatedPosition()
     
     def halfSpeed(self):
-        self.kMaxSpeed = 0.5 * (rc.driveConstants.RobotSpeeds.maxSpeed)
-
+        #self.kMaxSpeed = 0.5 * (rc.driveConstants.RobotSpeeds.maxSpeed)
+        pass
     def fullSpeed(self):
         self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
+
+    def getCurrentVel(self):
+        #currently doesnt do anything aah
+        pass
+        
     
     def periodic(self):
         currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())

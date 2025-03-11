@@ -11,16 +11,16 @@ import commands2.cmd
 from commands2.sysid import SysIdRoutine
 
 
-from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition, PivotDown, PivotUp
+from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition, PivotDown, PivotUp, TopAlgaeRemoval, BottomAlgaeRemoval
 from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
 from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos
 from commands.ClimberCommand import FlipClimber, FlipCompressor
 
-from commands.VisionCommand import Lock
+
 
 from commands.simpleAutoCommands import *
+from commands.fancyAutoCommands import *
 
-from subsystems.limelight_camera import LimelightCamera
 
 from subsystems.cannon import CannonSubsystem
 from subsystems.algae import AlgaeSquisher
@@ -41,18 +41,13 @@ class RobotContainer():
     def __init__(self) -> None:
         #declaring the subsystems and setting up the drivetrain control
 
-
-        self.limelight = LimelightCamera("limelight-jamal")
-
-
         self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
 
         self.driveTrain = DriveTrainSubSystem(self.joystick)
         self.elevator = elevatorSubSystem()
-        
         self.driveTrain.setDefaultCommand(DefaultDriveCommand(self.driveTrain))
-        
+    
         self.scheduler = commands2.CommandScheduler()
 
         self.algae = AlgaeSquisher()
@@ -66,7 +61,8 @@ class RobotContainer():
 
         # Path follower
         self._auto_chooser = wpilib.SendableChooser()
-        self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [0, 1, 0], 2))
+        self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [-0.5, 0, 0], 1))
+        self._auto_chooser.addOption("something new??", GoToPosition(geometry.Pose2d(1, 1, pi/2), self.driveTrain))
         SmartDashboard.putData("Auto Mode", self._auto_chooser)
 
         # Configure the button bindings
@@ -86,15 +82,12 @@ class RobotContainer():
         self.AuxController.b().onTrue(elevatorToPos(self.elevator,13))
         self.AuxController.y().onTrue(elevatorToPos(self.elevator,22))
         self.AuxController.x().onTrue(elevatorToPos(self.elevator,0))
-
-
-
         #6/1
 
         self.AuxController.a().onTrue(cannonToPosition(self.cannon, 0.108))
         self.AuxController.b().onTrue(cannonToPosition(self.cannon, 0.133))
-        self.AuxController.y().onTrue(cannonToPosition(self.cannon, 0.))
-        self.AuxController.x().onTrue(cannonToPosition(self.cannon, 0.297))
+        self.AuxController.y().onTrue(cannonToPosition(self.cannon, 0.15))
+        self.AuxController.x().onTrue(cannonToPosition(self.cannon, 0.31))
 
         self.AuxController.axisGreaterThan(1,.5).whileTrue(elevatorDown(self.elevator))
         self.AuxController.axisLessThan(1,-.5).whileTrue(elevatorUp(self.elevator))
@@ -104,12 +97,11 @@ class RobotContainer():
         
 
 
-        self.joystickButton4 = self.joystick.button(4)
-        self.joystickButton4.whileTrue(SlowDown(self.driveTrain))
+        #self.joystickButton4 = self.joystick.button(4)
+        #self.joystickButton4.onTrue(SlowDown(self.driveTrain))
         
-        #Welcome to the Ryan Zone 
-        self.joystickButton2 = self.joystick.button(2)
-        self.joystickButton2.whileTrue(Lock(self.limelight))
+    
+
 
         
         #self.AuxController.start().onTrue(elevatorToPos(self.elevator,0.5))
@@ -120,6 +112,8 @@ class RobotContainer():
 
         self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
         self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
+        self.AuxController.pov(90).onTrue(TopAlgaeRemoval(self.cannon))
+        self.AuxController.pov(270).onTrue(BottomAlgaeRemoval(self.cannon))
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.
@@ -145,7 +139,7 @@ class RobotContainer():
         elevatorToPos(self.elevator,0)
 
     def autonomousInit(self):
-        pass
+       pass
 
     def autonousPeriodic(self):
         pass

@@ -54,6 +54,12 @@ class SwerveModule:
         #MotorConfigs.feedback.rotor_to_sensor_ratio = rc.SwerveModules.drivingGearRatio
         MotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.drivingGearRatio
 
+        #The following configs are for position based drive... might be helpful for autos?
+        MotorConfigs.slot1.k_p = 7.2
+        MotorConfigs.slot1.k_i = 2.4
+        MotorConfigs.slot1.k_d = 0.0001
+        MotorConfigs.slot1.k_s = 0.01
+
         self.driveMotor.configurator.apply(MotorConfigs)
 
         turnMotorConfigs = phoenix6.configs.TalonFXConfiguration()
@@ -139,8 +145,8 @@ class SwerveModule:
 
     def stop(self)-> None:
         #THE ROBOT MUST STOP NOW (break the motors)
-        self.driveMotor.set_control(self.velocity(0))
-        self.turnMotor.set_control(self.velocity(0))
+        self.driveMotor.set_control(self.velocity.with_velocity(0))
+        self.turnMotor.set_control(self.velocity.with_velocity(0))
 
    
 

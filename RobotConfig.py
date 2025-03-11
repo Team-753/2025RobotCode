@@ -96,6 +96,8 @@ class driveConstants:
         thetaPoseToleranceRadians = 0.01745
         teleopVelLimit = 4.25
         teleopAccelLimit = 3
+        autoVelLimit = 2
+        autoAccelLimit = 1
 
     class ThetaPIDConstants:
         autoVelLimit = 2
@@ -108,5 +110,21 @@ class driveConstants:
             kI = 0.0
             kD = 0.0
             period = 0.05
+
+
+class visionConstants:
+    # The physical mounting offset of the camera relative to the robot's center (in degrees)
+    x_offset = 1.5  # Adjust as needed
+
+    # Acceptable error (in degrees) to consider the target centered
+    x_tolerance = 2.0  
+
+    # Tuning multipliers (tune these separately for lateral vs. rotational control)
+    lateralCorrectionConstant = 0.005  
+    rotationalCorrectionConstant = 0.007  
+    
+    # For forward speed based on the target's area (desired tag area when at the proper distance)
+    forwardSpeedMultiplier = 0.01  
+    desired_tag_area = 15.0
 
 

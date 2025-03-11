@@ -22,6 +22,7 @@ class SlowDown(commands2.Command):
 
     def execute(self):
         self.driveTrain.halfSpeed()
-
+        self.driveTrain.joystickDrive(self.driveTrain.getJoystickInput())
+    
     def end(self, interrupted):
         self.driveTrain.fullSpeed()

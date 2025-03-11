@@ -8,7 +8,7 @@ class superSimpleAuto(commands2.Command):
         super().__init__()
         self.addRequirements(driveTrainSubSystem)
         self.driveTrain = driveTrainSubSystem
-        self.timer = Timer
+        self.timer = Timer()
         self.directions = directions
         self.endTime = stopTime
     
@@ -18,13 +18,15 @@ class superSimpleAuto(commands2.Command):
 
     def execute(self):
         self.driveTrain.joystickDrive(self.directions)
+        print("running auto")
     
     def isFinished(self):
-        if self.timer.get() > self.endTime:
+        if self.timer.hasElapsed(self.endTime):
             return True
+        self.timer.reset()
         
     def end(self, interrupted: bool):
-        self.driveTrain.joystickDrive([0, 0, geometry.Rectangle2d()])
+        #self.driveTrain.joystickDrive([0, 0, 0])
         self.timer.stop()
 
     
