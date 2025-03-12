@@ -54,8 +54,8 @@ class AuxController:
     USB_ID = 1
 
 class algaeSquisher:
-    squisherPistonForward = 0
-    squisherPistonReverse = 1
+    squisherPistonForward = 1
+    squisherPistonReverse = 0
 
     squisherMotorID = 18
 

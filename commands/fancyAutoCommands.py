@@ -1,5 +1,6 @@
 import commands2
 from wpimath import geometry, controller, trajectory
+import wpimath
 from subsystems.drivetrain import DriveTrainSubSystem
 from RobotConfig import driveConstants as config
 from wpilib import DriverStation, SmartDashboard, Timer
@@ -58,8 +59,8 @@ class GoToPosition(commands2.Command):
         #self.xController.reset(self.driveTrain.getCurrentPose().X())
         self.xController.setTolerance(config.poseConstants.xPoseToleranceMeters)
         self.yController.setTolerance(config.poseConstants.yPoseToleranceMeters)
-        self.constraints = trajectory.TrapezoidProfile.Constraints(config.ThetaPIDConstants.autoVelLimit, config.ThetaPIDConstants.autoAccelLimit)
-        self.angleController = controller.ProfiledPIDController(config.poseConstants.rotationPIDConstants.kP, config.poseConstants.rotationPIDConstants.kI, config.poseConstants.rotationPIDConstants.kD, self.constraints)
+        self.constraints = trajectory.TrapezoidProfileRadians.Constraints(config.ThetaPIDConstants.autoVelLimit, config.ThetaPIDConstants.autoAccelLimit)
+        self.angleController = controller.ProfiledPIDControllerRadians(config.poseConstants.rotationPIDConstants.kP, config.poseConstants.rotationPIDConstants.kI, config.poseConstants.rotationPIDConstants.kD, self.constraints)
         self.angleController.setTolerance(config.poseConstants.thetaPoseToleranceRadians)
         self.angleController.enableContinuousInput(-pi, pi)
         self.timer = Timer()
@@ -68,12 +69,14 @@ class GoToPosition(commands2.Command):
     def initialize(self):
         self.targetXState = trajectory.TrapezoidProfile.State(self.desiredPos.X())
         self.targetYState = trajectory.TrapezoidProfile.State(self.desiredPos.Y())
-        self.targetState =  trajectory.TrapezoidProfile.State(self.desiredPos.rotation().radians())
-        
+        self.targetState =  trajectory.TrapezoidProfileRadians.State(self.desiredPos.rotation().radians())
+        print(self.targetXState.position, self.targetYState.position, self.targetState.position)
+
     def execute(self):
-        self.toX = self.xController.calculate(self.driveTrain.getCurrentPose().X())
-        self.toY = self.yController.calculate(self.driveTrain.getCurrentPose().Y())
-        self.output = self.angleController.calculate(self.driveTrain.getCurrentPose().rotation().radians(), self.targetState)
+        self.toX = self.xController.calculate(self.driveTrain.getCurrentPose().X(), self.targetXState)
+        self.toY = self.yController.calculate(self.driveTrain.getCurrentPose().Y(), self.targetYState)
+        self.output = self.angleController.calculate(wpimath.angleModulus(self.driveTrain.getCurrentPose().rotation().radians()), self.targetState)
+        SmartDashboard.putNumber("current spin: ", wpimath.angleModulus(self.driveTrain.getCurrentPose().rotation().radians().__float__()))
         self.driveTrain.setSwerveStates(self.toX, self.toY, self.output)
         SmartDashboard.putBoolean("auto going", True)
 

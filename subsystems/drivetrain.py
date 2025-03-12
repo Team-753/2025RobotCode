@@ -184,3 +184,4 @@ class DriveTrainSubSystem(commands2.Subsystem):
     def periodic(self):
         currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
         self.field.setRobotPose(currentPose)
+        wpilib.SmartDashboard.putNumber("X position: ", currentPose.X())

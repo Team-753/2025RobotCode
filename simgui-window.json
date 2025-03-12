@@ -37,12 +37,20 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "6,780",
+<<<<<<< HEAD
+      "Size": "388,176"
+=======
       "Size": "202,214"
+>>>>>>> 3b1c8dab74c9ea3f60c4b3422edc6c87dd74e4c1
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "306,275",
+<<<<<<< HEAD
+      "Size": "1156,241"
+=======
       "Size": "976,278"
+>>>>>>> 3b1c8dab74c9ea3f60c4b3422edc6c87dd74e4c1
     },
     "###NetworkTables": {
       "Collapsed": "0",
