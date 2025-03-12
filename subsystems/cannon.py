@@ -26,6 +26,9 @@ class CannonSubsystem(commands2.Subsystem):
     def place(self):
         print("cannon is placing")
         self.topMotor.set(-0.35)
+
+    def slowPlace(self):
+        self.topMotor.set(-0.1)
         
     def intake(self):
         self.topMotor.set(1) #full speed

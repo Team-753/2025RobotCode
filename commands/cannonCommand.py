@@ -197,6 +197,30 @@ class AutoIntake(commands2.Command):
         self.timer.stop
 
 
+class AutoTroughPlace(commands2.Command):
+    def __init__(self, cannonSubsystem: CannonSubsystem, stopTime):
+        super().__init__()
+        self.addRequirements(CannonSubsystem)
+        self.cannon = CannonSubsystem
+        self.timer = Timer()
+        self.endTime = stopTime
+
+    def initialize(self):
+        self.timer.reset
+        self.timer.start
+
+    def execute(self):
+        self.cannon.slowPlace
+
+    def isFinished(self):
+        if self.timer.hasElapsed(self.endTime):
+            return True
+        self.timer.reset
+
+    def end(self, interrupted: bool):
+        self.timer.stop
+
+
 
 
     
