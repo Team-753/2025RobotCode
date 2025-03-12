@@ -31,6 +31,7 @@ from subsystems.Climber import ClimberSubsystem
 #from phoenix6 import swerve, hardware
 from wpilib import SmartDashboard
 from wpimath.geometry import Rotation2d
+from math import pi
 #from wpimath.units import rotationsToRadians
 
 class RobotContainer():
@@ -62,7 +63,7 @@ class RobotContainer():
         # Path follower
         self._auto_chooser = wpilib.SendableChooser()
         self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [-0.5, 0, 0], 1))
-        self._auto_chooser.addOption("something new??", GoToPosition(geometry.Pose2d(1, 1, pi/2), self.driveTrain))
+        self._auto_chooser.addOption("something new??", GoToPosition(geometry.Pose2d(1, 0, 0), self.driveTrain))
         SmartDashboard.putData("Auto Mode", self._auto_chooser)
 
         # Configure the button bindings
@@ -136,7 +137,7 @@ class RobotContainer():
         return kInput
     
     def disabledInit(self):
-        elevatorToPos(self.elevator,0)
+        elevatorToPos(self.elevator, 0)
 
     def autonomousInit(self):
        pass
