@@ -145,8 +145,8 @@ class SwerveModule:
 
     def stop(self)-> None:
         #THE ROBOT MUST STOP NOW (break the motors)
-        self.driveMotor.set_control(self.velocity(0))
-        self.turnMotor.set_control(self.velocity(0))
+        self.driveMotor.set_control(self.velocity.with_velocity(0))
+        self.turnMotor.set_control(self.velocity.with_velocity(0))
 
    
 

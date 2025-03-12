@@ -19,6 +19,7 @@ from commands.ClimberCommand import FlipClimber, FlipCompressor
 
 
 from commands.simpleAutoCommands import *
+from commands.fancyAutoCommands import *
 
 
 from subsystems.cannon import CannonSubsystem
@@ -30,6 +31,7 @@ from subsystems.Climber import ClimberSubsystem
 #from phoenix6 import swerve, hardware
 from wpilib import SmartDashboard
 from wpimath.geometry import Rotation2d
+from math import pi
 #from wpimath.units import rotationsToRadians
 
 class RobotContainer():
@@ -61,6 +63,7 @@ class RobotContainer():
         # Path follower
         self._auto_chooser = wpilib.SendableChooser()
         self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [-0.5, 0, 0], 1))
+        self._auto_chooser.addOption("something new??", GoToPosition(geometry.Pose2d(1, 0, 0), self.driveTrain))
         SmartDashboard.putData("Auto Mode", self._auto_chooser)
 
         # Configure the button bindings
@@ -78,7 +81,7 @@ class RobotContainer():
         
         self.AuxController.a().onTrue(elevatorToPos(self.elevator,6))
         self.AuxController.b().onTrue(elevatorToPos(self.elevator,13))
-        self.AuxController.y().onTrue(elevatorToPos(self.elevator,22))
+        self.AuxController.y().onTrue(elevatorToPos(self.elevator,23.8))
         self.AuxController.x().onTrue(elevatorToPos(self.elevator,0))
         #6/1
 
@@ -138,7 +141,7 @@ class RobotContainer():
         return kInput
     
     def disabledInit(self):
-        elevatorToPos(self.elevator,0)
+        elevatorToPos(self.elevator, 0)
 
     def autonomousInit(self):
        pass
