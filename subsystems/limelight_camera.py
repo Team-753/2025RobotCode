@@ -12,6 +12,7 @@ class LimelightCamera(Subsystem):
     def __init__(self, cameraName: str) -> None:
         super().__init__()
 
+
         self.cameraName = _fix_name(cameraName)
 
         instance = NetworkTableInstance.getDefault()
