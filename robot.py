@@ -14,7 +14,7 @@ class MyRobot(commands2.TimedCommandRobot):
     def robotInit(self):
         self.robotContainer = RobotContainer()
         SmartDashboard.setDefaultBoolean("Locked(1)", False)
-        SmartDashboard.setDefaultBoolean("Locked(2)", False)
+        #SmartDashboard.setDefaultBoolean("Locked(2)", False)
 
         
 
@@ -22,31 +22,31 @@ class MyRobot(commands2.TimedCommandRobot):
         
         if self.camera.hasDetection() == True:
             SmartDashboard.putBoolean("Locked(1)", True)
-            SmartDashboard.putBoolean("Locked(2)", True)
+            #SmartDashboard.putBoolean("Locked(2)", True)
         else :
             SmartDashboard.putBoolean("Locked(1)", False)
-            SmartDashboard.putBoolean("Locked(2)", False)
+            #SmartDashboard.putBoolean("Locked(2)", False)
 
 
     def teleopInit(self):
         SmartDashboard.putBoolean("Locked(1)", False)
-        SmartDashboard.putBoolean("Locked(2)", False)
+        #SmartDashboard.putBoolean("Locked(2)", False)
 
           
 
     def disabledInit(self):
         SmartDashboard.putBoolean("Locked(1)", False)
-        SmartDashboard.putBoolean("Locked(2)", False)
+        #SmartDashboard.putBoolean("Locked(2)", False)
         return super().disabledInit()
     
     def autonomousInit(self):
         
         if self.camera.hasDetection() == True:
             SmartDashboard.putBoolean("Locked(1)", True)
-            SmartDashboard.putBoolean("Locked(2)", True)
+            #SmartDashboard.putBoolean("Locked(2)", True)
         else :
             SmartDashboard.putBoolean("Locked(1)", False)
-            SmartDashboard.putBoolean("Locked(2)", False)
+            #SmartDashboard.putBoolean("Locked(2)", False)
         
         
         self.robotContainer.autonomousInit()

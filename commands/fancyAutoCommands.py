@@ -59,7 +59,7 @@ class GoToPosition(commands2.Command):
         #self.xController.reset(self.driveTrain.getCurrentPose().X())
         self.xController.setTolerance(config.poseConstants.xPoseToleranceMeters)
         self.yController.setTolerance(config.poseConstants.yPoseToleranceMeters)
-        self.constraints = trajectory.TrapezoidProfileRadians.Constraints(config.ThetaPIDConstants.autoVelLimit, config.ThetaPIDConstants.autoAccelLimit)
+        self.constraints = trajectory.TrapezoidProfileRadians.Constraints(2 *pi, 2 * pi)
         self.angleController = controller.ProfiledPIDControllerRadians(config.poseConstants.rotationPIDConstants.kP, config.poseConstants.rotationPIDConstants.kI, config.poseConstants.rotationPIDConstants.kD, self.constraints)
         self.angleController.setTolerance(config.poseConstants.thetaPoseToleranceRadians)
         self.angleController.enableContinuousInput(-pi, pi)
@@ -70,6 +70,7 @@ class GoToPosition(commands2.Command):
         self.targetXState = trajectory.TrapezoidProfile.State(self.desiredPos.X())
         self.targetYState = trajectory.TrapezoidProfile.State(self.desiredPos.Y())
         self.targetState =  trajectory.TrapezoidProfileRadians.State(self.desiredPos.rotation().radians())
+        SmartDashboard.putNumber("desired spin: ", self.targetState.position)
         print(self.targetXState.position, self.targetYState.position, self.targetState.position)
 
     def execute(self):
@@ -77,7 +78,8 @@ class GoToPosition(commands2.Command):
         self.toY = self.yController.calculate(self.driveTrain.getCurrentPose().Y(), self.targetYState)
         self.output = self.angleController.calculate(wpimath.angleModulus(self.driveTrain.getCurrentPose().rotation().radians()), self.targetState)
         SmartDashboard.putNumber("current spin: ", wpimath.angleModulus(self.driveTrain.getCurrentPose().rotation().radians().__float__()))
-        self.driveTrain.setSwerveStates(self.toX, self.toY, self.output)
+        #self.driveTrain.setSwerveStates(self.toX, self.toY, self.output)
+        self.driveTrain.setSwerveStates(0, 0, self.output)
         SmartDashboard.putBoolean("auto going", True)
 
     def end(self, interrupted):

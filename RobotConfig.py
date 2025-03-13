@@ -86,7 +86,7 @@ class driveConstants:
             period = 0.025
 
         class rotationPIDConstants:
-            kP = 1.0
+            kP = 0.15
             kI = 0.0
             kD = 0.0
             period = 0.025
@@ -100,8 +100,8 @@ class driveConstants:
         autoAccelLimit = 1
 
     class ThetaPIDConstants:
-        autoVelLimit = 2
-        autoAccelLimit = 2
+        autoVelLimit = 6
+        autoAccelLimit = 5
         xPoseToleranceMeters = 0.03
         yPoseToleranceMeters = 0.03
         period = 0.05
