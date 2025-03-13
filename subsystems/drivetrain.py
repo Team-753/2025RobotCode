@@ -205,11 +205,10 @@ class DriveTrainSubSystem(commands2.Subsystem):
             lockTime= time - (latency/1000)
 
             self.poseEstimatior.addVisionMeasurement(posedata,lockTime)
+            
+            wpilib.SmartDashboard.putNumberArray("data",posedata,time)
 
         currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
-
-            
-
 
 
         self.field.setRobotPose(currentPose)
