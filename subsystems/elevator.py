@@ -77,7 +77,7 @@ class elevatorSubSystem(commands2.Subsystem):
         self.lMotor.IdleMode(0)
         self.lMotor.set(0.06)
     def getPosError(self):
-        return (float(self.desiredPos())-float(self.encoder.getPosition()))
+        return (float(self.desiredPos)-float(self.encoder.getPosition()))
 
 
  

@@ -33,6 +33,19 @@ class elevatorDown(commands2.Command):
         self.eSub.checkBottom()
         pass
 
+'''class elevatorToPos(commands2.Command):
+    def __init__(self, elevatorSubSystem: elevatorSubSystem, desPos):
+        super().__init__()
+        self.addRequirements(elevatorSubSystem)
+        self.elevator = elevatorSubSystem
+        self.desiredPos=desPos
+    def execute(self):
+        if self.desiredPos==0:
+            self.elevator.goToZero()
+            self.elevator.checkBottom()
+        else:
+            self.elevator.setPosition(self.desiredPos)'''
+
 class elevatorToPos(commands2.Command):
     def __init__(self, elevatorSubSystem: elevatorSubSystem, desPos):
         super().__init__()
@@ -47,8 +60,8 @@ class elevatorToPos(commands2.Command):
             self.elevator.goToMax()
         else:
             self.elevator.setPosition(self.desiredPos)
-    '''def isFinished(self):
+    def isFinished(self):
         if float(self.elevator.getPosError())<0.2:
             return True
         else:
-            return False'''
+            return False
