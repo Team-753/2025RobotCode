@@ -3,7 +3,7 @@
 # Open Source Software; you can modify and/or share it under the terms of
 # the WPILib BSD license file in the root directory of this project.
 
-from wpilib import Timer
+'''from wpilib import Timer
 from commands2 import Subsystem
 from ntcore import NetworkTableInstance
 
@@ -72,4 +72,4 @@ class LimelightCamera(Subsystem):
 def _fix_name(name: str):
     if not name:
         name = "limelight"
-    return name
+    return name'''

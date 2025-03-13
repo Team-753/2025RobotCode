@@ -2,7 +2,7 @@ from wpimath import geometry, kinematics
 import wpilib
 import navx
 from subsystems.swerveModule import SwerveModule
-from limelight_camera import LimelightCamera
+#from limelight_camera import LimelightCamera
 from wpilib import DriverStation
 from wpimath import controller, trajectory, estimator
 import wpimath
@@ -38,7 +38,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.frontRight = SwerveModule(rc.SwerveModules.frontRight.driveMotorID, rc.SwerveModules.frontRight.turnMotorID, rc.SwerveModules.frontRight.CANCoderID, rc.SwerveModules.frontRight.encoderOffset, rc.SwerveModules.frontRight.isInverted)
         self.rearLeft = SwerveModule(rc.SwerveModules.rearLeft.driveMotorID, rc.SwerveModules.rearLeft.turnMotorID, rc.SwerveModules.rearLeft.CANCoderID, rc.SwerveModules.rearLeft.encoderOffset, rc.SwerveModules.rearLeft.isInverted)
         self.rearRight = SwerveModule(rc.SwerveModules.rearRight.driveMotorID, rc.SwerveModules.rearRight.turnMotorID, rc.SwerveModules.rearRight.CANCoderID, rc.SwerveModules.rearRight.encoderOffset, rc.SwerveModules.rearRight.isInverted)
-        self.limeLight = LimelightCamera("jamal")
+        #self.limeLight = LimelightCamera("jamal")
         
         #renaming some variables so they are easier to use
         teleopConstants = rc.driveConstants.poseConstants
