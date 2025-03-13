@@ -104,4 +104,3 @@ class GoToPosition(commands2.Command):
             self.timer.stop()
             self.timer.reset()
             return False
-            

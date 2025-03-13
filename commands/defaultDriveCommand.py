@@ -11,7 +11,7 @@ class DefaultDriveCommand(commands2.Command):
 
     def execute(self):
         #print("ahhh")
-        self.driveTrain.joystickDrive(self.driveTrain.getJoystickInput())
+        self.driveTrain.joystickDrive(self.driveTrain.getJoystickInputCurved())
         #print("calling the joystick inputs")
 
 class SlowDown(commands2.Command):

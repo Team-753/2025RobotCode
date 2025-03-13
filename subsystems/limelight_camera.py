@@ -7,7 +7,6 @@ from wpilib import Timer
 from commands2 import Subsystem
 from ntcore import NetworkTableInstance
 from wpimath import geometry
-
 class LimelightCamera(Subsystem):
     def __init__(self, cameraName: str) -> None:
         super().__init__()

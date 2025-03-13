@@ -10,7 +10,7 @@ from math import hypot, radians, pi, atan2
 from typing import List
 import commands2
 import RobotConfig as rc
-import math
+import math,numpy
 from subsystems import limelight_camera
 from wpilib import Timer
 
@@ -105,7 +105,12 @@ class DriveTrainSubSystem(commands2.Subsystem):
         deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband)
         deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
         return (deadbandedY, deadbandedX, deadbandedZ)
-
+    def getJoystickInputCurved(self)-> tuple[float]: #getting input from the joysticks and changing it so that we can use it
+        constants = rc.driveConstants.joystickConstants
+        deadbandedY = -math.pow((abs(wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband))),1.8)*numpy.sign(self.joystick.getY())
+        deadbandedX = math.pow((abs(wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband))),1.8)*numpy.sign(self.joystick.getX())
+        deadbandedZ = -math.pow((abs(wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband))),1.8)*numpy.sign(self.joystick.getZ())
+        return (deadbandedY, deadbandedX, deadbandedZ)
         
     
     def setSwerveStates(self, xSpeed: float, ySpeed: float, zSpeed: float, fieldOrient = True)-> None:

@@ -11,7 +11,7 @@ import commands2.cmd
 from commands2.sysid import SysIdRoutine
 
 
-from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition, PivotDown, PivotUp, TopAlgaeRemoval, BottomAlgaeRemoval
+from commands.cannonCommand import place, intake, DefaultPivotCommand,cannonToPosition, PivotDown, PivotUp, TopAlgaeRemoval, BottomAlgaeRemoval,AutoIntake,AutoPlace,AutoCannonPosition
 from commands.AlgaeCommand import GrabAlgae,ReleaseAlgae, FlipAlgaeSquisher
 from commands.elevatorCommand import elevatorUp,elevatorDown,elevatorToPos
 from commands.ClimberCommand import FlipClimber, FlipCompressor
@@ -96,7 +96,7 @@ class RobotContainer():
         self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
         
-
+        self.AuxController.leftStick().onTrue(elevatorToPos(self.elevator,6).andThen(AutoCannonPosition(self.cannon,3).andThen(AutoPlace(self.cannon,3))))
 
         #self.joystickButton4 = self.joystick.button(4)
         #self.joystickButton4.onTrue(SlowDown(self.driveTrain))
