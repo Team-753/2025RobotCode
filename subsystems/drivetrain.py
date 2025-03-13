@@ -2,7 +2,7 @@ from wpimath import geometry, kinematics
 import wpilib
 import navx
 from subsystems.swerveModule import SwerveModule
-from limelight_camera import LimelightCamera
+from subsystems.limelight_camera import LimelightCamera
 from wpilib import DriverStation
 from wpimath import controller, trajectory, estimator
 import wpimath
@@ -113,10 +113,10 @@ class DriveTrainSubSystem(commands2.Subsystem):
 
 
         wpilib.SmartDashboard.putBoolean("have navx: ", self.navx.isConnected())
-        wpilib.SmartDashboard.putNumber("last rotation: ", self.getCurrentPose().rotation().degrees())
+        #wpilib.SmartDashboard.putNumber("last rotation: ", self.getCurrentPose().rotation().degrees())
         wpilib.SmartDashboard.putNumber("x distance: ", self.getCurrentPose().translation().X())
         wpilib.SmartDashboard.putNumber("y distance: ", self.getCurrentPose().translation().Y())
-        wpilib.SmartDashboard.putNumber("navx position: ", self.getNavxRotation2d().degrees())
+        #wpilib.SmartDashboard.putNumber("navx position: ", self.getNavxRotation2d().degrees())
 
 
     
