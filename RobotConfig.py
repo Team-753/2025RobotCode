@@ -113,6 +113,9 @@ class driveConstants:
 
 
 class visionConstants:
+
+    cameraName = "Jamal"
+
     # The physical mounting offset of the camera relative to the robot's center (in degrees)
     x_offset = 1.5  # Adjust as needed
 

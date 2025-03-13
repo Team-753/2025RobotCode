@@ -11,6 +11,11 @@ from typing import List
 import commands2
 import RobotConfig as rc
 import math
+from subsystems import limelight_camera
+from wpilib import Timer
+
+from subsystems.limelight_camera import LimelightCamera
+
 
 from pathplannerlib.auto import AutoBuilder
 from pathplannerlib.controller import PPHolonomicDriveController
@@ -21,6 +26,11 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #camera settings
         self.stateStdDevs = 1.0, 1.0, 1.0
         self.visionMeasurementsStdDevs = 0.0, 0.0, 0.0
+
+        
+        self.limeLight = limelight_camera.LimelightCamera(rc.visionConstants.cameraName)
+    
+        
 
         #set up the joystick and navx sensor
         self.joystick = joystick
@@ -184,6 +194,21 @@ class DriveTrainSubSystem(commands2.Subsystem):
         
     
     def periodic(self):
+
+        time = Timer.getFPGATimestamp()
+
+        if  self.limeLight.hasDetection() == True:
+
+            posedata,latency = self.limeLight.getPoseData()
+
+            lockTime= time - (latency/1000)
+
+            self.poseEstimatior.addVisionMeasurement(posedata,lockTime)
+            
+            wpilib.SmartDashboard.putNumberArray("data",posedata,time)
+
         currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
+
+
         self.field.setRobotPose(currentPose)
         wpilib.SmartDashboard.putNumber("X position: ", currentPose.X())

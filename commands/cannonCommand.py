@@ -1,6 +1,6 @@
 import commands2
 from subsystems.cannon import CannonSubsystem
-from wpilib import XboxController
+from wpilib import XboxController, Timer
 
 class place(commands2.Command):
     def __init__(self, cannonSubsystem: CannonSubsystem):
@@ -102,11 +102,12 @@ class TopAlgaeRemoval(commands2.Command):
 
     def execute(self):
         self.cannon.topAlgaeRemoval()
-        self.cannon.goToPos(self.cannon, 0.2)
+        print("removing algae")
+        #self.cannon.goToPos(0.2)
 
     def end(self, interrupted):
-        self.cannon.stop
-        self.cannon.angleStop
+        self.cannon.idle
+        #self.cannon.angleStop
 
 
 class BottomAlgaeRemoval(commands2.Command):
@@ -117,11 +118,109 @@ class BottomAlgaeRemoval(commands2.Command):
 
     def execute(self):
         self.cannon.bottomAlgaeRemoval()
-        self.cannon.goToPos(self.cannon, 0.13)
+        print("removing algae")
+        #self.cannon.goToPos(0.13)
 
     def end(self, interrupted):
-        self.cannon.stop
-        self.cannon.angleStop
+        self.cannon.idle
+        #self.cannon.angleStop
+
+class AutoCannonPosition(commands2.Command):
+    def __init__(self, cannonSubsystem: CannonSubsystem, stopTime):
+        super().__init__()
+        self.addRequirements(cannonSubsystem)
+        self.cannon = cannonSubsystem
+        self.timer = Timer()
+        self.endTime = stopTime
+
+    def initialize(self):
+        self.timer.reset()
+        self.timer.start()
+        
+    def execute(self):
+        self.cannon.goToPos(0.133)
+
+    def isFinished(self):
+        if self.timer.hasElapsed(self.endTime):
+            return True
+        self.timer.reset
+
+    def end(self, interrupted: bool):
+        self.timer.stop
+        
+
+class AutoPlace(commands2.Command):
+    def __init__(self, cannonSubsystem: CannonSubsystem, stopTime):
+        super().__init__()
+        self.addRequirements(CannonSubsystem)
+        self.cannon = CannonSubsystem
+        self.timer = Timer()
+        self.endTime = stopTime
+
+    def initialize(self):
+        self.timer.reset
+        self.timer.start
+
+    def execute(self):
+        self.cannon.place
+
+    def isFinished(self):
+        if self.timer.hasElapsed(self.endTime):
+            return True
+        self.timer.reset
+
+    def end(self, interrupted: bool):
+        self.timer.stop
+
+
+class AutoIntake(commands2.Command):
+    def __init__(self, cannonSubsystem: CannonSubsystem, stopTime):
+        super().__init__()
+        self.addRequirements(CannonSubsystem)
+        self.cannon = cannonSubsystem
+        self.timer = Timer()
+        self.endTime = stopTime
+
+    def initialize(self):
+        self.timer.reset
+        self.timer.start
+
+    def execute(self):
+        self.cannon.intake
+
+    def isFinished(self):
+        if self.timer.hasElapsed(self.endTime):
+            return True
+        self.timer.reset
+
+    def end(self, interrupted: bool):
+        self.timer.stop
+
+
+class AutoTroughPlace(commands2.Command):
+    def __init__(self, cannonSubsystem: CannonSubsystem, stopTime):
+        super().__init__()
+        self.addRequirements(CannonSubsystem)
+        self.cannon = CannonSubsystem
+        self.timer = Timer()
+        self.endTime = stopTime
+
+    def initialize(self):
+        self.timer.reset
+        self.timer.start
+
+    def execute(self):
+        self.cannon.slowPlace
+
+    def isFinished(self):
+        if self.timer.hasElapsed(self.endTime):
+            return True
+        self.timer.reset
+
+    def end(self, interrupted: bool):
+        self.timer.stop
+
+
 
 
     

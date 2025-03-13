@@ -113,8 +113,12 @@ class RobotContainer():
 
         self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
         self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
+
         self.AuxController.pov(90).onTrue(TopAlgaeRemoval(self.cannon))
+        #self.AuxController.pov(90).onTrue(cannonToPosition(self.cannon, 0.2))
         self.AuxController.pov(270).onTrue(BottomAlgaeRemoval(self.cannon))
+        #self.AuxController.pov(270).onTrue(cannonToPosition(self.cannon, 0.13))
+    
 
     def getAutonomousCommand(self) -> commands2.Command:
         """Use this to pass the autonomous command to the main {@link Robot} class.
