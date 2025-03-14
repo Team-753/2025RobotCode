@@ -3,7 +3,7 @@
 # Open Source Software; you can modify and/or share it under the terms of
 # the WPILib BSD license file in the root directory of this project.
 
-'''from wpilib import Timer
+from wpilib import Timer
 from commands2 import Subsystem
 from ntcore import NetworkTableInstance
 from wpimath import geometry
@@ -57,7 +57,7 @@ class LimelightCamera(Subsystem):
 
     def getPoseData(self) -> tuple[geometry.Pose2d, float]:
         """ Returns the *last* calculated robot Pose2D and the pipeline latency """
-        bot_pose_data = self.table.getEntry("botpose_wpiblue").getDoubleArray()
+        bot_pose_data = self.table.getEntry("botpose_wpiblue").getDoubleArray([])
         pose_2d = geometry.Pose2d(geometry.Translation2d(bot_pose_data[0], bot_pose_data[1]), geometry.Rotation2d(bot_pose_data[5]))
         latency = bot_pose_data[6]
         return (pose_2d, latency)
@@ -83,4 +83,4 @@ class LimelightCamera(Subsystem):
 def _fix_name(name: str):
     if not name:
         name = "limelight"
-    return name'''
+    return name

@@ -23,9 +23,12 @@ from pathplannerlib.config import RobotConfig, PIDConstants
 
 class DriveTrainSubSystem(commands2.Subsystem):
     def __init__(self, joystick: commands2.button.CommandJoystick) -> None:
+        
+        
+        
         #camera settings
-        self.stateStdDevs = 1.0, 1.0, 1.0
-        self.visionMeasurementsStdDevs = 0.0, 0.0, 0.0
+        self.stateStdDevs = 0.1, 0.1, 0.1
+        self.visionMeasurementsStdDevs = 0.9, 0.9, 0.9
 
         
         self.limeLight = limelight_camera.LimelightCamera(rc.visionConstants.cameraName)
@@ -66,7 +69,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.KINEMATICS = kinematics.SwerveDrive4Kinematics(geometry.Translation2d(float(self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(self.trackWidth / 2), float(-self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(-self.wheelBase / 2)))
         #self.poseEstimatior = estimator.SwerveDrive4PoseEstimator(kinematics.SwerveDrive4Kinematics(geometry.Translation2d(float(self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(self.trackWidth / 2), float(-self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(self.wheelBase / 2)), geometry.Translation2d(float(-self.trackWidth / 2), float(-self.wheelBase / 2))), 
                                                                   #self.getNavxRotation2d(), self.getSwerveModulePositions(), geometry.Pose2d(0, 0, geometry.Rotation2d()), self.stateStdDevs, self.visionMeasurementsStdDevs)
-        self.poseEstimatior = estimator.SwerveDrive4PoseEstimator(self.KINEMATICS, self.getNavxRotation2d(), self.getSwerveModulePositions(), geometry.Pose2d(geometry.Translation2d(), geometry.Rotation2d()), self.stateStdDevs, self.visionMeasurementsStdDevs)
+        self.poseEstimator = estimator.SwerveDrive4PoseEstimator(self.KINEMATICS, self.getNavxRotation2d(), self.getSwerveModulePositions(), geometry.Pose2d(geometry.Translation2d(), geometry.Rotation2d()), self.stateStdDevs, self.visionMeasurementsStdDevs)
 
         self.field = wpilib.Field2d()
         wpilib.SmartDashboard.putData("Field: ", self.field)
@@ -85,7 +88,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
     
     def getPose(self)-> geometry.Pose2d:
         #figuring out where the robot is relative to where we started
-        return self.poseEstimatior.getEstimatedPosition()
+        return self.poseEstimator.getEstimatedPosition()
     
     def getSwerveModulePositions(self):
         #figuring out where the wheels are relative to where they started
@@ -93,7 +96,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
     
     def resetPose(self, poseToSet: geometry.Pose2d)-> None:
         #we broke our pose so we are resetting it with our current location as 0
-        self.poseEstimatior.resetPosition(self.getNavxRotation2d(), self.getSwerveModulePositions(), poseToSet)
+        self.poseEstimator.resetPosition(self.getNavxRotation2d(), self.getSwerveModulePositions(), poseToSet)
     
     def resetFieldOrient(self)-> None:
         #this doesnt do anything useful
@@ -116,7 +119,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
     def setSwerveStates(self, xSpeed: float, ySpeed: float, zSpeed: float, fieldOrient = True)-> None:
         #using the input from the get joystick input function to tell the wheels where to go
         if fieldOrient:
-            SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, zSpeed, self.poseEstimatior.getEstimatedPosition().rotation()))
+            SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, zSpeed, self.poseEstimator.getEstimatedPosition().rotation()))
 
         else:
             SwerveModuleStates = self.KINEMATICS.toSwerveModuleStates(kinematics.ChassisSpeeds(xSpeed, ySpeed, zSpeed))
@@ -124,7 +127,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.frontRight.setState(SwerveModuleStates[1])
         self.rearLeft.setState(SwerveModuleStates[2])
         self.rearRight.setState(SwerveModuleStates[3])
-        wpilib.SmartDashboard.putNumber("current rotation", self.poseEstimatior.getEstimatedPosition().rotation().degrees())
+        wpilib.SmartDashboard.putNumber("current rotation", self.poseEstimator.getEstimatedPosition().rotation().degrees())
 
 
         wpilib.SmartDashboard.putBoolean("have navx: ", self.navx.isConnected())
@@ -185,7 +188,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
     
     def getCurrentPose(self)-> geometry.Pose2d:
         # updating the current position of the robot
-        return self.poseEstimatior.getEstimatedPosition()
+        return self.poseEstimator.getEstimatedPosition()
     
     def halfSpeed(self):
         #self.kMaxSpeed = 0.5 * (rc.driveConstants.RobotSpeeds.maxSpeed)
@@ -206,13 +209,12 @@ class DriveTrainSubSystem(commands2.Subsystem):
 
             posedata,latency = self.limeLight.getPoseData()
 
-            lockTime= time - (latency/1000)
+            lockTime = time - (latency/1000)
 
-            self.poseEstimatior.addVisionMeasurement(posedata,lockTime)
+            self.poseEstimator.addVisionMeasurement(posedata,lockTime)
             
-            wpilib.SmartDashboard.putNumberArray("data",posedata,time)
 
-        currentPose = self.poseEstimatior.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
+        currentPose = self.poseEstimator.update(self.getNavxRotation2d(), self.getSwerveModulePositions())
 
 
         self.field.setRobotPose(currentPose)
