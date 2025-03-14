@@ -28,7 +28,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         
         #camera settings
         self.stateStdDevs = 0.1, 0.1, 0.1
-        self.visionMeasurementsStdDevs = 0.9, 0.9, 0.9 * math.pi
+        self.visionMeasurementsStdDevs = 0.9, 0.9, 0.9
 
         
         self.limeLight = limelight_camera.LimelightCamera(rc.visionConstants.cameraName)
