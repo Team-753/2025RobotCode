@@ -7,7 +7,6 @@ from wpilib import Timer
 from commands2 import Subsystem
 from ntcore import NetworkTableInstance
 from wpimath import geometry
-
 class LimelightCamera(Subsystem):
     def __init__(self, cameraName: str) -> None:
         super().__init__()
@@ -58,7 +57,7 @@ class LimelightCamera(Subsystem):
 
     def getPoseData(self) -> tuple[geometry.Pose2d, float]:
         """ Returns the *last* calculated robot Pose2D and the pipeline latency """
-        bot_pose_data = self.table.getEntry("botpose_wpiblue").getDoubleArray()
+        bot_pose_data = self.table.getEntry("botpose_wpiblue").getDoubleArray([])
         pose_2d = geometry.Pose2d(geometry.Translation2d(bot_pose_data[0], bot_pose_data[1]), geometry.Rotation2d(bot_pose_data[5]))
         latency = bot_pose_data[6]
         return (pose_2d, latency)

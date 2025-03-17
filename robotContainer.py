@@ -88,7 +88,7 @@ class RobotContainer():
 
         self.AuxController.a().onTrue(cannonToPosition(self.cannon, 0.108))
         self.AuxController.b().onTrue(cannonToPosition(self.cannon, 0.133))
-        self.AuxController.y().onTrue(cannonToPosition(self.cannon, 0.15))
+        self.AuxController.y().onTrue(cannonToPosition(self.cannon, 0.175))
         self.AuxController.x().onTrue(cannonToPosition(self.cannon, 0.31))
 
         self.AuxController.axisGreaterThan(1,.5).whileTrue(elevatorDown(self.elevator))
@@ -97,7 +97,7 @@ class RobotContainer():
         self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
         
-
+        self.AuxController.leftStick().onTrue(elevatorToPos(self.elevator,6).andThen(AutoCannonPosition(self.cannon,3).andThen(AutoPlace(self.cannon,3))))
 
         #self.joystickButton4 = self.joystick.button(4)
         #self.joystickButton4.onTrue(SlowDown(self.driveTrain))
@@ -115,10 +115,11 @@ class RobotContainer():
         self.AuxController.pov(0).whileTrue(GrabAlgae(self.algae))
         self.AuxController.pov(180).whileTrue(ReleaseAlgae(self.algae))
 
-        self.AuxController.pov(90).onTrue(TopAlgaeRemoval(self.cannon))
-        #self.AuxController.pov(90).onTrue(cannonToPosition(self.cannon, 0.2))
-        self.AuxController.pov(270).onTrue(BottomAlgaeRemoval(self.cannon))
-        #self.AuxController.pov(270).onTrue(cannonToPosition(self.cannon, 0.13))
+        #these don't work at the same time right now, the elevator does stuff but the cannon doesn't.
+        self.AuxController.pov(90).whileTrue(TopAlgaeRemoval(self.cannon).alongWith(elevatorToPos(self.elevator, 13)))
+        #self.AuxController.pov(90).onTrue(elevatorToPos(self.elevator, 13))
+        self.AuxController.pov(270).whileTrue(BottomAlgaeRemoval(self.cannon).alongWith(elevatorToPos(self.elevator, 6)))
+        #self.AuxController.pov(270).onTrue(elevatorToPos(self.elevator, 6))
     
 
     def getAutonomousCommand(self) -> commands2.Command:

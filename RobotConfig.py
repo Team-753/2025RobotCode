@@ -115,7 +115,7 @@ class driveConstants:
 
 class visionConstants:
 
-    cameraName = "Jamal"
+    cameraName = ("limelight-jamal")  # name of your camera goes in parentheses
 
     # The physical mounting offset of the camera relative to the robot's center (in degrees)
     x_offset = 1.5  # Adjust as needed
