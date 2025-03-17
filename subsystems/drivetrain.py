@@ -73,6 +73,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         self.poseEstimator = estimator.SwerveDrive4PoseEstimator(self.KINEMATICS, self.getNavxRotation2d(), self.getSwerveModulePositions(), geometry.Pose2d(geometry.Translation2d(), geometry.Rotation2d()), self.stateStdDevs, self.visionMeasurementsStdDevs)
 
         self.field = wpilib.Field2d()
+        #self.field.
         wpilib.SmartDashboard.putData("Field: ", self.field)
 
         """Here lies fancy auto stuff get ready for buggy fun

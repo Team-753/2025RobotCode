@@ -64,7 +64,7 @@ class RobotContainer():
         self._auto_chooser = wpilib.SendableChooser()
         self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [-0.5, 0, 0], 1))
         self._auto_chooser.addOption("something new??", GoToPosition(geometry.Pose2d(-1.60, 0, pi), self.driveTrain))
-        self._auto_chooser.addOption("score??", commands2.SequentialCommandGroup(elevatorToPos(self.elevator, 24), AutoCannonPosition(self.cannon, 0.31, 1), GoToPosition(geometry.Pose2d(-1.60, 0, pi), self.driveTrain)))#, (AutoCannonPosition(self.cannon, 0.31, 1), GoToPosition(geometry.Pose2d(-1.65, 0, pi), self.driveTrain), AutoIntake(self.cannon, 1), AutoPlace(self.cannon, 1)))
+        self._auto_chooser.addOption("score??", commands2.SequentialCommandGroup(elevatorToPos(self.elevator, 24))) #, AutoCannonPosition(self.cannon, 0.31, 1), GoToPosition(geometry.Pose2d(-1.60, 0, pi), self.driveTrain)))#, (AutoCannonPosition(self.cannon, 0.31, 1), GoToPosition(geometry.Pose2d(-1.65, 0, pi), self.driveTrain), AutoIntake(self.cannon, 1), AutoPlace(self.cannon, 1)))
         SmartDashboard.putData("Auto Mode", self._auto_chooser)
 
         # Configure the button bindings
@@ -97,7 +97,7 @@ class RobotContainer():
         self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
         
-        self.AuxController.leftStick().onTrue(elevatorToPos(self.elevator,6).andThen(AutoCannonPosition(self.cannon,3).andThen(AutoPlace(self.cannon,3))))
+        #self.AuxController.leftStick().onTrue(elevatorToPos(self.elevator,6).andThen(AutoCannonPosition(self.cannon,3).andThen(AutoPlace(self.cannon,3))))
 
         #self.joystickButton4 = self.joystick.button(4)
         #self.joystickButton4.onTrue(SlowDown(self.driveTrain))
