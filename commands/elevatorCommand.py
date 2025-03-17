@@ -1,6 +1,6 @@
 import commands2,wpilib
 from subsystems.elevator import elevatorSubSystem
-from wpilib import SmartDashboard
+
 
 class elevatorUp(commands2.Command):
     def __init__(self, kElevSub:elevatorSubSystem):
@@ -53,7 +53,6 @@ class elevatorToPos(commands2.Command):
         self.elevator = elevatorSubSystem
         self.desiredPos=desPos
     def execute(self):
-        SmartDashboard.putBoolean("elevator going", True)
         if self.desiredPos==0:
             self.elevator.goToZero()
             self.elevator.checkBottom()
@@ -62,8 +61,10 @@ class elevatorToPos(commands2.Command):
         else:
             self.elevator.setPosition(self.desiredPos)
     def isFinished(self):
-        if float(self.elevator.getPosError())<0.2:
-            SmartDashboard.putBoolean("elevator going", False)
+        if float(self.elevator.getPosError())<0.2 and self.desiredPos!=0:
+            print("elevatorcommandfinished")
+            return True
+        elif self.desiredPos==0 and self.elevator.checkBottom():
             return True
         else:
             return False

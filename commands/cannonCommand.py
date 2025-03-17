@@ -144,17 +144,17 @@ class AutoCannonPosition(commands2.Command):
     def isFinished(self):
         if self.timer.hasElapsed(self.endTime):
             return True
-        self.timer.reset()
+        #self.timer.reset()
 
     def end(self, interrupted: bool):
         self.timer.stop()
         
 
 class AutoPlace(commands2.Command):
-    def __init__(self, cannonSubsystem: CannonSubsystem, stopTime):
+    def __init__(self, kcannonSubsystem: CannonSubsystem, stopTime):
         super().__init__()
         self.addRequirements(CannonSubsystem)
-        self.cannon = CannonSubsystem
+        self.cannon = kcannonSubsystem
         self.timer = Timer()
         self.endTime = stopTime
 
@@ -168,7 +168,7 @@ class AutoPlace(commands2.Command):
     def isFinished(self):
         if self.timer.hasElapsed(self.endTime):
             return True
-        self.timer.reset()
+        #self.timer.reset()
 
     def end(self, interrupted: bool):
         self.timer.stop()
