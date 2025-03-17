@@ -6,7 +6,7 @@ class robotDimensions:
 
 class SwerveModules:
 
-    drivingGearRatio = 5.68 # find a real number
+    drivingGearRatio = 6.75 # find a real number
     turningGearRatio = 13.3714 # find a real number
     #turning gear notes from motor to output: 10: 30: 22/16 : 88
     #contiued: 1/3* 3/2 * 5/3 * 1/6
@@ -65,6 +65,7 @@ class elevator:
 
     
 class driveConstants:
+    #in meters, wheels have 4 in diameters
     wheelDiameter = 0.1016
 
     class joystickConstants:
@@ -76,7 +77,7 @@ class driveConstants:
     class RobotSpeeds:
         maxSpeed = 4.8
         maxAcceleration = 3
-        manualRotationSpeedFactor = 0.7
+        manualRotationSpeedFactor = 1.4
 
     class poseConstants:
         class translationPIDConstants:
@@ -86,22 +87,22 @@ class driveConstants:
             period = 0.025
 
         class rotationPIDConstants:
-            kP = 0.15
+            kP = 10
             kI = 0.0
             kD = 0.0
             period = 0.025
 
         xPoseToleranceMeters = 0.05
         yPoseToleranceMeters = 0.05
-        thetaPoseToleranceRadians = 0.01745
-        teleopVelLimit = 4.25
-        teleopAccelLimit = 3
-        autoVelLimit = 2
-        autoAccelLimit = 1
+        thetaPoseToleranceRadians = 0.02
+        teleopVelLimit = 2
+        teleopAccelLimit = 2
+        autoVelLimit = 4
+        autoAccelLimit = 2
 
     class ThetaPIDConstants:
-        autoVelLimit = 6
-        autoAccelLimit = 5
+        autoVelLimit = 4
+        autoAccelLimit = 2
         xPoseToleranceMeters = 0.03
         yPoseToleranceMeters = 0.03
         period = 0.05

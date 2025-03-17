@@ -107,7 +107,7 @@ class SwerveModule:
     
     def getTurnWheelState(self)-> geometry.Rotation2d:
         #what is the angle of the wheel?
-        return geometry.Rotation2d(self.turnMotor.get_position().value / (math.tau))
+        return geometry.Rotation2d(self.turnMotor.get_position().value * (math.tau))
     
     def getDriveState(self):
         #how fast are we going?
@@ -127,7 +127,7 @@ class SwerveModule:
         optimizedDesiredState.optimize(geometry.Rotation2d(self.turnMotor.get_position().value))
         #driveMotorVelocity = optimizedDesiredState. / (rc.driveConstants.wheelDiameter * math.pi)
         #turnMotorPosition = optimizedDesiredState.angle / math.tau
-        driveMotorVelocity = optimizedDesiredState.speed * math.pi
+        driveMotorVelocity = optimizedDesiredState.speed #* math.pi
         turnMotorPosition = optimizedDesiredState.angle.radians() / math.tau
         '''print("module number " +  str(self.driveMotor.device_id))
         print ("desired positition " + str(turnMotorPosition))

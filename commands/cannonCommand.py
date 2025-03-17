@@ -126,19 +126,20 @@ class BottomAlgaeRemoval(commands2.Command):
         #self.cannon.angleStop
 
 class AutoCannonPosition(commands2.Command):
-    def __init__(self, cannonSubsystem: CannonSubsystem, stopTime):
+    def __init__(self, cannonSubsystem: CannonSubsystem, desPos, stopTime):
         super().__init__()
         self.addRequirements(cannonSubsystem)
         self.cannon = cannonSubsystem
         self.timer = Timer()
         self.endTime = stopTime
+        self.desiredPose = desPos
 
     def initialize(self):
         self.timer.reset()
         self.timer.start()
         
     def execute(self):
-        self.cannon.goToPos(0.133)
+        self.cannon.goToPos(self.desiredPose)
 
     def isFinished(self):
         if self.timer.hasElapsed(self.endTime):

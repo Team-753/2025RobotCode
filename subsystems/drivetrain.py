@@ -2,7 +2,7 @@ from wpimath import geometry, kinematics
 import wpilib
 import navx
 from subsystems.swerveModule import SwerveModule
-from subsystems.limelight_camera import LimelightCamera
+#from subsystems.limelight_camera import LimelightCamera
 from wpilib import DriverStation
 from wpimath import controller, trajectory, estimator
 import wpimath
@@ -24,7 +24,7 @@ from pathplannerlib.config import RobotConfig, PIDConstants
 class DriveTrainSubSystem(commands2.Subsystem):
     def __init__(self, joystick: commands2.button.CommandJoystick) -> None:
         #camera settings
-        self.stateStdDevs = 1.0, 1.0, 1.0
+        self.stateStdDevs = 1, 1, 1
         self.visionMeasurementsStdDevs = 0.0, 0.0, 0.0
 
         
@@ -34,7 +34,8 @@ class DriveTrainSubSystem(commands2.Subsystem):
 
         #set up the joystick and navx sensor
         self.joystick = joystick
-        self.navx = navx.AHRS.create_spi()
+        #self.navx = navx.AHRS.create_spi()
+        self.navx = navx.AHRS(navx.AHRS.NavXComType.kMXP_SPI)
 
         #getting some important constants about the robot declared
         self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
@@ -101,8 +102,8 @@ class DriveTrainSubSystem(commands2.Subsystem):
     
     def getJoystickInput(self)-> tuple[float]: #getting input from the joysticks and changing it so that we can use it
         constants = rc.driveConstants.joystickConstants
-        deadbandedY = -wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband)
-        deadbandedX = wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband)
+        deadbandedY = -wpimath.applyDeadband(self.joystick.getY() * 10, constants.yDeadband)
+        deadbandedX = wpimath.applyDeadband(self.joystick.getX() * 10, constants.xDeadband)
         deadbandedZ = -wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband)
         return (deadbandedY, deadbandedX, deadbandedZ)
 

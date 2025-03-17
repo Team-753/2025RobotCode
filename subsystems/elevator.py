@@ -36,6 +36,7 @@ class elevatorSubSystem(commands2.Subsystem):
         self.lMotor.configure(configL, rev.SparkMax.ResetMode.kNoResetSafeParameters, rev.SparkMax.PersistMode.kNoPersistParameters)
         self.lMotor.IdleMode(0)
         self.rMotor.IdleMode(0)
+        self.desiredPos = 0
     def checkBottom(self):
         if self.encoder.getPosition()<0.7:
             self.lMotor.IdleMode(0)
@@ -77,7 +78,7 @@ class elevatorSubSystem(commands2.Subsystem):
         self.lMotor.IdleMode(0)
         self.lMotor.set(0.06)
     def getPosError(self):
-        return (float(self.desiredPos())-float(self.encoder.getPosition()))
+        return (float(self.desiredPos)-float(self.encoder.getPosition()))
 
 
  

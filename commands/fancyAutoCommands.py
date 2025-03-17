@@ -59,7 +59,7 @@ class GoToPosition(commands2.Command):
         #self.xController.reset(self.driveTrain.getCurrentPose().X())
         self.xController.setTolerance(config.poseConstants.xPoseToleranceMeters)
         self.yController.setTolerance(config.poseConstants.yPoseToleranceMeters)
-        self.constraints = trajectory.TrapezoidProfileRadians.Constraints(2 *pi, 2 * pi)
+        self.constraints = trajectory.TrapezoidProfileRadians.Constraints(4 *pi, 4 * pi)
         self.angleController = controller.ProfiledPIDControllerRadians(config.poseConstants.rotationPIDConstants.kP, config.poseConstants.rotationPIDConstants.kI, config.poseConstants.rotationPIDConstants.kD, self.constraints)
         self.angleController.setTolerance(config.poseConstants.thetaPoseToleranceRadians)
         self.angleController.enableContinuousInput(-pi, pi)
@@ -76,32 +76,42 @@ class GoToPosition(commands2.Command):
     def execute(self):
         self.toX = self.xController.calculate(self.driveTrain.getCurrentPose().X(), self.targetXState)
         self.toY = self.yController.calculate(self.driveTrain.getCurrentPose().Y(), self.targetYState)
-        self.output = self.angleController.calculate(wpimath.angleModulus(self.driveTrain.getCurrentPose().rotation().radians()), self.targetState)
-        SmartDashboard.putNumber("current spin: ", wpimath.angleModulus(self.driveTrain.getCurrentPose().rotation().radians().__float__()))
-        #self.driveTrain.setSwerveStates(self.toX, self.toY, self.output)
-        self.driveTrain.setSwerveStates(0, 0, self.output)
+        self.output = self.angleController.calculate(-1 * wpimath.angleModulus(self.driveTrain.getCurrentPose().rotation().radians()), self.targetState)
+        SmartDashboard.putNumber("current spin: ", -1 * wpimath.angleModulus(self.driveTrain.getCurrentPose().rotation().radians().__float__()))
+        SmartDashboard.putNumber("current x", self.driveTrain.getCurrentPose().X())
+        SmartDashboard.putNumber("current y", self.driveTrain.getCurrentPose().Y())
+        self.driveTrain.setSwerveStates(self.toX, self.toY, self.output)
+        #self.driveTrain.setSwerveStates(0, 0, self.output)
         SmartDashboard.putBoolean("auto going", True)
 
     def end(self, interrupted):
         self.driveTrain.stationary()
+        SmartDashboard.putBoolean("auto going", False)
         
     def isFinished(self):
-        #self.timer.start()
+        SmartDashboard.putNumber("timer", self.timer.get())
         if self.xController.atSetpoint() and self.yController.atSetpoint() and self.angleController.atSetpoint() and self.timer.hasElapsed(0.25):
             self.timer.stop()
             self.timer.reset()
+            SmartDashboard.putNumber("auto ending", 1)
             return True
-        elif not self.timer.hasElapsed(0.25) and self.xController.atSetpoint() and self.yController.atSetpoint() and self.angleController.atSetpoint():
-            return False
         elif self.xController.atSetpoint() and self.yController.atSetpoint() and self.angleController.atSetpoint() and not self.timer.isRunning():
             self.timer.reset()
             self.timer.start()
+            SmartDashboard.putNumber("auto ending", 3)
+            return False
+        elif not self.timer.hasElapsed(0.25) and self.xController.atSetpoint() and self.yController.atSetpoint() and self.angleController.atSetpoint():
+            SmartDashboard.putNumber("auto ending", 2)
+            return False
         elif not self.xController.atSetpoint() or not self.yController.atSetpoint() or not self.angleController.atSetpoint():
             self.timer.stop()
             self.timer.reset()
+            SmartDashboard.putNumber("auto ending", 4)
             return False
         else:
             self.timer.stop()
             self.timer.reset()
+            SmartDashboard.putNumber("auto ending", 5)
             return False
-            
+        
+        
