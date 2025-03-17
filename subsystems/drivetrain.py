@@ -27,7 +27,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         
         
         #camera settings
-        self.stateStdDevs = 1.0, 1.0, 1.0
+        self.stateStdDevs = 1, 1, 1
         self.visionMeasurementsStdDevs = 0.0, 0.0, 0.0
 
         
