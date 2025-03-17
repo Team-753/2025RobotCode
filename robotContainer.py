@@ -97,7 +97,7 @@ class RobotContainer():
         self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
         
-        self.AuxController.leftStick().onTrue(elevatorToPos(self.elevator,6).andThen(AutoCannonPosition(self.cannon,3).andThen(AutoPlace(self.cannon,3))))
+        self.AuxController.leftStick().onTrue(elevatorToPos(self.elevator,6).andThen(AutoCannonPosition(self.cannon,0.2,0.1).andThen(AutoPlace(self.cannon,3))))#.andThen(AutoCannonPosition(self.cannon,desPos=0.2,stopTime=3).
 
         #self.joystickButton4 = self.joystick.button(4)
         #self.joystickButton4.onTrue(SlowDown(self.driveTrain))
@@ -108,7 +108,6 @@ class RobotContainer():
         
         #self.AuxController.start().onTrue(elevatorToPos(self.elevator,0.5))
         self.AuxController.rightStick().onTrue(elevatorToPos(self.elevator,0.0))
-        self.AuxController.leftStick().onTrue(cannonToPosition(self.cannon,0.5))
         #self.AuxController.leftStick().whileTrue(elevatorUp(self.elevator))
 
 
