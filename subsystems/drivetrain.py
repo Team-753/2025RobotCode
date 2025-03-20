@@ -38,7 +38,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #set up the joystick and navx sensor
         self.joystick = joystick
         #self.navx = navx.AHRS.create_spi()
-        self.navx = navx.AHRS(navx.AHRS.NavXComType.kMXP_SPI)
+        self.navx = navx.AHRS(navx.AHRS.NavXComType.kMXP_SPI, 55)
 
         #getting some important constants about the robot declared
         self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
@@ -112,8 +112,8 @@ class DriveTrainSubSystem(commands2.Subsystem):
         return (deadbandedY, deadbandedX, deadbandedZ)
     def getJoystickInputCurved(self)-> tuple[float]: #getting input from the joysticks and changing it so that we can use it
         constants = rc.driveConstants.joystickConstants
-        deadbandedY = -math.pow((abs(wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband))),1.8)*numpy.sign(self.joystick.getY())
-        deadbandedX = math.pow((abs(wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband))),1.8)*numpy.sign(self.joystick.getX())
+        deadbandedY = -math.pow((abs(wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband))),1.8)*numpy.sign(self.joystick.getY()) *5
+        deadbandedX = math.pow((abs(wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband))),1.8)*numpy.sign(self.joystick.getX()) *5
         deadbandedZ = -math.pow((abs(wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband))),1.8)*numpy.sign(self.joystick.getZ())
         return (deadbandedY, deadbandedX, deadbandedZ)
         
@@ -132,7 +132,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         wpilib.SmartDashboard.putNumber("current rotation", self.poseEstimator.getEstimatedPosition().rotation().degrees())
 
 
-        wpilib.SmartDashboard.putBoolean("have navx: ", self.navx.isConnected())
+        
         #wpilib.SmartDashboard.putNumber("last rotation: ", self.getCurrentPose().rotation().degrees())
         wpilib.SmartDashboard.putNumber("x distance: ", self.getCurrentPose().translation().X())
         wpilib.SmartDashboard.putNumber("y distance: ", self.getCurrentPose().translation().Y())
@@ -221,3 +221,4 @@ class DriveTrainSubSystem(commands2.Subsystem):
 
         self.field.setRobotPose(currentPose)
         wpilib.SmartDashboard.putNumber("X position: ", currentPose.X())
+        wpilib.SmartDashboard.putBoolean("have navx: ", self.navx.isConnected())

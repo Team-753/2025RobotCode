@@ -59,7 +59,7 @@ class GoToPosition(commands2.Command):
         #self.xController.reset(self.driveTrain.getCurrentPose().X())
         self.xController.setTolerance(config.poseConstants.xPoseToleranceMeters)
         self.yController.setTolerance(config.poseConstants.yPoseToleranceMeters)
-        self.constraints = trajectory.TrapezoidProfileRadians.Constraints(4 *pi, 4 * pi)
+        self.constraints = trajectory.TrapezoidProfileRadians.Constraints(pi/2, pi/2)
         self.angleController = controller.ProfiledPIDControllerRadians(config.poseConstants.rotationPIDConstants.kP, config.poseConstants.rotationPIDConstants.kI, config.poseConstants.rotationPIDConstants.kD, self.constraints)
         self.angleController.setTolerance(config.poseConstants.thetaPoseToleranceRadians)
         self.angleController.enableContinuousInput(-pi, pi)

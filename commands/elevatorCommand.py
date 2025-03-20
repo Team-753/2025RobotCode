@@ -53,6 +53,7 @@ class elevatorToPos(commands2.Command):
         self.elevator = elevatorSubSystem
         self.desiredPos=desPos
     def execute(self):
+        wpilib.SmartDashboard.putBoolean("elevator going", True)
         if self.desiredPos==0:
             self.elevator.goToZero()
             self.elevator.checkBottom()
@@ -63,8 +64,10 @@ class elevatorToPos(commands2.Command):
     def isFinished(self):
         if float(self.elevator.getPosError())<0.2 and self.desiredPos!=0:
             print("elevatorcommandfinished")
+            wpilib.SmartDashboard.putBoolean("elevator going", False)
             return True
         elif self.desiredPos==0 and self.elevator.checkBottom():
+            wpilib.SmartDashboard.putBoolean("elevator going", False)
             return True
         else:
             return False

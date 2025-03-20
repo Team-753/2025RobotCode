@@ -44,6 +44,16 @@ class RobotContainer():
 
         self.joystick = commands2.button.CommandJoystick(0)
         self.AuxController = commands2.button.CommandXboxController(1)
+        
+        self.positionGetter = wpilib.SendableChooser()
+        self.positionGetter.setDefaultOption("blue center", geometry.Pose2d(7.2702, 3.9942, geometry.Rotation2d(0)))
+        self.positionGetter.addOption("blue right", geometry.Pose2d(1.8998, 3.9942, geometry.Rotation2d(0)))
+        self.positionGetter.addOption("blue left", geometry.Pose2d(6.0893, 3.9942, geometry.Rotation2d(0)))
+        self.positionGetter.addOption("red center", geometry.Pose2d(7.2702, 8.2752, geometry.Rotation2d(0)))
+        self.positionGetter.addOption("red right", geometry.Pose2d(6.0893, 8.2752, geometry.Rotation2d(0)))
+        self.positionGetter.addOption("red left", geometry.Pose2d(1.8998, 8.2752, geometry.Rotation2d(0)))
+
+        self.startPos = self.positionGetter.getSelected()
 
         self.driveTrain = DriveTrainSubSystem(self.joystick)
         self.elevator = elevatorSubSystem()
@@ -60,11 +70,17 @@ class RobotContainer():
         self.climber.GoDown()
         self.climber.ComeBack()
 
+        #build some complex commands. This should probably go somewhere else but... Im feeling lazy.
+        self.level4Command = commands2.SequentialCommandGroup(elevatorToPos(self.elevator, 26).alongWith(AutoCannonPosition(self.cannon, 0.31, 1)).alongWith(AutoIntake(self.cannon, 1)), AutoCannonPosition(self.cannon, 0.175, 0.5), AutoPlace(self.cannon, 1), elevatorToPos(self.elevator, 0))
+
         # Path follower
         self._auto_chooser = wpilib.SendableChooser()
-        self._auto_chooser.setDefaultOption("forward", superSimpleAuto(self.driveTrain, [-0.5, 0, 0], 1))
-        self._auto_chooser.addOption("something new??", GoToPosition(geometry.Pose2d(-1.60, 0, pi), self.driveTrain))
-        self._auto_chooser.addOption("score??", commands2.SequentialCommandGroup(elevatorToPos(self.elevator, 24))) #, AutoCannonPosition(self.cannon, 0.31, 1), GoToPosition(geometry.Pose2d(-1.60, 0, pi), self.driveTrain)))#, (AutoCannonPosition(self.cannon, 0.31, 1), GoToPosition(geometry.Pose2d(-1.65, 0, pi), self.driveTrain), AutoIntake(self.cannon, 1), AutoPlace(self.cannon, 1)))
+        self._auto_chooser.addOption("a stop", superSimpleAuto(self.driveTrain, [-0.5, 0, 0], 1))
+        self._auto_chooser.addOption("move", GoToPosition(geometry.Pose2d(-1.60, 0, 0), self.driveTrain))
+        self._auto_chooser.setDefaultOption("score center", commands2.SequentialCommandGroup(GoToPosition(geometry.Pose2d(0, 0, 0), self.driveTrain), GoToPosition(geometry.Pose2d(-1.30, 0, pi), self.driveTrain), elevatorToPos(self.elevator, 26).alongWith(AutoCannonPosition(self.cannon, 0.31, 1)).alongWith(AutoIntake(self.cannon, 1)), AutoCannonPosition(self.cannon, 0.175, 0.5), AutoPlace(self.cannon, 1), elevatorToPos(self.elevator, 0))) #GoToPosition(geometry.Pose2d(0, 0, 0), self.driveTrain))) #, AutoCannonPosition(self.cannon, 0.31, 1), GoToPosition(geometry.Pose2d(-1.60, 0, pi), self.driveTrain)))#, (AutoCannonPosition(self.cannon, 0.31, 1), GoToPosition(geometry.Pose2d(-1.65, 0, pi), self.driveTrain), AutoIntake(self.cannon, 1), AutoPlace(self.cannon, 1)))
+        #self._auto_chooser.addOption("score left", commands2.SequentialCommandGroup(GoToPosition(geometry.Pose2d(-2.0, 0, pi/3),self.driveTrain), self.level4Command))
+        #self._auto_chooser.addOption("score right", commands2.SequentialCommandGroup(GoToPosition(geometry.Pose2d(-2.0, 0, -pi/3), self.driveTrain), self.level4Command))
+        self._auto_chooser.addOption("center trough", commands2.SequentialCommandGroup(GoToPosition(geometry.Pose2d(-1.60, 0, 0), self.driveTrain), AutoCannonPosition(self.cannon, 0.108, 1), AutoPlace(self.cannon, 1)))
         SmartDashboard.putData("Auto Mode", self._auto_chooser)
 
         # Configure the button bindings
@@ -82,7 +98,7 @@ class RobotContainer():
         
         self.AuxController.a().onTrue(elevatorToPos(self.elevator,6))
         self.AuxController.b().onTrue(elevatorToPos(self.elevator,13))
-        self.AuxController.y().onTrue(elevatorToPos(self.elevator,24))
+        self.AuxController.y().onTrue(elevatorToPos(self.elevator,26))
         self.AuxController.x().onTrue(elevatorToPos(self.elevator,0))
         #6/1
 
@@ -97,7 +113,7 @@ class RobotContainer():
         self.AuxController.axisLessThan(5,-.5).whileTrue(PivotUp(self.cannon))
         self.AuxController.axisGreaterThan(5,.5).whileTrue(PivotDown(self.cannon))
         
-        self.AuxController.leftStick().onTrue(elevatorToPos(self.elevator,6).andThen(AutoCannonPosition(self.cannon,0.2,0.1).andThen(AutoPlace(self.cannon,3))))#.andThen(AutoCannonPosition(self.cannon,desPos=0.2,stopTime=3).
+        #self.AuxController.leftStick().onTrue(elevatorToPos(self.elevator,6).andThen(AutoCannonPosition(self.cannon,0.2,0.1).andThen(AutoPlace(self.cannon,3))))#.andThen(AutoCannonPosition(self.cannon,desPos=0.2,stopTime=3).
 
         #self.joystickButton4 = self.joystick.button(4)
         #self.joystickButton4.onTrue(SlowDown(self.driveTrain))

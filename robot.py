@@ -36,7 +36,7 @@ class MyRobot(commands2.TimedCommandRobot):
     def disabledInit(self):
         '''SmartDashboard.putBoolean("Locked(1)", False)
         SmartDashboard.putBoolean("Locked(2)", False)'''
-        return super().disabledInit()
+        self.robotContainer.disabledInit()
     
     def autonomousInit(self):
         

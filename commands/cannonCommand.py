@@ -172,6 +172,7 @@ class AutoPlace(commands2.Command):
 
     def end(self, interrupted: bool):
         self.timer.stop()
+        self.cannon.idle()
 
 
 class AutoIntake(commands2.Command):
@@ -192,7 +193,7 @@ class AutoIntake(commands2.Command):
     def isFinished(self):
         if self.timer.hasElapsed(self.endTime):
             return True
-        self.timer.reset()
+        #self.timer.reset()
 
     def end(self, interrupted: bool):
         self.timer.stop()
@@ -216,7 +217,7 @@ class AutoTroughPlace(commands2.Command):
     def isFinished(self):
         if self.timer.hasElapsed(self.endTime):
             return True
-        self.timer.reset()
+        #self.timer.reset()
 
     def end(self, interrupted: bool):
         self.timer.stop()

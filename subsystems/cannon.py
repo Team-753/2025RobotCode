@@ -25,7 +25,7 @@ class CannonSubsystem(commands2.Subsystem):
         
     def place(self):
         print("cannon is placing")
-        self.topMotor.set(-0.35)
+        self.topMotor.set(-0.47)
 
     def slowPlace(self):
         self.topMotor.set(-0.1)
@@ -50,11 +50,11 @@ class CannonSubsystem(commands2.Subsystem):
 
 
     def spinup(self):
-        self.pivotMotor.set(0.1) # slow speed, because otherwise things break
+        self.pivotMotor.set(0.2) # slow speed, because otherwise things break
         print("current cannon postition: " + str(self.encoder.getPosition()))
 
     def spindown(self):
-        self.pivotMotor.set(-0.1)
+        self.pivotMotor.set(-0.2)
 
     def angleStop(self):
         self.pivotMotor.set(0.016)

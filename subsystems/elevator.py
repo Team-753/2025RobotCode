@@ -41,6 +41,9 @@ class elevatorSubSystem(commands2.Subsystem):
         if self.encoder.getPosition()<0.7:
             self.lMotor.IdleMode(0)
             self.lMotor.set(0)
+            return True
+        else:
+            return False
             #print("MOTOR IDLE")
     def setPosition(self,desiredPos):
         self.desiredPos=desiredPos
@@ -51,7 +54,7 @@ class elevatorSubSystem(commands2.Subsystem):
                 self.lMotor.set(0)
                 #print("MOTOR IDLE")
         elif self.encoder.getPosition()<4 and abs(self.encoder.getVelocity())<150:
-            self.lMotor.set(0.023)
+            self.lMotor.set(0.018)
             #print("AT POS")
         else:
             self.pid.setReference(4,rev.SparkMax.ControlType.kPosition,rev.ClosedLoopSlot.kSlot0)
