@@ -52,7 +52,10 @@ class SwerveModule:
         MotorConfigs.current_limits.supply_current_limit = 38 
         MotorConfigs.motor_output.neutral_mode = signals.NeutralModeValue.COAST
         #MotorConfigs.feedback.rotor_to_sensor_ratio = rc.SwerveModules.drivingGearRatio
-        MotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.drivingGearRatio
+        if driveID == 1 or 7:
+            MotorConfigs.feedback.sensor_to_mechanism_ratio = rc.SwerveModules.drivingGearRatio
+        elif driveID == 4 or 10:
+            MotorConfigs.feedback.sensor_to_mechanism_ratio = 5.60
 
         #The following configs are for position based drive... might be helpful for autos?
         MotorConfigs.slot1.k_p = 7.2

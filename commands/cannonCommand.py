@@ -220,6 +220,7 @@ class AutoTroughPlace(commands2.Command):
         #self.timer.reset()
 
     def end(self, interrupted: bool):
+        
         self.timer.stop()
 
 

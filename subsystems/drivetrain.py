@@ -38,7 +38,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         #set up the joystick and navx sensor
         self.joystick = joystick
         #self.navx = navx.AHRS.create_spi()
-        self.navx = navx.AHRS(navx.AHRS.NavXComType.kMXP_SPI, 55)
+        self.navx = navx.AHRS(navx.AHRS.NavXComType.kUSB1, 200)
 
         #getting some important constants about the robot declared
         self.kMaxSpeed = rc.driveConstants.RobotSpeeds.maxSpeed
@@ -114,7 +114,7 @@ class DriveTrainSubSystem(commands2.Subsystem):
         constants = rc.driveConstants.joystickConstants
         deadbandedY = -math.pow((abs(wpimath.applyDeadband(self.joystick.getY(), constants.yDeadband))),1.8)*numpy.sign(self.joystick.getY()) *5
         deadbandedX = math.pow((abs(wpimath.applyDeadband(self.joystick.getX(), constants.xDeadband))),1.8)*numpy.sign(self.joystick.getX()) *5
-        deadbandedZ = -math.pow((abs(wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband))),1.8)*numpy.sign(self.joystick.getZ())
+        deadbandedZ = -math.pow((abs(wpimath.applyDeadband(self.joystick.getZ(), constants.theataDeadband))),2.3)*numpy.sign(self.joystick.getZ())*2
         return (deadbandedY, deadbandedX, deadbandedZ)
         
     
