@@ -12,7 +12,8 @@ class MyRobot(commands2.TimedCommandRobot):
         #self.camera = LimelightCamera("limelight-jamal")  # name of your camera goes in parentheses
 
     def robotInit(self):
-        self.robotContainer = RobotContainer()
+        """Things to do on code startup"""
+        self.robotContainer = RobotContainer() #creates the robot container class
         #SmartDashboard.setDefaultBoolean("Locked(1)", False)
         #SmartDashboard.setDefaultBoolean("Locked(2)", False)
 
@@ -29,7 +30,8 @@ class MyRobot(commands2.TimedCommandRobot):
 
 
     def teleopInit(self):
-        self.robotContainer.teleopInit()
+        """Things to do at the beginning of the teleop period"""
+        self.robotContainer.teleopInit() #does whatever we told it to at the beginning of teleoop in the robot container
 
           
 
@@ -39,7 +41,7 @@ class MyRobot(commands2.TimedCommandRobot):
         self.robotContainer.disabledInit()
     
     def autonomousInit(self):
-        
+        """Code run at the start of auto. This currently figures out what the robot is doing for auto"""
         '''if self.camera.hasDetection() == True:
             SmartDashboard.putBoolean("Locked(1)", True)
             SmartDashboard.putBoolean("Locked(2)", True)
@@ -48,7 +50,7 @@ class MyRobot(commands2.TimedCommandRobot):
             SmartDashboard.putBoolean("Locked(2)", False)'''
         
         
-        self.robotContainer.autonomousInit()
-        self.autoCommand = self.robotContainer.getAutonomousCommand()
-        self.autoCommand.schedule()
+        self.robotContainer.autonomousInit() #run the code in the robot container outlining what to do
+        self.autoCommand = self.robotContainer.getAutonomousCommand() #Get the command to run from shuffleboard
+        self.autoCommand.schedule() #runs the command
     

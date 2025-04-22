@@ -11,8 +11,8 @@
       "style": "0",
       "userScale": "2",
       "width": "1920",
-      "xpos": "-14",
-      "ypos": "1152"
+      "xpos": "11",
+      "ypos": "139"
     }
   },
   "Table": {
@@ -37,12 +37,12 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "7,810",
-      "Size": "388,176"
+      "Size": "235,244"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "375,697",
-      "Size": "1156,241"
+      "Size": "1156,91"
     },
     "###NetworkTables": {
       "Collapsed": "0",
